@@ -116,8 +116,23 @@ DINOv2 の公開以降、**「画像特徴抽出は DINOv2 を凍結して使う
 ## 系譜と派生
 
 ### 由来
-- [[entities/dino]]（2021）→ [[entities/ibot]]（2022）→ **DINOv2**（2023）
+- [[entities/dino]]（2021）→ [[entities/ibot]]（2021/ICLR 2022, [[sources/ibot]]）→ **DINOv2**（2023）
+- iBOT の MIM 損失と online tokenizer（[[concepts/online-tokenizer]]）の発想は [[entities/mae]]（He et al., 2021）の masked image modeling 系統と DINO の self-distillation 枠組みを統合したもの
 - 各種実装技法は MoCo / BYOL / SwAV / SimMIM などからの吸収
+
+### MAE との対比
+
+[[entities/mae]] は DINOv2 と**対照的かつ補完的**:
+
+| | MAE | DINOv2 |
+|---|---|---|
+| 学習信号 | 画像内マスク再構成のみ | 自己蒸留（DINO）+ MIM（iBOT 由来）|
+| 凍結特徴量 | 弱い（linear 75.8%） | 強い（linear 86.3%、k-NN 83.5%）|
+| Fine-tuning | 非常に強い（87.8% IN1K） | 強い（88.5%）|
+| 用途 | Fine-tune ありの大規模応用 | 凍結特徴量での汎用利用 |
+| Emergent | なし | 自己注意マップにオブジェクト境界 |
+
+DINOv2 は MAE の MIM 強みを iBOT 経由で取り込みつつ、DINO の self-distillation で凍結特徴量を強化した「両取り」の設計。
 
 ### 後続
 - **DINOv2 with registers**（Darcet et al., 2023）: artifact 解消、register tokens 導入

@@ -2,9 +2,9 @@
 type: concept
 aliases: [Foundation Model, 基盤モデル, foundation models]
 tags: [paradigm, scaling, pretraining]
-related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[vision-transformer]]
-sources: [[sources/dinov2-learning-robust-visual-features-without-supervision]]
-updated: 2026-05-24
+related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[vision-transformer]], [[zero-shot-transfer]], [[contrastive-learning]], [[promptable-segmentation]], [[promptable-concept-segmentation]]
+sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/segment-anything]], [[sources/sam-3]], [[sources/siglip]], [[sources/siglip-2]]
+updated: 2026-05-27
 ---
 
 # Foundation Model（基盤モデル）
@@ -39,23 +39,30 @@ updated: 2026-05-24
 CV では NLP より遅れたが、2021〜2024 にかけて本格化。
 
 ### A. 弱教師あり系（テキスト誘導）
-- **CLIP**（OpenAI, 2021）: WIT-400M の画像-テキスト対で対比学習。最初の本格的視覚基盤モデル。詳細: [[entities/clip]]
+- **CLIP**（OpenAI, 2021, [[sources/clip]] / [[entities/clip]]）: WIT-400M（[[entities/wit-400m]]）の画像-テキスト対で対比学習。**CV における初の本格的視覚基盤モデル**で、ゼロショット転移（[[concepts/zero-shot-transfer]]）を CV に持ち込んだ起点
 - **ALIGN**（Google, 2021）: 18 億の Web 画像-alt text 対で学習
 - **OpenCLIP**: LAION-2B/5B で CLIP を再現・拡張、公開
-- **Florence**（Microsoft）, **BASIC**（Google）, **CoCa**（Google）など
+- **SigLIP** ([[entities/siglip]] / [[sources/siglip]]) (Google DeepMind, 2023): CLIP の **softmax → sigmoid 損失** で根本的効率化、4 TPU で 1 日訓練可能、**32k バッチで飽和** という発見。SO-400M で 5B EVA-CLIP を超える 83.2% IN-0
+- **SigLIP 2** ([[sources/siglip-2]]) (Google DeepMind, 2025): SigLIP に LocCa decoder + 自己蒸留＋マスク予測 + ACID 蒸留 + 多言語＋de-bias + NaFlex を統合した「全部入りレシピ」。**CLIP 4 年分の独立改善を 1 モデルに凝集**。RefCOCO で +20pt、ADE20k で +4.2pt、representation bias 35.5%→7.3%。g/16 (1B) 新サイズ追加、85.0% IN-0
+- **PE** ([[entities/perception-encoder]]) / **Florence**（Microsoft）, **BASIC**（Google）, **CoCa**（Google）, **EVA-CLIP**, **MetaCLIP**, **DFN** など多数の後継
 
 ### B. 自己教師あり系
-- **MAE**（Meta, 2022）: マスク再構成で ViT-H まで scale
-- **DINO**（Meta, 2021）: 自己蒸留。[[entities/dino]]
-- **iBOT**（2022）: DINO + MIM。[[entities/ibot]]
-- **DINOv2**（Meta, 2023）: 1B パラメータ、142M キュレーション画像で基盤モデル化。[[entities/dinov2]]
+- **MAE**（Meta, 2021/2022, [[entities/mae]]）: マスク再構成で ViT-H まで scale
+- **DINO**（Meta, 2021, [[entities/dino]]）: 自己蒸留
+- **iBOT**（2021/2022, [[entities/ibot]]）: DINO + MIM
+- **DINOv2**（Meta, 2023, [[entities/dinov2]]）: 1B パラメータ、142M キュレーション画像で基盤モデル化
+- **DINOv3**（Meta, 2025, [[entities/dinov3]]）: ViT-7B × 1.689B 画像、Gram anchoring で dense feature 劣化を解決
 
 ### C. 生成系
 - **Stable Diffusion**（2022）: テキストから画像生成の基盤
 - **Imagen, DALL-E 3, SDXL** など
 
-### D. 領域汎用モデル
-- **SAM**（Segment Anything Model, Meta, 2023）: セグメンテーションのプロンプタブル基盤モデル
+### D. 領域汎用モデル（promptable / 教師あり）
+- **SAM**（Segment Anything Model, Meta, 2023, [[sources/segment-anything]] / [[entities/sam]]）: **CV における初の本格的セグメンテーション基盤モデル**。promptable segmentation（[[concepts/promptable-segmentation]]）タスクで訓練、データエンジンで構築した SA-1B（[[entities/sa-1b]]、11M 画像 × 1.1B マスク）を使用。**SSL ではなく教師あり**でスケール（モデル支援アノテーションで実現）。
+- **SAM 2**（Meta, 2024, [[sources/sam-2]] / [[entities/sam-2]]）: SAM の動画拡張版。**Hiera 画像エンコーダ**（[[entities/hiera]]）+ **streaming memory** で動画と画像を統一処理。SA-V（[[entities/sa-v]]、50.9K 動画 × 642.6K masklet、CC by 4.0）で訓練。画像でも SAM v1 比 6× 高速 + 高精度の上位互換。**動画 foundation model の de facto 標準**。
+- **SAM 3**（Meta Superintelligence Labs, 2025, [[sources/sam-3]] / [[entities/sam-3]]）: **新タスク PCS（Promptable Concept Segmentation, [[concepts/promptable-concept-segmentation]]）を導入**。名詞句または画像 exemplar から **コンセプトの全インスタンス** を検出・セグメント・追跡。Perception Encoder backbone + DETR detector + **presence head**（認識と位置特定を分離）+ SAM 2 tracker。SA-Co（[[entities/sa-co]]、4M unique NP、benchmark 207K concepts）で訓練・評価。**foundation model の第 4 軸（コンセプト指定）** を確立。
+- **DALL·E, Stable Diffusion 系**: テキスト → 画像生成の基盤として CLIP/SigLIP を構成要素に持つ
+- **Florence-2**（Microsoft, 2024）: 検出/セグメンテーション/キャプション統合 vision foundation
 
 ## 基盤モデルがもたらす変化
 
@@ -105,6 +112,12 @@ DINOv2 はこれらを多くの軸で達成し、「CV の基盤モデルは SSL
 
 ## 関連ページ
 
-- [[sources/dinov2-learning-robust-visual-features-without-supervision]]: CV における純粋 SSL 基盤モデルの代表例
-- [[entities/dinov2]], [[entities/clip]]
-- [[concepts/self-supervised-learning]], [[concepts/weakly-supervised-pretraining]]
+- [[sources/clip]]: CV における初の本格的基盤モデル CLIP の原典
+- [[sources/dinov2-learning-robust-visual-features-without-supervision]] / [[sources/dinov3]]: 純粋 SSL 基盤モデルの代表例
+- [[sources/segment-anything]]: セグメンテーション基盤モデル SAM の原典（教師ありデータをスケールできれば SSL でなくてよいという主張）
+- [[sources/sam-2]]: 動画への拡張、Hiera 採用で画像でも SAM v1 を凌駕
+- [[sources/sam-3]]: PCS タスク導入、コンセプト指定型 foundation model の確立、PE 採用
+- [[entities/clip]] / [[entities/dinov2]] / [[entities/dinov3]] / [[entities/siglip]] / [[entities/perception-encoder]] / [[entities/sam]] / [[entities/sam-2]] / [[entities/sam-3]] / [[entities/hiera]]
+- [[entities/sa-1b]] / [[entities/sa-v]] / [[entities/sa-co]]: SAM/SAM 2/SAM 3 の訓練データ（モデル支援アノテーションでスケール、SAM 3 では AI verifier も活用）
+- [[concepts/self-supervised-learning]] / [[concepts/weakly-supervised-pretraining]] / [[concepts/promptable-segmentation]]: 基盤モデルを生む 3 大事前学習パラダイム
+- [[concepts/zero-shot-transfer]] / [[concepts/contrastive-learning]]: 基盤モデルの中核能力と学習手法

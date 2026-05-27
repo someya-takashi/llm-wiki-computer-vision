@@ -3,8 +3,8 @@ type: concept
 aliases: [KD, Knowledge Distillation, 知識蒸留]
 tags: [training-technique, distillation, transfer]
 related: [[self-supervised-learning]], [[vision-transformer]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]]
-updated: 2026-05-24
+sources: [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip-2]]
+updated: 2026-05-27
 ---
 
 # Knowledge Distillation（KD, 知識蒸留）
@@ -59,6 +59,17 @@ $$
 
 中間層の活性値や attention map を一致させる FitNet / AT / SP など多数の派生がある。
 
+### 5. データを通じた暗黙的蒸留（ACID / ACED）
+
+[[sources/siglip-2]] が小型モデル最適化に使う近年の手法。Udandarao et al. 2024 が提案：
+
+- **ACID**（Active Curation Implicit Distillation）: 各訓練ステップで teacher と learner がサンプルの「learnability」をスコアリングし、super-batch（64k）から最適な 32k バッチを共同選択。**soft label を渡さずに、選別の偏りだけで知識転移する**
+- **ACED**（ACID + Explicit Distillation）: ACID に加え 2 つ目の teacher で明示的 softmax 蒸留
+
+SigLIP 2 の工夫: ACED の 2-teacher 設定を、**単一 teacher（SigLIP 2 So400m）を高品質キュレーションデータで 1B ファインチューンして使う ACID 単独** に置き換え、計算を半減しつつ同等の性能を達成。
+
+> **補足: なぜ「暗黙的」と呼ぶか** — 古典的 KD は teacher の出力分布を直接 student に渡す（**明示的**）。ACID は teacher を「データセレクタ」として使うだけで、出力分布は渡さない。しかし teacher が「student が苦手なサンプル」を選び続けることで、結果的に teacher の知識が student に「データの偏りを通じて」伝わる。これが「**暗黙的（implicit）**」蒸留と呼ばれる理由。
+
 ## 「教師あり KD」と「DINO 流 self-distillation」の違い
 
 | | 標準的な KD | DINO 流 self-distillation |
@@ -82,4 +93,5 @@ DINO の重要な観察は、**「教師 = 生徒の EMA」かつ「異なる拡
 ## 関連ページ
 
 - [[sources/dino-emerging-properties-in-self-supervised-vit]]: 知識蒸留を SSL に拡張した代表例
+- [[sources/siglip-2]]: ACID / ACED の現代的応用例（暗黙的蒸留 + 明示的蒸留の組み合わせ）
 - [[concepts/self-supervised-learning]]: 多くの SSL 手法が KD として再解釈される文脈

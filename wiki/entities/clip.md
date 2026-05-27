@@ -2,57 +2,140 @@
 type: entity
 entity_kind: model
 aliases: [CLIP, OpenCLIP, Contrastive Language-Image Pre-training]
-tags: [weakly-supervised, vision-language, foundation-model, openai]
-related: [[concepts/weakly-supervised-pretraining]], [[concepts/foundation-model]], [[concepts/vision-transformer]]
-sources: [[sources/dinov2-learning-robust-visual-features-without-supervision]]
-updated: 2026-05-24
+tags: [weakly-supervised, vision-language, foundation-model, openai, contrastive-learning]
+related: [[concepts/weakly-supervised-pretraining]], [[concepts/contrastive-learning]], [[concepts/zero-shot-transfer]], [[concepts/foundation-model]], [[concepts/vision-transformer]], [[concepts/promptable-segmentation]]
+sources: [[sources/clip]]
+updated: 2026-05-26
 ---
 
 # CLIP / OpenCLIP
 
 ## 概要
 
-**CLIP** = **Contrastive Language-Image Pre-training**。OpenAI の Radford ら（2021）が発表した、**画像 - テキスト対の対比学習**による事前学習法。CV における**汎用視覚基盤モデル**（[[concepts/foundation-model]]）の事実上の起点となった画期的論文。
+**CLIP** = **Contrastive Language-Image Pre-training**。OpenAI の Radford ら（2021）が発表した、**画像-テキスト対の対比学習**による事前学習法。CV における**現代マルチモーダル AI の起点**となった歴史的論文。
 
 - 論文: "Learning Transferable Visual Models From Natural Language Supervision"
-- arXiv: 2103.00020 → ICML 2021
-- OpenAI コード: <https://github.com/OpenAI/CLIP>
+- arXiv: 2103.00020（2021 年 2 月）→ ICML 2021
+- OpenAI コード・モデル: <https://github.com/OpenAI/CLIP>
+- 詳細解説: [[sources/clip]] / 翻訳: [[translations/clip]]
 
 **OpenCLIP** は LAION コミュニティが公開データ（LAION-2B / LAION-5B）で CLIP を再現・拡張した版で、現在は実質的な「公開 CLIP」として広く使われている：
 
 - コード: <https://github.com/mlfoundations/open_clip>
 - 主要メンバー: Ilharco, Schuhmann ら
 
-DINOv2 論文（[[sources/dinov2-learning-robust-visual-features-without-supervision]]）における**主要ベースライン**は OpenCLIP（特に ViT-G/14, LAION-2B 訓練）と EVA-CLIP。
+CLIP は後の **DALL-E, Stable Diffusion, BLIP, LLaVA, GPT-4V, Claude Vision, SigLIP, PE** など、ほぼすべての現代マルチモーダル AI の出発点。
 
-## 学習設定（CLIP）
+---
+
+## なぜ重要か
+
+CLIP は CV に複数の paradigm shift をもたらした：
+
+1. **「自然言語の教師信号 + 対比学習」**による事前学習の有効性を実証
+2. **ゼロショット転移**を CV の標準評価プロトコルに（[[concepts/zero-shot-transfer]]）
+3. **プロンプトエンジニアリング**を CV に持ち込み
+4. **画像とテキストの結合埋め込み空間**を実用化（後のマルチモーダル AI の基盤）
+5. **頑健性**: ゼロショット CLIP は ImageNet 派生分布で標準モデルを大幅に上回り、robustness gap を最大 75% 削減
+
+---
+
+## 学習設定（オリジナル CLIP）
 
 | 項目 | 値 |
 |---|---|
-| 学習データ | **WIT-400M**（Web から収集した 4 億の画像 - テキスト対、OpenAI 内部） |
-| アーキテクチャ | 画像 encoder（ViT または ResNet）+ テキスト encoder（Transformer） |
-| 損失 | **対比損失（InfoNCE）**: バッチ内のすべての対について「対応する画像とテキストの類似度を最大化、非対応を最小化」 |
-| バッチサイズ | 32,768（巨大バッチが性能の鍵） |
-| 公開モデル | ViT-B/16, ViT-B/32, ViT-L/14, ViT-L/14@336 |
+| 学習データ | **WIT**（4 億画像-テキスト対、OpenAI 内部）[[entities/wit-400m]] |
+| 学習目的 | **対称的 InfoNCE**（画像 → テキスト + テキスト → 画像） |
+| バッチサイズ | **32,768**（巨大バッチが性能の鍵） |
+| エポック | 32 |
+| 温度 τ | **学習可能**（log-parameterized、100 倍以下にクリップ） |
+| Optimizer | Adam + decoupled weight decay |
+| Mixed precision | あり |
 
-### 対比損失の概略
+### 損失関数
 
-バッチ内の N 個の画像 - テキスト対 $(I_i, T_i)$ について：
-- 画像 encoder で $v_i = f_{img}(I_i)$、テキスト encoder で $t_i = f_{txt}(T_i)$ を得る
-- $N \times N$ の類似度行列 $S_{ij} = v_i \cdot t_j / \|v_i\| \|t_j\|$ を計算
-- 対角成分（対応する対）を大きく、それ以外を小さくするクロスエントロピー損失（行方向と列方向の両方）
+```python
+# CLIP の擬似コード（論文 図3）
+I_e = l2_normalize(image_encoder(image), axis=-1)
+T_e = l2_normalize(text_encoder(text), axis=-1)
+logits = I_e @ T_e.T * exp(τ)
+labels = arange(n)
+loss = (CE(logits, labels, axis=0) + CE(logits, labels, axis=1)) / 2
+```
 
-> **補足: なぜ「対比」と呼ぶか** — 「正例（対応する対）」と「負例（同じバッチの他の画像 - テキスト組合せ）」を**対比**して学習する、という意味。詳細: [[concepts/weakly-supervised-pretraining]]
+詳細: [[concepts/contrastive-learning]]
 
-## CLIP の革命的だった点
+---
 
-1. **ゼロショット分類**: テキストプロンプト "a photo of a {class}" を作るだけで、未知のクラスにも対応可能
-   - ImageNet で 76.2% top-1（学習データに ImageNet ラベルを 1 つも使わずに）
-2. **共有埋め込み空間**: 画像とテキストが同じ空間にマップされ、テキスト → 画像検索、画像クラスタリング、Stable Diffusion のテキスト条件付けなどが容易に
-3. **頑健性**: ImageNet 学習モデルが弱い ImageNet-R/A/Sketch でも、相対的に良く動く
-4. **スケール則**: データとモデルを増やすと一貫して性能が上がる
+## モデルファミリ（CLIP）
 
-## OpenCLIP の重要モデル
+### 画像エンコーダ: ResNet 系（5 モデル）
+
+| Model | Embed dim | Input res | Notes |
+|---|---|---|---|
+| RN50 | 1024 | 224 | ベース |
+| RN101 | 512 | 224 | 深い |
+| RN50x4 | 640 | 288 | EfficientNet 風 4x scale |
+| RN50x16 | 768 | 384 | 16x scale |
+| RN50x64 | 1024 | 448 | 64x scale、最大 |
+
+ResNet には注意プーリング（attention pooling）と ResNet-D 改善、blur pooling を導入。
+
+### 画像エンコーダ: ViT 系（4 モデル）
+
+| Model | Embed dim | Input res | Layers | Width | Heads |
+|---|---|---|---|---|---|
+| ViT-B/32 | 512 | 224 | 12 | 768 | 12 |
+| ViT-B/16 | 512 | 224 | 12 | 768 | 12 |
+| ViT-L/14 | 768 | 224 | 24 | 1024 | 16 |
+| **ViT-L/14@336px** | **768** | **336** | **24** | **1024** | **16** |
+
+論文の「CLIP」と呼ぶときは通常 **ViT-L/14@336px**（最良モデル）を指す。
+
+### テキストエンコーダ
+
+- 12 層 × 512 幅 × 8 ヘッド Transformer（**6300 万パラメータ**）
+- BPE トークナイザ（語彙 49,152）、最大系列長 76
+- `[EOS]` トークンの最終層出力をテキスト表現として使用
+- 結合埋め込み空間に**線形射影**
+
+---
+
+## 主要結果
+
+### ImageNet ゼロショット（§3.1）
+
+| Method | ImageNet zero-shot top-1 |
+|---|---|
+| Visual N-Grams (2017) | 11.5% |
+| ResNet-50 (教師あり、128 万訓練例) | 76.2% |
+| **CLIP ViT-L/14@336px (ゼロショット)** | **76.2%** |
+
+**訓練例 0 で ResNet-50 と同等** ― これが CLIP の最も印象的な結果。
+
+### 27 データセット平均（§3.2）
+
+CLIP ViT-L/14@336px は線形プローブで **Noisy Student EfficientNet-L2 を平均 +5% 上回り**、当時の SOTA。CLIP ViT は CLIP ResNet より **3 倍計算効率が良い**。
+
+### 分布シフトへの頑健性（§3.3）
+
+| Model | ImageNet | IN-V2 | IN-A | IN-R | ObjectNet | IN-Sketch |
+|---|---|---|---|---|---|---|
+| NS EfficientNet-L2 | 88.3 | 80.2 | 84.9 | 74.7 | 68.5 | 47.6 |
+| ResNet-101 | 77.4 | 65.5 | 6.7 | 37.6 | 32.6 | 25.3 |
+| **Zero-Shot CLIP** | 76.2 | **70.1** | **77.2** | **88.9** | **72.3** | **60.2** |
+
+**ImageNet-A で CLIP 77.2 vs RN-101 6.7** という圧倒的な差。CLIP は ImageNet で訓練していないため、ImageNet 固有の偽相関を学ばず汎化する。
+
+### Few-shot との比較
+
+**ゼロショット CLIP ≈ 4-shot ロジスティック回帰**（同じ CLIP 特徴量空間で）。自然言語による概念の明示的指定が、画像例からの暗黙的推論より効率的。
+
+---
+
+## OpenCLIP（公開再現）
+
+OpenCLIP は LAION コミュニティが行った CLIP の公開データ再現：
 
 | Model | Arch | Data | ImageNet zero-shot | ImageNet linear |
 |---|---|---|---|---|
@@ -62,43 +145,114 @@ DINOv2 論文（[[sources/dinov2-learning-robust-visual-features-without-supervi
 | **OpenCLIP ViT-G/14** | ViT-G/14 | LAION-2B | 80.1 | **86.2** |
 | **OpenCLIP ViT-bigG/14** | ViT-bigG/14 | LAION-2B | 82.0 | – |
 
-DINOv2 が比較対象として最重要視するのは **OpenCLIP ViT-G/14**（86.2% linear ImageNet）。
+CLIP と OpenCLIP の違い：
 
-## CLIP / OpenCLIP の弱点（DINOv2 論文が指摘）
+| | CLIP (OpenAI) | OpenCLIP (LAION) |
+|---|---|---|
+| 訓練データ | WIT（非公開、4 億）[[entities/wit-400m]] | LAION-400M / LAION-2B / LAION-5B |
+| データ公開 | × | ✓ |
+| モデル公開 | ✓ | ✓ |
+| 最大モデル | ViT-L/14 (300M) | ViT-bigG/14 (2B+) |
+| コミュニティ | OpenAI 内部開発 | オープンコミュニティ |
 
-[[sources/dinov2-learning-robust-visual-features-without-supervision]] §1, §7.4 の主張：
+DINOv3 論文（[[sources/dinov3]]）における**主要ベースライン**は OpenCLIP（特に ViT-G/14, LAION-2B 訓練）。
 
-1. **キャプションは画像情報の近似でしかない**: 「a photo of a dog」というキャプションでは犬の品種・姿勢・背景・3D 構造の大半が落ちる。**特に密予測（segmentation, depth）で弱い**。
-2. **テキスト - 画像対が必要**: 純粋画像のみのデータを使えない（DINOv2 の SSL アプローチの強み）
-3. **計算コストが大きい**: テキスト encoder も並行訓練する。DINOv2 §9 の試算では **OpenCLIP-G の訓練は DINOv2-g の 10 倍の CO₂eq**。
-4. **キャプションのバイアス**: Web キャプションは特定の表現分布を持ち、それを引き継ぐ
+---
 
-DINOv2 が dense prediction や fine-grained 分類で OpenCLIP を大きく上回るのは、この「キャプションが捉えきれないピクセル情報」を SSL が捉えられるため、という解釈。
+## 系譜と派生
 
-## CLIP / OpenCLIP の派生
+### 先行研究（CLIP が乗り越えた）
+- **Visual N-Grams** (Li et al., 2017): ImageNet zero-shot 11.5%
+- **VirTex** (Desai 2021): 画像キャプション予測 + SSL
+- **ICMLM** (Sariyildiz 2020): inline classification with masked language modeling
+- **ConVIRT** (Zhang et al., 2020): CLIP の最も近い祖先、医療画像で対比目的
 
-- **ALIGN**（Google, 2021）: 1.8B 対、CLIP より大規模
-- **SLIP**（Mu et al., 2021）: CLIP + SSL
-- **LiT**（Zhai et al., 2022）: テキスト encoder のみ訓練、画像 encoder は凍結
-- **EVA-CLIP**（Sun et al., 2023）: より良いビジョン initialization、scale up
-- **SigLIP**（Zhai et al., 2023）: softmax → sigmoid 損失で大バッチ不要に
-- **MetaCLIP / DFN**: データキュレーションの改善
-- **CLIPA**, **CoCa** など多数
+### 後続・派生
+- **DALL-E** (OpenAI, 2021): CLIP と同時期、text-to-image 生成
+- **ALIGN** (Google, 2021): 18 億ペア、CLIP より大規模
+- **OpenCLIP** (LAION, 2022): 公開データで CLIP 再現＋拡大
+- **SLIP** (Mu et al., 2021): CLIP + SSL
+- **FLIP** (Li et al., 2023): masked CLIP
+- **LiT** (Zhai et al., 2022): テキストエンコーダのみ訓練
+- **EVA-CLIP** (Sun et al., 2023): より良いビジョン initialization
+- **SigLIP / SigLIP 2** ([[entities/siglip]] / [[sources/siglip]]) (Zhai et al., 2023/2025): **sigmoid 損失で効率化**。CLIP の softmax を pair-wise sigmoid に置き換え、小バッチで圧倒的に勝つ + メモリ効率改善 + ノイズ頑健。**32k バッチで飽和** という発見で「対比学習 = 大バッチ」常識を覆す。4 TPU で 1 日訓練可能（SigLiT）、SO-400M で 83.2% IN-0
+- **MetaCLIP / DFN** (Meta, 2023): データキュレーションの改善
+- **Perception Encoder (PE)** ([[entities/perception-encoder]]) (Meta, 2024): 86B ペア
+- **CoCa, BLIP, LLaVA** など多数
 
-## CLIP と VLM への発展
+### マルチモーダル AI への発展
 
 CLIP の image encoder は、その後の **VLM（Vision-Language Models）** の標準的な vision tower になった：
 
 - **BLIP / BLIP-2**: CLIP encoder + Q-Former + LLM
 - **LLaVA**: CLIP ViT-L/14 + LLaMA
-- **LLaVA-NeXT**: CLIP + **DINOv2** の特徴連結（両者の良さを取る）
+- **LLaVA-NeXT**: CLIP + **DINOv2** の特徴連結
 - **Flamingo, IDEFICS** など
+- **GPT-4V, Gemini, Claude Vision** 等の商用 VLM（実装は非公開だが CLIP 系を使用）
 
-DINOv2 vs CLIP は、現代 VLM の vision tower 選択における主要な議論軸となっている。
+### セグメンテーション基盤モデルへの組み込み
+
+CLIP のテキストエンコーダは、CLIP 自体が分類用でないモデルにも構成要素として組み込まれている：
+
+- **SAM**（[[entities/sam]] / [[sources/segment-anything]] §7.5, §D.5）: SAM のテキストプロンプト処理は CLIP ViT-L/14@336px のテキストエンコーダを使う。訓練時は CLIP **画像**埋め込みをプロンプトに使い、推論時に CLIP **テキスト**埋め込みに置き換える（CLIP の画像-テキスト埋め込みアラインメントを利用）。"a wheel" や "beaver tooth grille" のような自由形式テキストで SAM のマスクを引き出せる。
+- **Grounded-SAM**: Grounding DINO のテキスト → ボックス検出器（これも CLIP 系を使う）→ SAM のパイプライン
+- **OWL-ViT / OWLv2**: CLIP ベースのオープン語彙検出
+
+---
+
+## CLIP の限界（論文 §6）
+
+- **タスク学習の限界**: 細粒度分類、抽象タスク（カウント, 距離推定）、新規タスク（医療画像）でほぼランダム
+- **本当の OOD には弱い**: 手書き MNIST 88%（生ピクセルロジスティック回帰に負ける）
+- **生成不可**: 固定クラス集合内の選択のみ、キャプション生成不可
+- **データ効率の悪さ**: 128 億画像を 1 秒 1 枚で見ると 405 年
+- **少ショットでむしろ精度低下**: ゼロショット → 1-2 shot で性能が下がる（人間と逆）
+- **社会的バイアス**: ウェブデータの偏りを継承（[[sources/clip]] §7 で詳細）
+
+---
+
+## 産業応用への影響
+
+CLIP の登場以降、CV/AI 界は劇的に変化：
+
+- **画像検索**: テキストから画像、画像から画像の検索が一気に実用化
+- **テキストから画像生成**: Stable Diffusion 等が CLIP テキストエンコーダを使う
+- **画像キャプション/VQA**: VLM の vision tower として
+- **コンテンツモデレーション**: ゼロショット分類で任意のカテゴリ
+- **ロボティクス**: CLIP 特徴量がロボットの perception に使われる
+- **マルチモーダル LLM**: GPT-4V, Claude Vision 等の基盤
+
+---
+
+## CLIP を選ぶべきとき / 選ばないとき
+
+### CLIP が最良な選択肢
+- **ゼロショット画像分類** が必要
+- **テキストから画像検索 / 画像からテキスト検索**
+- **VLM の vision tower**
+- **画像生成のテキスト条件付け**（Stable Diffusion）
+- **オープン語彙の分類タスク**
+- **計算予算限定**（CLIP は比較的軽量）
+
+### 他のモデルを検討すべきとき
+- **密予測（segmentation, depth）が必要** → **DINOv2/v3**（[[entities/dinov2]], [[entities/dinov3]]）
+- **細粒度分類** → DINOv2/v3 や教師ありモデル
+- **インスタンス検索** → DINOv2/v3
+- **多言語対応が必要** → **SigLIP 2**（[[entities/siglip]]）
+- **より大きなモデル/データ** → **PE**（[[entities/perception-encoder]]）
+
+---
 
 ## 関連ページ
 
-- [[sources/dinov2-learning-robust-visual-features-without-supervision]]: CLIP / OpenCLIP を主要ベースラインとして比較する論文
-- [[concepts/weakly-supervised-pretraining]]: CLIP が代表する系統の解説
-- [[concepts/foundation-model]]: CLIP は CV 初の本格的基盤モデル
-- [[entities/dinov2]]: CLIP に対する純粋 SSL 側からの対抗
+- [[sources/clip]] — 原論文の詳細解説
+- [[translations/clip]] — 原論文全訳（Appendix 込み）
+- 概念:
+  - [[concepts/contrastive-learning]] — CLIP の学習目的関数
+  - [[concepts/zero-shot-transfer]] — CLIP が CV に持ち込んだ評価パラダイム
+  - [[concepts/weakly-supervised-pretraining]] — CLIP が代表する系統
+  - [[concepts/foundation-model]] — CLIP は CV 初の本格的基盤モデル
+  - [[concepts/vision-transformer]] — CLIP-ViT のバックボーン
+- データ: [[entities/wit-400m]]
+- 競合・派生: [[entities/siglip]] / [[entities/perception-encoder]]
+- 対抗系統: [[entities/dinov2]] / [[entities/dinov3]]（純粋 SSL）

@@ -3,7 +3,7 @@ type: concept
 aliases: [RoPE, Rotary Position Embeddings, 回転位置埋め込み, Rotary Positional Encoding]
 tags: [architecture, transformer, position-encoding]
 related: [[vision-transformer]]
-sources: [[sources/dinov3]]
+sources: [[sources/dinov3]], [[sources/sam-2]]
 updated: 2026-05-24
 ---
 
@@ -136,7 +136,8 @@ DINOv3 はこの **axial RoPE** を採用。
 ### CV
 
 - **RoPE-ViT**（Heo et al., 2024）: ViT への axial RoPE 適用
-- **DINOv3**（2025）: axial RoPE + box jittering
+- **DINOv3**（2025, [[entities/dinov3]]）: axial RoPE + box jittering
+- **SAM 2**（Meta, 2024, [[entities/sam-2]] / [[sources/sam-2]]）: **memory attention で 2D-RoPE を使用**。画像エンコーダ（Hiera）では RPB を全削除し絶対位置埋め込みのみ、memory cross-attention のみ 2D-RoPE。「memory への spatial 一貫性が必要だが画像エンコーダはシンプルに保ちたい」設計判断
 - **EVA-02**: 一部派生で採用
 - **InternVL**: マルチモーダルでも採用増加中
 
@@ -154,5 +155,7 @@ DINOv3 はこの **axial RoPE** を採用。
 ## 関連ページ
 
 - [[sources/dinov3]] — vision で axial RoPE を本格採用した論文
+- [[sources/sam-2]] — memory attention で 2D-RoPE を採用、画像エンコーダ側は絶対位置埋め込みのみという設計選択
 - [[entities/dinov3]] — RoPE-box jittering で解像度頑健性を強化したモデル
+- [[entities/sam-2]] — 動画ストリーミング処理の memory に 2D-RoPE
 - [[concepts/vision-transformer]] — RoPE が改善する対象アーキテクチャ
