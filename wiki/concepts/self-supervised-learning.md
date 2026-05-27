@@ -2,9 +2,9 @@
 type: concept
 aliases: [SSL, 自己教師あり学習, Self-Supervised Learning]
 tags: [paradigm, pretraining, representation-learning]
-related: [[knowledge-distillation]], [[vision-transformer]], [[knn-evaluation-protocol]], [[masked-image-modeling]], [[foundation-model]], [[weakly-supervised-pretraining]], [[gram-anchoring]], [[semi-supervised-learning]]
-sources: [[sources/simclr]], [[sources/byol]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/dinov3]], [[sources/siglip-2]]
-updated: 2026-05-27
+related: [[knowledge-distillation]], [[vision-transformer]], [[knn-evaluation-protocol]], [[masked-image-modeling]], [[foundation-model]], [[weakly-supervised-pretraining]], [[gram-anchoring]], [[semi-supervised-learning]], [[diffusion-model]]
+sources: [[sources/simclr]], [[sources/byol]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/dinov3]], [[sources/siglip-2]], [[sources/i-synmed]], [[sources/eva-x]]
+updated: 2026-05-28
 ---
 
 # Self-Supervised Learning（SSL, 自己教師あり学習）
@@ -121,6 +121,9 @@ SwAV で導入されたデータ拡張戦略。
 ## 参考
 
 - [[concepts/semi-supervised-learning]]: 半教師あり学習（少量ラベルあき + 大量ラベルなし）— 当 wiki の SSL（自己教師あり学習）とは別概念。文献によっては "SSL" と同じ略称を使うため注意
+- [[concepts/diffusion-model]]: 拡散モデル（DDPM, Stable Diffusion 等）。合成データ生成で SSL 事前学習を補完する応用が登場
+- [[sources/i-synmed]] / [[entities/i-synmed]]: DDPM 合成画像で DINO を事前学習する医療応用例（IEEE Access 2025）
+- [[sources/eva-x]] / [[entities/eva-x]]: 胸部 X 線専用基盤モデル。EVA-02 系統（凍結 CLIP トークナイザ × MIM）の医療版（npj Digital Medicine 2025）
 - [[sources/byol]]: BYOL 論文（「負例なし SSL」の先駆け、非対比型の代表）
 - [[sources/dino-emerging-properties-in-self-supervised-vit]]: DINO 論文（本概念の主要文献の一つ）
 - [[sources/dinov2-learning-robust-visual-features-without-supervision]]: DINOv2 論文（SSL がスケールで基盤モデルになり得ることを実証）

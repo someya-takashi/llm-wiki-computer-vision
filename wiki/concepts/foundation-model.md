@@ -136,3 +136,5 @@ DINOv2 はこれらを多くの軸で達成し、「CV の基盤モデルは SSL
 - [[concepts/semi-supervised-learning]]: SeSL は VFM 時代に再検討された（[[sources/revisiting-ssl-foundation-models]]）
 - [[sources/revisiting-ssl-foundation-models]]: NeurIPS 2025 — VFM 時代における SeSL の再検討、V-PET 提案
 - [[entities/v-pet]]: VFM × PEFT アンサンブル疑似ラベリングによる SeSL 手法
+- [[sources/eva-x]] / [[entities/eva-x]]: 胸部 X 線専用基盤モデル（npj Digital Medicine 2025）。EVA-02 系統の医療応用
+- [[sources/i-synmed]] / [[entities/i-synmed]]: DDPM 合成 + DINO による医療基盤モデル候補（IEEE Access 2025）

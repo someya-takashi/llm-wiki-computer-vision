@@ -407,3 +407,59 @@
   - **既存 wiki 概念群との強い接続**: 本論文は CLIP/DINOv2（[[entities/clip]]/[[entities/dinov2]]）をバックボーンとし、FixMatch/FlexMatch（[[entities/fixmatch]]/[[entities/flexmatch]]）を主要比較対象とする。wiki の既存 6 ページ以上に直接影響。VFM × SeSL という新しい交差領域を確立
   - **Ohio State University の貢献**: SimCLR/FixMatch（Google）/MixMatch（Google）/FlexMatch（東工大・MSRA）/DINOv2（Meta）に続き、Ohio State から SeSL 研究の主要貢献。研究機関の地理的多様化が継続
   - 後続候補: FineSSL（CLIP × 平衡マージン softmax SeSL）/ V-PETL Bench（PEFT ベンチマーク）/ LoRA 原典 / AdaptFormer 原典 / VPT 原典 / FreeMatch / SoftMatch 原典 / Visual Task Adaptation Benchmark（VTAB）原典 など
+
+## [2026-05-28] ingest | Self-Supervised Learning Powered by Synthetic Data From Diffusion Models: Application to X-Ray Images (I-SynMed)
+
+- 取り込み: `raw/papers/Self-Supervised Learning Powered by Synthetic Data From Diffusion Models_ Application to X-Ray Images.md`（IEEE Access 2025、Web クリップ markdown）
+- **特例: 画像取得不可** — IEEE Xplore の画像 URL は認証が必要で、curl で取得を試みた 5 ファイルは全て同サイズ（4141 bytes）のエラーレスポンス。`raw/assets/i-synmed/` ディレクトリは作成せず、翻訳内では原典 URL を参照する形で対応
+- 作成:
+  - [[translations/i-synmed]] — Abstract（原典 markdown では切れている）+ §1-5 + 謝辞の全文和訳。図 1-9・表 1-7 の数値情報を本文中にテキストで保持（References は除外、独立 Appendix なし）
+  - [[sources/i-synmed]] — 初学者向け要約。「DDPM 合成画像 → DINO 事前学習」パイプラインの設計詳細 / 統計検定結果（p=0.107〜0.999、すべて有意差なし）/ なぜ「合成 = 実」が成立するかの仮説 / IEEE Access の位置づけと top-tier ML 会議との質的差の明示 / DDPM の memorization 問題への注意喚起
+  - [[entities/i-synmed]] — I-SynMed パイプライン（4 phase 図 / DDPM・DINO のハイパラ / 全ベンチマーク数値表 / アブレーション結果）
+  - [[concepts/diffusion-model]] — **新規 concept ページ**。DDPM/Stable Diffusion 系列の俯瞰。順方向・逆方向拡散の数式 / 再パラメータ化トリック / UNet 標準アーキテクチャと DiT への発展 / 系譜図（DPM 2015 → DDPM 2020 → DDIM 2021 → SDE 2021 → LDM 2022 → DiT 2023 → Sora 2024）/ DAE との理論的関係 / SSL × 合成データ事前学習の位置づけ / 限界（推論コスト・memorization 問題）
+- 更新:
+  - [[concepts/self-supervised-learning]] — frontmatter sources/related に i-synmed / diffusion-model 追加、参考セクションに合成データ×SSL の現代的接続を明示
+  - [[concepts/denoising-autoencoder]] — 関連ページに diffusion-model / i-synmed 追加（DAE → DDPM の理論的継承を強化）
+  - [[entities/dino]] — 「応用領域：医療画像」セクション新規追加（I-SynMed での DINO+ViT-16 採用、DDPM 合成データとの組み合わせ）、関連ページに i-synmed / diffusion-model 追加
+  - [[index]] — sources/translations/entities/concepts の各セクションに追加、略称表に DDPM/Stable Diffusion/DDIM/LDM/DiT/Classifier-free Guidance/score-based SDE/I-SynMed/UNet/FID/IS/SSIM/t-SNE/COVIDx CXR-4/NIH Chest X-ray/SIIM-ACR Pneumothorax/LightlySSL/バイオマーカー/フェデレーテッドラーニング を新規登録（19 項目）
+  - [[log]]
+- メモ:
+  - **「合成 = 実」を統計的に実証した応用研究**: 手法的新規性は低い（DDPM + DINO の組み合わせ）が、医療画像領域での「合成データ事前学習」の実証的根拠として価値がある。複数の下流タスク（肺炎/気胸の分類・セグメンテーション）で統計検定（t-test, Mann-Whitney U, Shapiro-Wilk, FDR 補正）込みで「有意差なし」を確認している点が良質
+  - **DDPM の memorization 問題は未検証**: 論文の motivation は「プライバシー保護のための合成データ」だが、Carlini et al. 2023 等が指摘する拡散モデルの訓練データ記憶問題に正面から取り組んでいない。論文自身も「将来研究」と認める重大な制限
+  - **新規 concept ページ [[concepts/diffusion-model]] を作成**: wiki に拡散モデルの体系的解説が欠けていたため、本 ingest を機会に新規作成。今後 Stable Diffusion / Sora / ControlNet / Diffusion Transformer 等の ingest で繰り返し参照される基盤概念
+  - **DAE → DDPM の理論的継承**: [[concepts/denoising-autoencoder]] 内に既に「拡散モデルとの繋がり」セクションがあったため、専用 concept ページとの相互リンクで補完。「**MAE と拡散モデルは DAE という祖先を共有する**」という見方がさらに明確化
+  - **画像取得不可の運用例**: IEEE Xplore は CDN 認証が厳しく、Web Clipper でクリップした markdown 内の画像 URL から curl/wget で取得できない。CLAUDE.md §7 の「ダウンロードできない場合は元 URL をそのまま使う」を実践、翻訳ファイル内で IEEE URL を引用してコメント注釈
+  - **IEEE Access の位置づけ**: トップ ML 会議（NeurIPS/ICCV/CVPR）ではなく open access ジャーナル（採択率高め）に投稿されている事実を sources ページ内で明示。wiki 利用者が論文の出自と質を理解するための重要情報
+  - **DINO の医療応用事例として価値**: 既存 [[entities/dino]] エンティティの応用領域セクションを追加することで、DINO が医療画像でも有効であることを wiki 内で参照可能にした
+  - **ablation の wiki 知識との整合**: DINO+ViT が MoCo+ResNet を大きく上回るという結果は、[[concepts/self-supervised-learning]] の「ViT は SSL と相性が良い」「DINO は自己蒸留として強力」という既存知見と一致
+  - **後続候補**: Stable Diffusion（Rombach et al. 2022）/ Latent Diffusion 原典 / DDPM 原典（Ho et al. 2020）/ Classifier-free Guidance 原典 / Score-based SDE / DiT（Diffusion Transformer）/ DreamBooth / ControlNet / Sora / MedSAM / RadFM など。医療画像基盤モデル系統と拡散モデル系統の双方を強化すべき
+
+## [2026-05-28] ingest | EVA-X: a foundation model for general chest x-ray analysis with self-supervised learning
+
+- 取り込み: `raw/papers/EVA-X_ a foundation model for general chest x-ray analysis with self-supervised learning - npj Digital Medicine.md`（npj Digital Medicine 2025、Web クリップ markdown）
+- ダウンロード: `raw/assets/eva-x/` に fig1-6.webp を Springer Nature の CDN から取得（一度 fig4 が HTML エラーレスポンスを返したが、再試行で WebP 取得成功）
+- 作成:
+  - [[translations/eva-x]] — Abstract + §1-4（Methods 含む完全本文）+ Data/Code availability の全文和訳。図 1-6 を `<figure>` で埋め込み、表データ・数式を本文中に保持（References と Acknowledgments と Supplementary は除外）
+  - [[sources/eva-x]] — 初学者向け要約。EVA-02 系統の医療版という位置づけ / dual ViT（学習可能 + 凍結 CLIP トークナイザ）の核心設計 / iBOT との詳細対比（online vs frozen external tokenizer）/ I-SynMed との対比表 / 11 下流タスク SOTA の具体的数値 / EVA-X-Ti (6M) が 13× FLOPs の MGCA-B を上回る効率性の意義 / 1% ラベルで COVID-19 精度 95% の意味
+  - [[entities/eva-x]] — EVA-X モデルファミリー（Ti/S/B 3 サイズ）スペックシート。アーキテクチャ詳細 / 全実験数値表 / iBOT との対比表 / EVA 系統の系譜
+- 更新:
+  - [[concepts/self-supervised-learning]] — frontmatter sources に eva-x 追加、参考セクションに eva-x 関連ページ追加
+  - [[concepts/masked-image-modeling]] — 「EVA / EVA-02 / EVA-X 系統：凍結 CLIP トークナイザによる MIM」セクション新規追加（EVA 系統が MIM の主要な新潮流であることを明示）
+  - [[concepts/online-tokenizer]] — 「Online vs Frozen-External Tokenizer：対比設計」セクション新規追加（iBOT/DINOv2 系の online と EVA/EVA-X 系の frozen external の対立を明示化、両者の補完性を整理）
+  - [[concepts/foundation-model]] — 関連ページに eva-x / i-synmed 追加（医療基盤モデルの代表例として）
+  - [[entities/ibot]] — 後続セクションに EVA-X を追加（iBOT の online tokenizer を凍結外部 CLIP に置き換えた設計バリアント）
+  - [[entities/i-synmed]] — 「EVA-X との対比」セクション新規追加（同じ胸部 X 線 SSL でも対照的な 2 アプローチを明示）
+  - [[index]] — sources/translations/entities の各セクションに追加、略称表に EVA-X/EVA/EVA-02/EVA-CLIP/MGCA/MedKLIP/BioViL/GLoRIA/Medical MAE/SelfMedMAE/Merged-520K/CXR14/CheXpert/MIMIC-CXR/Ark+/CXR-Foundation/CheXagent/XrayGPT/dual ViT/frozen external tokenizer/Sub-LN/Deepseek-v3/Grad-CAM/UperNet を新規登録（24 項目）
+  - [[log]]
+- メモ:
+  - **医療基盤モデルの本格構築の代表例**: npj Digital Medicine（Nature 系列）に掲載された質の高い研究。「EVA-02 の設計レシピが医療に転移できる」を実証。I-SynMed（IEEE Access）とは対照的に、システム研究としての規模感と完成度
+  - **online vs frozen-external tokenizer という対比軸の確立**: iBOT 系（online、self-evolving）と EVA 系（frozen external pretrained CLIP）の設計対立は MIM 研究の重要な分岐点。新規セクションで [[concepts/online-tokenizer]] に整理。両者は対立しつつ補完的（online はドメイン横断的、frozen は強い既存 CLIP を活かす）
+  - **I-SynMed との対比ペア**: 同じ「胸部 X 線 + SSL」でも、データ（合成 vs 実）、SSL アルゴリズム（DINO vs MIM）、ジャーナルの質（IEEE Access vs npj Digital Medicine）、規模感（応用 vs システム）が全く異なる。両 entity ページに相互比較表を配置
+  - **EVA-X-Ti (6M) の効率性インパクト**: 13× FLOPs を持つ MGCA-B を上回るという結果は、設計優位性の端的な証拠。「より小さく、より速く、より良い」を達成
+  - **1% ラベルで 95% 精度の臨床的意義**: ラベルアノテーションが希少な医療現場では、この効率性が直接的な実用価値を持つ。深層学習の医療普及のボトルネック解消につながる
+  - **訓練の安定性が異次元**: EVA-X の標準偏差 0.03 は Medical MAE/MGCA/BioViL 比で 2-5 倍の安定性。臨床実装可能性に直結する重要指標
+  - **EVA 系統の wiki 入口**: 今回の ingest で EVA / EVA-02 / EVA-CLIP の名前と概念が wiki に初登場。これらの原典 ingest を将来の優先候補に
+  - **Discussion で LLM 統合に言及**: CheXagent / XrayGPT 等の医療 VLM との組み合わせを将来課題として明記。医療画像エージェントの方向性を予示
+  - **データバイアスへの自己批判**: 論文自体が Glocker et al. 2023 を引用し「CXR14/CheXpert/MIMIC の異質性とバイアス」を認めている誠実さ。出版倫理の高さを示す
+  - **Deepseek-v3 でレポート解析**: 中国の LLM を実世界アノテーションに使用（F1 99% 対医師）。海外の Llama や GPT-4 ではなく国産 LLM を使う中国研究の傾向
+  - **後続候補**: EVA / EVA-02 / EVA-CLIP 原典（自然画像基盤モデル系統）/ MGCA 原典（医療 CLIP）/ MAE 系医療版（Medical MAE, SelfMedMAE 原典）/ Ark+（Nature 2025 医療基盤モデル）/ CXR-Foundation (ELIXR) / CheXagent / XrayGPT / MedSAM など。医療基盤モデルと EVA 系統の両方を強化すべき

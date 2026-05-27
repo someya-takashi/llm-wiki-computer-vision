@@ -31,6 +31,8 @@
 - [[sources/fixmatch]] — FixMatch（Sohn et al., NeurIPS 2020）。弱→強の非対称拡張 + 信頼度閾値 τ=0.95 だけで MixMatch を大幅更新。CIFAR-10（250 ラベル）で 5.07%。半教師あり学習の設計原則を確立。
 - [[sources/flexmatch]] — FlexMatch（Zhang et al., NeurIPS 2021）。CPL（クラス別動的閾値）で FixMatch を拡張。CIFAR-10（40 ラベル）で 4.97%、収束速度 1/5。ただし SVHN（クラス不均衡）では逆に悪化。
 - [[sources/revisiting-ssl-foundation-models]] — Revisiting SSL in the Era of Foundation Models（Zhang et al., NeurIPS 2025）。VFM 時代に FixMatch/FlexMatch/SoftMatch が Labeled-only PEFT を凌駕できないことを実証、V-PET（VFM × PEFT アンサンブル疑似ラベリング）を提案。SeSL 研究の前提を再定義。
+- [[sources/i-synmed]] — Self-Supervised Learning Powered by Synthetic Data From Diffusion Models（Hosseini & Serag, IEEE Access 2025）。DDPM 生成合成 X 線画像で DINO 事前学習しても実画像と統計的に同等性能を達成、医療画像でのプライバシー保護 SSL の可能性を実証。
+- [[sources/eva-x]] — EVA-X: a foundation model for general chest x-ray analysis with self-supervised learning（Yao et al., npj Digital Medicine 2025）。EVA-02 系統（凍結 CLIP トークナイザ × MIM）の医療版。Merged-520K で事前学習、11 下流タスクで SOTA、EVA-X-Ti (6M) が 13× FLOPs の MGCA-B を上回る効率性。
 
 ### Articles
 
@@ -55,6 +57,8 @@
 - [[translations/fixmatch]] — FixMatch 原論文の全文和訳。Abstract + §1-6 + Broader Impact + Appendix A-E（アルゴリズム擬似コード / 全数値表・ハイパーパラメータ / ImageNet 実装 / 拡張手法 / データ変換詳細）を含む（References のみ除外）。
 - [[translations/flexmatch]] — FlexMatch 原論文の全文和訳。Abstract + §1-6 + Broader Impact + Appendix A-B（ハイパーパラメータ / クラスごと精度 / 中央値エラー率 / TorchSSL ベンチマーク全 4 データセット）を含む（References のみ除外）。
 - [[translations/revisiting-ssl-foundation-models]] — Revisiting SSL in the Era of Foundation Models 原論文の本文和訳。Abstract + §1-7 + Acknowledgment（References と Appendix A-C は除外、ユーザー指示）。図 1-6 を `<figure>` で埋め込み。
+- [[translations/i-synmed]] — I-SynMed 原論文（IEEE Access）の全文和訳。Abstract + §1-5 + 謝辞（References は除外、独立 Appendix なし）。図は IEEE Xplore 認証必須のためダウンロード不可、原典 URL 参照のみ。
+- [[translations/eva-x]] — EVA-X 原論文（npj Digital Medicine）の全文和訳。Abstract + §1-4（Methods 含む）+ Data/Code availability（References と Acknowledgments は除外、Supplementary は別途）。Springer Nature の図 6 枚を `<figure>` で埋め込み。
 
 ## Concepts
 
@@ -72,6 +76,7 @@
 - [[concepts/contrastive-learning]] — 対比学習。正例ペアを近づけ負例を遠ざける。InfoNCE 損失、SimCLR/MoCo/CLIP/DINO 系統の基盤。
 - [[concepts/semi-supervised-learning]] — 半教師あり学習（SeSL）。少量ラベルあき + 大量ラベルなしを組み合わせる。一貫性正則化 / エントロピー最小化 / MixUp の 3 系統。自己教師あり学習（SSL）との違いを解説。
 - [[concepts/parameter-efficient-fine-tuning]] — PEFT（パラメータ効率的ファインチューニング）。VFM の一部だけを更新する LoRA/AdaptFormer/BitFit/VPT 等の手法群。VFM 時代の SeSL の主役。
+- [[concepts/diffusion-model]] — 拡散モデル。DDPM/Stable Diffusion 系列の生成モデルの中核。DAE の連続版として位置づけ、生成・編集・3D・動画・科学応用すべての中心技術。
 - [[concepts/zero-shot-transfer]] — ゼロショット転移。CLIP が CV に持ち込んだ「プロンプトのみで追加訓練なしの推論」というパラダイム。
 - [[concepts/promptable-segmentation]] — SAM が定義した「任意プロンプトから妥当マスクを返す」新タスク（PVS）。セグメンテーション基盤モデルの事前学習目的兼ゼロショット転移インターフェイス。
 - [[concepts/promptable-concept-segmentation]] — SAM 3 が定義した「名詞句/画像 exemplar からコンセプトの全インスタンスを返す」新タスク（PCS）。PVS と互補的な open-vocabulary な軸。
@@ -98,6 +103,8 @@
 - [[entities/fixmatch]] — FixMatch（Google Research, NeurIPS 2020）。半教師あり学習。弱→強の非対称拡張 + τ=0.95 閾値。CIFAR-10（250 ラベル）で 5.07%（MixMatch 比 2.2× 改善）。
 - [[entities/flexmatch]] — FlexMatch（東工大・Microsoft, NeurIPS 2021）。半教師あり学習。CPL クラス別動的閾値。CIFAR-10（40 ラベル）で 4.97%、収束速度 FixMatch の 1/5。
 - [[entities/v-pet]] — V-PET（Ohio State, NeurIPS 2025）。VFM × PEFT アンサンブル疑似ラベリングによる SeSL。閾値も MixUp も使わず、CLIP/DINOv2 × LoRA/AdaptFormer の Mean Labels アンサンブルだけで FixMatch/FlexMatch/SoftMatch を凌駕。
+- [[entities/i-synmed]] — I-SynMed（Weill Cornell-Qatar, IEEE Access 2025）。DDPM 合成 X 線画像で DINO + ViT-16 を事前学習する医療画像 SSL パイプライン。肺炎分類で AUC 99.1 を達成、実画像事前学習と統計的に同等。
+- [[entities/eva-x]] — EVA-X（HUST, npj Digital Medicine 2025）。胸部 X 線基盤モデル。学習可能 ViT + 凍結 EVA-CLIP/MGCA トークナイザの dual ViT 構造で MIM。3 サイズ（Ti 6M / S 22M / B 86M）で 11 下流タスク SOTA。EVA-X-Ti が 13× FLOPs の MGCA-B を上回る効率性。COVID-19 で 1% ラベルで 95% 精度。
 
 ### Datasets
 
@@ -298,6 +305,48 @@
 | CHI | Calinski-Harabasz Index（クラスタ品質指標） | [[sources/revisiting-ssl-foundation-models]] |
 | FineSSL | CLIP 視覚バックボーン + 平衡マージン softmax SeSL 手法（Gan & Wei, 2024） | [[sources/revisiting-ssl-foundation-models]] |
 | SoftMatch | ガウス重み付け SeSL 手法（Chen et al., 2023） | [[sources/revisiting-ssl-foundation-models]] |
+| DDPM | Denoising Diffusion Probabilistic Model（Ho et al., 2020） | [[concepts/diffusion-model]] |
+| Stable Diffusion | 潜在空間で拡散する大規模テキスト→画像モデル（Rombach et al., 2022） | [[concepts/diffusion-model]] |
+| DDIM | Denoising Diffusion Implicit Models（決定論的サンプリング） | [[concepts/diffusion-model]] |
+| LDM | Latent Diffusion Model（Stable Diffusion の正式名） | [[concepts/diffusion-model]] |
+| DiT | Diffusion Transformer（UNet を ViT に置き換え） | [[concepts/diffusion-model]] |
+| Classifier-free Guidance | 条件付き拡散生成の標準手法（Ho & Salimans, 2022） | [[concepts/diffusion-model]] |
+| score-based SDE | 拡散モデルの統一理論（Song et al., 2021） | [[concepts/diffusion-model]] |
+| I-SynMed | Image-Synthetic-Medical（DDPM + DINO 医療画像 SSL パイプライン） | [[entities/i-synmed]] |
+| UNet | encoder-decoder + skip connection 構造（Ronneberger et al., 2015） | [[concepts/diffusion-model]] |
+| FID | Fréchet Inception Distance（生成画像分布距離） | [[sources/i-synmed]] |
+| IS | Inception Score（生成画像品質指標） | [[sources/i-synmed]] |
+| SSIM | Structural Similarity Index Measure | [[sources/i-synmed]] |
+| t-SNE | t-distributed Stochastic Neighbor Embedding（次元削減） | [[sources/i-synmed]] |
+| COVIDx CXR-4 | COVID-19 検出用胸部 X 線データセット（85K） | [[sources/i-synmed]] |
+| NIH Chest X-ray | NIH 胸部 X 線データセット（112K、15 疾病） | [[sources/i-synmed]] |
+| SIIM-ACR Pneumothorax | 気胸セグメンテーションデータセット | [[sources/i-synmed]] |
+| LightlySSL | オープンソース SSL 実装ライブラリ | [[sources/i-synmed]] |
+| バイオマーカー | 疾病状態を示す医療画像中の特徴的パターン | [[sources/i-synmed]] |
+| フェデレーテッドラーニング | データを集約せず複数機関で分散訓練する手法 | [[sources/i-synmed]] |
+| EVA-X | 胸部 X 線基盤モデル（EVA-02 系統の医療版） | [[entities/eva-x]] |
+| EVA / EVA-02 | 自然画像基盤モデル（CLIP トークナイザ × MIM の元祖） | [[sources/eva-x]] |
+| EVA-CLIP | EVA-02 ベースの巨大 CLIP（ViT-G まで） | [[entities/clip]] |
+| MGCA | Multi-Granularity Cross-modal Alignment（医療 CLIP, Wang et al. NeurIPS 2022） | [[sources/eva-x]] |
+| MedKLIP | 医療知識強化 CLIP | [[sources/eva-x]] |
+| BioViL | Microsoft の医療視覚言語モデル | [[sources/eva-x]] |
+| GLoRIA | 医療マルチモーダル局所表現学習 | [[sources/eva-x]] |
+| Medical MAE | MAE の医療版 | [[sources/eva-x]] |
+| SelfMedMAE | 別の医療 MAE バリアント | [[sources/eva-x]] |
+| Merged-520K | CXR14+CheXpert+MIMIC-CXR を統合した EVA-X 訓練データ | [[entities/eva-x]] |
+| CXR14 / Chest X-Ray14 | NIH 胸部 X 線データセット（112K、14 病理） | [[entities/eva-x]] |
+| CheXpert | Stanford 胸部 X 線データセット（224K、14 病理） | [[entities/eva-x]] |
+| MIMIC-CXR | MIT 胸部 X 線データセット（200K+、レポート付き） | [[entities/eva-x]] |
+| Ark+ | 完全公開された医療 AI 基盤モデル（Ma et al., Nature 2025） | [[sources/eva-x]] |
+| CXR-Foundation / ELIXR | Google の X 線基盤モデル（Xu et al. 2023） | [[sources/eva-x]] |
+| CheXagent | LLM ベースの胸部 X 線解釈モデル（Chen et al. 2024） | [[sources/eva-x]] |
+| XrayGPT | X 線特化大規模視覚言語モデル | [[sources/eva-x]] |
+| dual ViT | 学習可能 ViT + 凍結トークナイザ ViT の 2 構造設計 | [[entities/eva-x]] |
+| frozen external tokenizer | 凍結外部 CLIP モデルを MIM トークナイザに使う設計（online tokenizer の対極） | [[concepts/online-tokenizer]] |
+| Sub-LN | Sub-Layer Normalization（Foundation Transformers 由来） | [[entities/eva-x]] |
+| Deepseek-v3 | 中国の大規模言語モデル（EVA-X 実世界実験でレポート解析に使用） | [[sources/eva-x]] |
+| Grad-CAM | 勾配ベースの class activation map（Selvaraju et al. 2017） | [[sources/eva-x]] |
+| UperNet | セグメンテーションヘッドアーキテクチャ | [[sources/eva-x]] |
 | Brier スコア | 多クラス予測確率と正解の L2 二乗距離（有界な損失） | [[sources/mixmatch]] |
 | PATE | Private Aggregation of Teachers' Ensembles（差分プライバシー学習） | [[sources/mixmatch]] |
 | Wide ResNet / WRN | Wide Residual Network（幅広い ResNet） | [[sources/mixmatch]] |
