@@ -122,6 +122,16 @@ return ℓ_s + λ_u · ℓ_u
 | **FreeMatch**（Wang et al., 2023） | クラス別＋局所適応の 2 レベル自由閾値。FlexMatch の SVHN 問題を改善 |
 | **SoftMatch**（Chen et al., 2023） | ハード閾値をガウス重み付けに変え、低信頼サンプルもゼロでなく使用 |
 
+## VFM 時代における評価（2025 年）
+
+[[sources/revisiting-ssl-foundation-models]]（NeurIPS 2025）は、CLIP / DINOv2 のような **Vision Foundation Models** をバックボーンとして使う場合、**FixMatch がしばしば「Labeled-only PEFT（LoRA/AdaptFormer でラベルあきデータのみ fine-tune）」よりも悪化する**ことを報告した。
+
+- CLIP/LoRA: FixMatch 53.7% vs Labeled Only 55.7%
+- DINOv2/LoRA: FixMatch **47.6%** vs Labeled Only **56.0%**（−8.4pt）
+- DINOv2/AdaptFormer: FixMatch **47.7%** vs Labeled Only **51.6%**（−3.9pt）
+
+> **解釈**: FixMatch は Wide ResNet をスクラッチから訓練する前提で設計されたため、強力な事前学習を持つ VFM 上では「ノイズの多い疑似ラベル」が VFM の汎化能力を**むしろ損なう**。VFM 時代の SeSL では [[entities/v-pet]] のような VFM × PEFT × アンサンブル設計が新たな主流。
+
 ## 関連ページ
 
 - [[sources/fixmatch]]: 詳細な論文要約（弱→強非対称性の解説・CIFAR-100 異常の考察を含む）
@@ -129,3 +139,5 @@ return ℓ_s + λ_u · ℓ_u
 - [[concepts/semi-supervised-learning]]: 半教師あり学習の全体像
 - [[entities/mixmatch]]: FixMatch の直前の先行手法
 - [[entities/flexmatch]]: FlexMatch（直接の後継手法）
+- [[entities/v-pet]]: VFM 時代の SeSL（FixMatch を凌駕）
+- [[sources/revisiting-ssl-foundation-models]]: VFM 時代における FixMatch の限界を実証

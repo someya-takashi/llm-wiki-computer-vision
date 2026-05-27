@@ -30,6 +30,7 @@
 - [[sources/mixmatch]] — MixMatch（Berthelot et al., NeurIPS 2019）。一貫性正則化 + エントロピー最小化 + MixUp を統合した半教師あり学習。CIFAR-10（250 ラベル）で 11.08%（VAT の 3.3 倍改善）。
 - [[sources/fixmatch]] — FixMatch（Sohn et al., NeurIPS 2020）。弱→強の非対称拡張 + 信頼度閾値 τ=0.95 だけで MixMatch を大幅更新。CIFAR-10（250 ラベル）で 5.07%。半教師あり学習の設計原則を確立。
 - [[sources/flexmatch]] — FlexMatch（Zhang et al., NeurIPS 2021）。CPL（クラス別動的閾値）で FixMatch を拡張。CIFAR-10（40 ラベル）で 4.97%、収束速度 1/5。ただし SVHN（クラス不均衡）では逆に悪化。
+- [[sources/revisiting-ssl-foundation-models]] — Revisiting SSL in the Era of Foundation Models（Zhang et al., NeurIPS 2025）。VFM 時代に FixMatch/FlexMatch/SoftMatch が Labeled-only PEFT を凌駕できないことを実証、V-PET（VFM × PEFT アンサンブル疑似ラベリング）を提案。SeSL 研究の前提を再定義。
 
 ### Articles
 
@@ -53,6 +54,7 @@
 - [[translations/mixmatch]] — MixMatch 原論文の全文和訳。Abstract + §1-5 + Appendix A-C（記号定義 / 全数値表 / 13 層 ConvNet 結果）を含む（References のみ除外）。
 - [[translations/fixmatch]] — FixMatch 原論文の全文和訳。Abstract + §1-6 + Broader Impact + Appendix A-E（アルゴリズム擬似コード / 全数値表・ハイパーパラメータ / ImageNet 実装 / 拡張手法 / データ変換詳細）を含む（References のみ除外）。
 - [[translations/flexmatch]] — FlexMatch 原論文の全文和訳。Abstract + §1-6 + Broader Impact + Appendix A-B（ハイパーパラメータ / クラスごと精度 / 中央値エラー率 / TorchSSL ベンチマーク全 4 データセット）を含む（References のみ除外）。
+- [[translations/revisiting-ssl-foundation-models]] — Revisiting SSL in the Era of Foundation Models 原論文の本文和訳。Abstract + §1-7 + Acknowledgment（References と Appendix A-C は除外、ユーザー指示）。図 1-6 を `<figure>` で埋め込み。
 
 ## Concepts
 
@@ -69,6 +71,7 @@
 - [[concepts/online-tokenizer]] — iBOT が提案した、teacher 自身を MIM の視覚トークナイザとして動的に使う発想。DINOv2/v3 の損失設計の中核。
 - [[concepts/contrastive-learning]] — 対比学習。正例ペアを近づけ負例を遠ざける。InfoNCE 損失、SimCLR/MoCo/CLIP/DINO 系統の基盤。
 - [[concepts/semi-supervised-learning]] — 半教師あり学習（SeSL）。少量ラベルあき + 大量ラベルなしを組み合わせる。一貫性正則化 / エントロピー最小化 / MixUp の 3 系統。自己教師あり学習（SSL）との違いを解説。
+- [[concepts/parameter-efficient-fine-tuning]] — PEFT（パラメータ効率的ファインチューニング）。VFM の一部だけを更新する LoRA/AdaptFormer/BitFit/VPT 等の手法群。VFM 時代の SeSL の主役。
 - [[concepts/zero-shot-transfer]] — ゼロショット転移。CLIP が CV に持ち込んだ「プロンプトのみで追加訓練なしの推論」というパラダイム。
 - [[concepts/promptable-segmentation]] — SAM が定義した「任意プロンプトから妥当マスクを返す」新タスク（PVS）。セグメンテーション基盤モデルの事前学習目的兼ゼロショット転移インターフェイス。
 - [[concepts/promptable-concept-segmentation]] — SAM 3 が定義した「名詞句/画像 exemplar からコンセプトの全インスタンスを返す」新タスク（PCS）。PVS と互補的な open-vocabulary な軸。
@@ -94,6 +97,7 @@
 - [[entities/mixmatch]] — MixMatch（Google Research, NeurIPS 2019）。半教師あり学習。一貫性正則化 + シャープニング + ラベルあき・なし横断 MixUp。CIFAR-10 (250 ラベル) で 11.08%（VAT 比 3.3 倍改善）。
 - [[entities/fixmatch]] — FixMatch（Google Research, NeurIPS 2020）。半教師あり学習。弱→強の非対称拡張 + τ=0.95 閾値。CIFAR-10（250 ラベル）で 5.07%（MixMatch 比 2.2× 改善）。
 - [[entities/flexmatch]] — FlexMatch（東工大・Microsoft, NeurIPS 2021）。半教師あり学習。CPL クラス別動的閾値。CIFAR-10（40 ラベル）で 4.97%、収束速度 FixMatch の 1/5。
+- [[entities/v-pet]] — V-PET（Ohio State, NeurIPS 2025）。VFM × PEFT アンサンブル疑似ラベリングによる SeSL。閾値も MixUp も使わず、CLIP/DINOv2 × LoRA/AdaptFormer の Mean Labels アンサンブルだけで FixMatch/FlexMatch/SoftMatch を凌駕。
 
 ### Datasets
 
@@ -272,6 +276,28 @@
 | TorchSSL | FlexMatch と同時公開された PyTorch ベース SSL 統合コードベース | [[entities/flexmatch]] |
 | FreeMatch | 2 レベル自由閾値による FlexMatch の後継（Wang et al., 2023） | [[entities/flexmatch]] |
 | SoftMatch | ガウス重み付きソフト閾値（FlexMatch の後継, Chen et al., 2023） | [[entities/flexmatch]] |
+| VFM | Vision Foundation Model（視覚基盤モデル, CLIP/DINOv2 等） | [[concepts/foundation-model]] |
+| PEFT / PETL | Parameter-Efficient (Transfer) Fine-Tuning（パラメータ効率的ファインチューニング） | [[concepts/parameter-efficient-fine-tuning]] |
+| LoRA | Low-Rank Adaptation（重み更新を低ランク行列で近似） | [[concepts/parameter-efficient-fine-tuning]] |
+| AdaptFormer | アダプタベース PEFT（ViT 向け bottleneck MLP） | [[concepts/parameter-efficient-fine-tuning]] |
+| BitFit | bias 項のみ更新の超軽量 PEFT | [[concepts/parameter-efficient-fine-tuning]] |
+| VPT | Visual Prompt Tuning（学習可能プロンプトトークン） | [[concepts/parameter-efficient-fine-tuning]] |
+| ConvPass / Fact-TT | 畳み込み / テンソル分解ベース PEFT | [[concepts/parameter-efficient-fine-tuning]] |
+| V-PET | VFM-PEFT Ensemble Training（VFM × PEFT アンサンブル疑似ラベリング） | [[entities/v-pet]] |
+| Mean Labels | one-hot 化後の平均によるアンサンブル戦略（V-PET 提案） | [[entities/v-pet]] |
+| ST / PET | Self-Training / PEFT Ensemble Training（V-PET のバリアント） | [[entities/v-pet]] |
+| VTAB | Visual Task Adaptation Benchmark | [[sources/revisiting-ssl-foundation-models]] |
+| DTD | Describable Textures Dataset（VTAB 内テクスチャ認識データセット） | [[sources/revisiting-ssl-foundation-models]] |
+| SUN397 | Scene Understanding Database 397 クラス | [[sources/revisiting-ssl-foundation-models]] |
+| RESISC45 | Remote Sensing Image Scene Classification（45 クラス） | [[sources/revisiting-ssl-foundation-models]] |
+| Retinopathy | 糖尿病性網膜症データセット（医療画像 SeSL） | [[sources/revisiting-ssl-foundation-models]] |
+| CLEVR-C | CLEVR Count（合成推論データセット） | [[sources/revisiting-ssl-foundation-models]] |
+| AMI / ARI / V-Measure / FMI | クラスタリング評価指標（教師なしハイパラチューニング基準） | [[sources/revisiting-ssl-foundation-models]] |
+| BNM | Batch Nuclear-norm Maximization（特徴行列核ノルム） | [[sources/revisiting-ssl-foundation-models]] |
+| RankMe | 表現行列のランクで表現品質を測る（Garrido et al., 2023） | [[sources/revisiting-ssl-foundation-models]] |
+| CHI | Calinski-Harabasz Index（クラスタ品質指標） | [[sources/revisiting-ssl-foundation-models]] |
+| FineSSL | CLIP 視覚バックボーン + 平衡マージン softmax SeSL 手法（Gan & Wei, 2024） | [[sources/revisiting-ssl-foundation-models]] |
+| SoftMatch | ガウス重み付け SeSL 手法（Chen et al., 2023） | [[sources/revisiting-ssl-foundation-models]] |
 | Brier スコア | 多クラス予測確率と正解の L2 二乗距離（有界な損失） | [[sources/mixmatch]] |
 | PATE | Private Aggregation of Teachers' Ensembles（差分プライバシー学習） | [[sources/mixmatch]] |
 | Wide ResNet / WRN | Wide Residual Network（幅広い ResNet） | [[sources/mixmatch]] |

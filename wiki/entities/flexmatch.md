@@ -107,6 +107,16 @@ FlexMatch の 200K 反復時の精度がすでに FixMatch の最終精度を大
 
 ---
 
+## VFM 時代における評価（2025 年）
+
+[[sources/revisiting-ssl-foundation-models]]（NeurIPS 2025）は、CLIP/DINOv2 をバックボーンとして使う場合、**FlexMatch も Labeled-only PEFT を凌駕できない**ことを示した：
+
+- CLIP/LoRA: FlexMatch 56.2% vs Labeled Only 55.7%（+0.5pt）
+- DINOv2/LoRA: FlexMatch **48.6%** vs Labeled Only **56.0%**（−7.4pt、大幅悪化）
+- DINOv2/AdaptFormer: FlexMatch **47.8%** vs Labeled Only **51.6%**（−3.8pt）
+
+FlexMatch の CPL（クラス別動的閾値）も VFM 上では効果が薄い。これは「**スクラッチからの ResNet 訓練を前提とした閾値適応**」と「**VFM の汎化能力**」のミスマッチを示唆する。VFM 時代の SeSL では [[entities/v-pet]] のような設計が主流に。
+
 ## 関連ページ
 
 - [[sources/flexmatch]]: 詳細な論文要約（CPL の設計詳細、SVHN 失敗事例の考察）
@@ -114,3 +124,5 @@ FlexMatch の 200K 反復時の精度がすでに FixMatch の最終精度を大
 - [[concepts/semi-supervised-learning]]: 半教師あり学習の全体像
 - [[entities/fixmatch]]: FlexMatch の直接の出発点（固定閾値版）
 - [[entities/mixmatch]]: FixMatch の前身
+- [[entities/v-pet]]: VFM 時代の SeSL（FlexMatch を凌駕）
+- [[sources/revisiting-ssl-foundation-models]]: VFM 時代における FlexMatch の限界を実証

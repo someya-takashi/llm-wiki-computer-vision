@@ -110,6 +110,17 @@ DINOv2 著者らが暗黙に置いている要件：
 
 DINOv2 はこれらを多くの軸で達成し、「CV の基盤モデルは SSL でも作れる」ことを示した。
 
+## VFM 時代の SeSL（半教師あり学習）への波及
+
+[[sources/revisiting-ssl-foundation-models]]（NeurIPS 2025）が示した重要な発見：**「VFM をバックボーンとして使う場合、MixMatch/FixMatch/FlexMatch などのスクラッチ前提 SeSL 手法は驚くほど効果が薄い」**。
+
+理由は単純で、VFM は既に膨大な事前学習で強力な汎化能力を獲得しているため、SeSL がラベルなしデータから抽出する追加情報の限界利得が小さい。代わりに以下が支配的な戦略となる：
+
+1. **[[concepts/parameter-efficient-fine-tuning]]（PEFT）でラベルあきデータのみ fine-tune** —— LoRA/AdaptFormer で十分に高精度
+2. **アンサンブル疑似ラベリング** —— 複数の (VFM, PEFT) ペアの予測を統合する [[entities/v-pet]] 等の手法
+
+これは「**基盤モデルが SSL/SeSL という研究領域そのものを再定義した**」象徴的な事例。VFM × PEFT × アンサンブルという 3 軸が次世代の SeSL 設計空間を形成しつつある。
+
 ## 関連ページ
 
 - [[sources/clip]]: CV における初の本格的基盤モデル CLIP の原典
@@ -121,3 +132,7 @@ DINOv2 はこれらを多くの軸で達成し、「CV の基盤モデルは SSL
 - [[entities/sa-1b]] / [[entities/sa-v]] / [[entities/sa-co]]: SAM/SAM 2/SAM 3 の訓練データ（モデル支援アノテーションでスケール、SAM 3 では AI verifier も活用）
 - [[concepts/self-supervised-learning]] / [[concepts/weakly-supervised-pretraining]] / [[concepts/promptable-segmentation]]: 基盤モデルを生む 3 大事前学習パラダイム
 - [[concepts/zero-shot-transfer]] / [[concepts/contrastive-learning]]: 基盤モデルの中核能力と学習手法
+- [[concepts/parameter-efficient-fine-tuning]]: VFM を下流タスクに適応させる主要手法（LoRA, AdaptFormer 等）
+- [[concepts/semi-supervised-learning]]: SeSL は VFM 時代に再検討された（[[sources/revisiting-ssl-foundation-models]]）
+- [[sources/revisiting-ssl-foundation-models]]: NeurIPS 2025 — VFM 時代における SeSL の再検討、V-PET 提案
+- [[entities/v-pet]]: VFM × PEFT アンサンブル疑似ラベリングによる SeSL 手法
