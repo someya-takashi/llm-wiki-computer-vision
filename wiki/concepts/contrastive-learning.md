@@ -2,9 +2,9 @@
 type: concept
 aliases: [Contrastive Learning, 対比学習, contrastive representation learning]
 tags: [paradigm, ssl, training-technique, representation-learning]
-related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[knn-evaluation-protocol]]
-sources: [[sources/simclr]], [[sources/clip]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip]], [[sources/siglip-2]]
-updated: 2026-05-27
+related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[knn-evaluation-protocol]], [[alignment-tuning]]
+sources: [[sources/simclr]], [[sources/clip]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
+updated: 2026-05-28
 ---
 
 # Contrastive Learning（対比学習）
@@ -225,7 +225,7 @@ loss = -sum(log_sigmoid(labels * logits)) / n
    ↓
 [2022] BLIP / FLIP: CLIP の拡張
 [2023] SigLIP: softmax → sigmoid で効率化
-[2024] PE: 86B ペアで超大規模化
+[2025] PE: 5.4B unique pairs / 86B samples seen + alignment tuning で中間層特徴を活用（NeurIPS 2025）
 [2024-25] LocCa / SILC / TIPS: CLIP に decoder / 自己蒸留 / マスク予測を追加
 [2025] SigLIP 2: 上記すべてを統合した「全部入りレシピ」
 ```

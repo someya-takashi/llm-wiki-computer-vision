@@ -2,9 +2,9 @@
 type: concept
 aliases: [WSL, Weakly-Supervised Pretraining, Text-Guided Pretraining, 弱教師あり事前学習]
 tags: [paradigm, pretraining, vision-language]
-related: [[self-supervised-learning]], [[foundation-model]], [[contrastive-learning]], [[zero-shot-transfer]]
-sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/siglip]], [[sources/siglip-2]]
-updated: 2026-05-27
+related: [[self-supervised-learning]], [[foundation-model]], [[contrastive-learning]], [[zero-shot-transfer]], [[alignment-tuning]]
+sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
+updated: 2026-05-28
 ---
 
 # Weakly-Supervised Pretraining（弱教師あり事前学習）
@@ -27,7 +27,8 @@ updated: 2026-05-27
 - **OpenCLIP**: LAION-2B / LAION-5B を使った CLIP の公開再現＋拡張版
 - **SigLIP** ([[entities/siglip]] / [[sources/siglip]]) (Zhai et al., Google DeepMind 2023): CLIP の **softmax 対比損失を sigmoid 損失に置き換え**。小バッチで圧倒的に勝つ、メモリ効率改善、ノイズ頑健、**32k バッチで飽和** という発見。4 TPU で 1 日訓練可能。SO-400M で 83.2% IN-0、5B EVA-CLIP より高精度
 - **SigLIP 2** ([[sources/siglip-2]]) (Tschannen et al., Google DeepMind 2025): SigLIP に **LocCa decoder + 自己蒸留＋マスク予測 + ACID 蒸留 + 多言語＋de-bias + NaFlex** を統合した「全部入りレシピ」。**WSL の集大成**。RefCOCO で +20pt、dense seg で +4-5pt、representation bias を 35.5%→7.3% に削減。g/16 (1B) 新サイズで 85.0% IN-0
-- **EVA-CLIP**, **DFN**, **MetaCLIP**, **PE** ([[entities/perception-encoder]]) など多数の後継
+- **PE** ([[sources/perception-encoder]] / [[entities/perception-encoder]]) (Bolya et al., Meta, NeurIPS 2025): **5.4B unique image-text pairs を 86B samples seen まで訓練** + 22M videos ファインチューン。**「対比学習を頑健化＋大規模化すると中間層に多目的特徴量が育つ」発見**、それを [[concepts/alignment-tuning]] で末端に引き出す PEcore / PElang / PEspatial の 3 バリアント設計。SigLIP 2 が「全部入りレシピ」で多目的化したのと対照的に、**対比学習をピュアに保ったまま** 中間層活用で同じことを実現
+- **EVA-CLIP**, **DFN**, **MetaCLIP** など多数の関連モデル
 
 ### B. ハッシュタグ・タグ予測
 

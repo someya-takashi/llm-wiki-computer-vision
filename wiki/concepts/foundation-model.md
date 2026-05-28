@@ -2,9 +2,9 @@
 type: concept
 aliases: [Foundation Model, 基盤モデル, foundation models]
 tags: [paradigm, scaling, pretraining]
-related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[vision-transformer]], [[zero-shot-transfer]], [[contrastive-learning]], [[promptable-segmentation]], [[promptable-concept-segmentation]]
-sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/segment-anything]], [[sources/sam-3]], [[sources/siglip]], [[sources/siglip-2]]
-updated: 2026-05-27
+related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[vision-transformer]], [[zero-shot-transfer]], [[contrastive-learning]], [[promptable-segmentation]], [[promptable-concept-segmentation]], [[alignment-tuning]]
+sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/segment-anything]], [[sources/sam-3]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
+updated: 2026-05-28
 ---
 
 # Foundation Model（基盤モデル）
@@ -44,7 +44,8 @@ CV では NLP より遅れたが、2021〜2024 にかけて本格化。
 - **OpenCLIP**: LAION-2B/5B で CLIP を再現・拡張、公開
 - **SigLIP** ([[entities/siglip]] / [[sources/siglip]]) (Google DeepMind, 2023): CLIP の **softmax → sigmoid 損失** で根本的効率化、4 TPU で 1 日訓練可能、**32k バッチで飽和** という発見。SO-400M で 5B EVA-CLIP を超える 83.2% IN-0
 - **SigLIP 2** ([[sources/siglip-2]]) (Google DeepMind, 2025): SigLIP に LocCa decoder + 自己蒸留＋マスク予測 + ACID 蒸留 + 多言語＋de-bias + NaFlex を統合した「全部入りレシピ」。**CLIP 4 年分の独立改善を 1 モデルに凝集**。RefCOCO で +20pt、ADE20k で +4.2pt、representation bias 35.5%→7.3%。g/16 (1B) 新サイズ追加、85.0% IN-0
-- **PE** ([[entities/perception-encoder]]) / **Florence**（Microsoft）, **BASIC**（Google）, **CoCa**（Google）, **EVA-CLIP**, **MetaCLIP**, **DFN** など多数の後継
+- **PE** ([[sources/perception-encoder]] / [[entities/perception-encoder]]) (Meta, NeurIPS 2025): 5.4B unique pairs を 86B samples seen まで訓練 + 22M videos。**「対比学習を頑健にスケールすると中間層に多目的な一般特徴量が育つ」発見と、[[concepts/alignment-tuning]] でそれを末端に引き出す戦略**で、PEcore（ゼロショット SOTA）/ PElang（MLLM 専門）/ PEspatial（dense 予測 SOTA）の 3 バリアントを構築。COCO 検出 66.0 box AP で SOTA
+- **Florence**（Microsoft）, **BASIC**（Google）, **CoCa**（Google）, **EVA-CLIP**, **MetaCLIP**, **DFN**, **AIMv2**（Apple, キャプション化型）, **InternVideo2**（動画ネイティブ）など多数の関連モデル
 
 ### B. 自己教師あり系
 - **MAE**（Meta, 2021/2022, [[entities/mae]]）: マスク再構成で ViT-H まで scale
@@ -60,7 +61,7 @@ CV では NLP より遅れたが、2021〜2024 にかけて本格化。
 ### D. 領域汎用モデル（promptable / 教師あり）
 - **SAM**（Segment Anything Model, Meta, 2023, [[sources/segment-anything]] / [[entities/sam]]）: **CV における初の本格的セグメンテーション基盤モデル**。promptable segmentation（[[concepts/promptable-segmentation]]）タスクで訓練、データエンジンで構築した SA-1B（[[entities/sa-1b]]、11M 画像 × 1.1B マスク）を使用。**SSL ではなく教師あり**でスケール（モデル支援アノテーションで実現）。
 - **SAM 2**（Meta, 2024, [[sources/sam-2]] / [[entities/sam-2]]）: SAM の動画拡張版。**Hiera 画像エンコーダ**（[[entities/hiera]]）+ **streaming memory** で動画と画像を統一処理。SA-V（[[entities/sa-v]]、50.9K 動画 × 642.6K masklet、CC by 4.0）で訓練。画像でも SAM v1 比 6× 高速 + 高精度の上位互換。**動画 foundation model の de facto 標準**。
-- **SAM 3**（Meta Superintelligence Labs, 2025, [[sources/sam-3]] / [[entities/sam-3]]）: **新タスク PCS（Promptable Concept Segmentation, [[concepts/promptable-concept-segmentation]]）を導入**。名詞句または画像 exemplar から **コンセプトの全インスタンス** を検出・セグメント・追跡。Perception Encoder backbone + DETR detector + **presence head**（認識と位置特定を分離）+ SAM 2 tracker。SA-Co（[[entities/sa-co]]、4M unique NP、benchmark 207K concepts）で訓練・評価。**foundation model の第 4 軸（コンセプト指定）** を確立。
+- **SAM 3**（Meta Superintelligence Labs, 2025, [[sources/sam-3]] / [[entities/sam-3]]）: **新タスク PCS（Promptable Concept Segmentation, [[concepts/promptable-concept-segmentation]]）を導入**。名詞句または画像 exemplar から **コンセプトの全インスタンス** を検出・セグメント・追跡。Perception Encoder backbone + DETR detector（[[sources/detr]] / [[entities/detr]] 系統）+ **presence head**（認識と位置特定を分離）+ SAM 2 tracker。SA-Co（[[entities/sa-co]]、4M unique NP、benchmark 207K concepts）で訓練・評価。**foundation model の第 4 軸（コンセプト指定）** を確立。
 - **DALL·E, Stable Diffusion 系**: テキスト → 画像生成の基盤として CLIP/SigLIP を構成要素に持つ
 - **Florence-2**（Microsoft, 2024）: 検出/セグメンテーション/キャプション統合 vision foundation
 

@@ -242,14 +242,14 @@ ViT-L は DINOv2-L 比で ADE20k +6.1 mIoU、DAVIS +6.5 J&F の大幅改善。
 | **SSL** | Self-Supervised Learning | 自己教師あり学習。[[concepts/self-supervised-learning]] |
 | **WSL** | Weakly-Supervised Learning | 弱教師あり（CLIP 系）。[[concepts/weakly-supervised-pretraining]] |
 | **CLIP** | Contrastive Language-Image Pre-training | 弱教師あり代表。[[entities/clip]] |
-| **PE / PEcore / PEspatial** | Perception Encoder | Meta の弱教師ありモデル。[[entities/perception-encoder]] |
+| **PE / PEcore / PElang / PEspatial** | Perception Encoder | Meta の弱教師ありモデル（3 バリアント、NeurIPS 2025）。[[entities/perception-encoder]] / [[sources/perception-encoder]] |
 | **SigLIP / SigLIP 2** | Sigmoid Loss Image-Language Pre-training | Google の CLIP 系。[[entities/siglip]] |
 | **AM-RADIO** | Agglomerative Models — RADIO | NVIDIA の凝集蒸留モデル（SAM + CLIP + DINOv2）|
 | **Franca** | — | オープンデータ SSL モデル |
 | **Web-DINO** | — | DINO の scaling 試行 |
 | **AIMv2** | Autoregressive Image Models v2 | Apple の自己回帰 ViT |
 | **EVA-CLIP** | — | 巨大 CLIP 系（最大 18B）|
-| **SAM / SAM v2** | Segment Anything Model | Meta の汎用セグメンテーションモデル |
+| **SAM / SAM 2** | Segment Anything Model | Meta の汎用セグメンテーションモデル。[[entities/sam]] / [[entities/sam-2]] |
 | **V-JEPA / V-JEPA 2** | Video Joint-Embedding Predictive Architecture | Meta の動画 SSL |
 | **VGGT** | Visual Geometry Grounded Transformer | 3D 理解の汎用モデル |
 | **DAv2** | Depth Anything V2 | 単眼深度推定の SOTA |

@@ -196,7 +196,7 @@ ImageNet 精度は同等の ResNet-101 と CLIP が、ImageNet-A では **CLIP 7
 6. **後の競合モデル群の出発点**:
    - **OpenCLIP** (LAION, 2022): オープンソース再現＋ LAION-2B/5B で拡大
    - **SigLIP / SigLIP 2** (Google, 2023/2024): sigmoid 損失で効率化。[[entities/siglip]]
-   - **Perception Encoder (PE)** (Meta, 2024): 86B ペアで超大規模化。[[entities/perception-encoder]]
+   - **Perception Encoder (PE)** (Meta, NeurIPS 2025): 5.4B unique image-text pairs を 86B samples seen まで訓練 + 22M videos ファインチューン。**alignment tuning** で中間層の一般特徴量を末端へ引き出し、PEcore / PElang / PEspatial の 3 バリアントで多目的化。[[sources/perception-encoder]] / [[entities/perception-encoder]]
    - **MetaCLIP, DFN, EVA-CLIP, BLIP-2** など多数
 
 ---

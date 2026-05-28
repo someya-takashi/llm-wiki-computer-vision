@@ -2,9 +2,9 @@
 type: concept
 aliases: [KD, Knowledge Distillation, 知識蒸留]
 tags: [training-technique, distillation, transfer]
-related: [[self-supervised-learning]], [[vision-transformer]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip-2]]
-updated: 2026-05-27
+related: [[self-supervised-learning]], [[vision-transformer]], [[alignment-tuning]]
+sources: [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip-2]], [[sources/perception-encoder]]
+updated: 2026-05-28
 ---
 
 # Knowledge Distillation（KD, 知識蒸留）
@@ -90,8 +90,24 @@ DINO の重要な観察は、**「教師 = 生徒の EMA」かつ「異なる拡
 - **DINO** (Caron et al., 2021): self-distillation という視点で SSL を再解釈、predictor 不要を示す。
 - **codistillation** (Anil et al., 2018): student も teacher もお互いに蒸留し合う双方向版。DINO とは「teacher が student の EMA」という非対称性で区別される。
 
+## KD と Alignment Tuning の対比（**世界観が逆**）
+
+[[concepts/alignment-tuning]]（Perception Encoder, NeurIPS 2025）は技術的には KD の損失（cosine 類似度、特徴量マッチング）を借用するが、**目的が真逆**：
+
+| 軸 | 古典的 KD | Alignment Tuning |
+|---|---|---|
+| 目的 | **教師の知識を student に注入** | **student に既にある特徴を引き出す** |
+| 教師の役割 | 答えを教える（情報の提供者） | アンカーを与える（情報の整列者） |
+| データ規模 | 大きい（教師の知識ほぼ全部を移植） | 小さい（事前学習の 1〜10%） |
+| 教師の必要性 | 強い教師モデルが必須 | **自分自身の凍結コピーで十分**（PE の自己層 41 蒸留） |
+| 適用文脈 | モデル圧縮、SSL 再解釈 | 「中間層に眠る一般特徴」を最終層に上げる |
+
+Alignment tuning は「**持っていないものを受け取る**（KD）」ではなく「**持っているものを表に出す**」という新世代の発想。PE では SAM 2.1 mask logits を外部教師として併用するが（古典的 KD）、**自己の凍結層 41 特徴を教師として併用する**（alignment 固有）点が決定的に違う。
+
 ## 関連ページ
 
 - [[sources/dino-emerging-properties-in-self-supervised-vit]]: 知識蒸留を SSL に拡張した代表例
 - [[sources/siglip-2]]: ACID / ACED の現代的応用例（暗黙的蒸留 + 明示的蒸留の組み合わせ）
+- [[sources/perception-encoder]]: KD の損失を借用しつつ世界観を反転した alignment tuning を導入
+- [[concepts/alignment-tuning]]: PE 由来の新ファインチューニング戦略、KD との対比
 - [[concepts/self-supervised-learning]]: 多くの SSL 手法が KD として再解釈される文脈

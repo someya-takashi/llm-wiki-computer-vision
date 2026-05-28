@@ -407,3 +407,258 @@
   - **既存 wiki 概念群との強い接続**: 本論文は CLIP/DINOv2（[[entities/clip]]/[[entities/dinov2]]）をバックボーンとし、FixMatch/FlexMatch（[[entities/fixmatch]]/[[entities/flexmatch]]）を主要比較対象とする。wiki の既存 6 ページ以上に直接影響。VFM × SeSL という新しい交差領域を確立
   - **Ohio State University の貢献**: SimCLR/FixMatch（Google）/MixMatch（Google）/FlexMatch（東工大・MSRA）/DINOv2（Meta）に続き、Ohio State から SeSL 研究の主要貢献。研究機関の地理的多様化が継続
   - 後続候補: FineSSL（CLIP × 平衡マージン softmax SeSL）/ V-PETL Bench（PEFT ベンチマーク）/ LoRA 原典 / AdaptFormer 原典 / VPT 原典 / FreeMatch / SoftMatch 原典 / Visual Task Adaptation Benchmark（VTAB）原典 など
+
+## [2026-05-28] ingest | Perception Encoder: The best visual embeddings are not at the output of the network
+
+- 取り込み: `raw/papers/Perception Encoder- The best visual embeddings are not at the output of the network.pdf`（54 ページ PDF、本文 pp.1-10 のみ、ユーザー指示で References pp.11-18 と Appendix A-F pp.19-54 を除外）
+- 画像対応: ユーザーが手動取得した 10 枚を `raw/images/fig{1..10}.png` → `raw/assets/perception-encoder/fig{1..10}.png` に移動（mkdir + mv）
+- 作成:
+  - [[translations/perception-encoder]] — Abstract + §1 Introduction + §2 PE: Core（§2.1-2.3）+ §3 General Features in a Contrastive Disguise + §4 PE: Language Alignment + §5 PE: Spatial Alignment + §6 Related Work + §7 Conclusion + Additional Contributors の本文和訳。図 1-10 を `<figure>` で埋め込み（References と Appendix A-F は除外）。表 1-8 をすべて含む
+  - [[sources/perception-encoder]] — 初学者向け要約。「中間層に一般特徴量が育つ」の発見 / 3 バリアント設計（PEcore / PElang / PEspatial）/ 9 段階累積アブレーション / 動画データエンジン / alignment tuning の 2 種 / DINOv3・SigLIP 2 との詳細対比 / SAM 3 backbone 採用 / 用語集
+  - [[concepts/alignment-tuning]] — **新規 concept ページ**。「中間層に眠る特徴を最終層に引き出す」ファインチューニング戦略の一般化。共通原則 / 言語アラインメント（PElang）と空間アラインメント（PEspatial）の具体例 / 知識蒸留・LoRA・linear probing との対比 / 既存研究のヒント / 限界と展望
+- 更新:
+  - [[entities/perception-encoder]] — **大幅書き直し**。データ規模の誤り訂正（86B → 5.4B unique pairs + 86B samples seen）/ PEcore 訓練レシピ 9 段階の詳細 / PElang セクション新規追加（Llama3.2 decoder + 2 層 MLP + 70M サンプル）/ PEspatial セクション新規追加（SAM 2.1 mask logits + 自己層 41 の 2 教師蒸留）/ DINOv3 との対比表を更新（PEspatial が dense SOTA を取り戻した）/ 主要結果テーブル（ゼロショット画像・動画 / MLLM / Dense Prediction / SOTA 検出）
+  - [[index]] — sources/perception-encoder、translations/perception-encoder、concepts/alignment-tuning を追加、略称表に PE/PEcore/PElang/PEspatial（更新）、alignment tuning、PVD、LAMB、Attention pooling、Progressive resolution、Mask regularization、AIMv2、InternVideo2、MetaCLIP、SAM 2.1 mask logits、DETA、CoDETR、layer 41、layerwise feature analysis を登録（14 項目）
+  - [[log]]
+- メモ:
+  - **「中間層に一般特徴量が育つ」という発見の衝撃**: 純粋な対比学習（CLIP 損失のみ）が、十分にスケールすれば OCR / VQA / grounding / 検出 / 深度 / 追跡すべてに使える特徴を中間層に育てるという発見は、「対比学習 vs キャプション化 vs SSL」の三つ巴を「対比学習だけで十分」という方向に巻き戻す可能性を持つ。SigLIP 2 が「全部入りレシピ」で多目的化したのと対照的に、PE は「ピュアな対比学習＋ alignment tuning」で同じことを達成
+  - **既存 entities/perception-encoder.md の誤り訂正**: 以前のエントリには「86B 画像-テキスト対」と書かれていたが、原典より正しくは「5.4B unique pairs を 86B samples seen まで訓練」。86B は累計サンプル数（実質エポック）であって unique pair 数ではない。**一次情報を読まずに二次情報で書いた wiki ページは誤りを内包しやすい** という典型例
+  - **DINOv3 との対立軸の再評価**: DINOv3 が「PE は dense で弱い」と主張していたが、本論文の PEspatial G は SAM 2.1 mask logits + 自己層 41 の 2 教師蒸留で dense 予測 SOTA を取り戻す。ただし PEspatial は **SAM 2.1 という supervised teacher への依存** が残るため、DINOv3 側の「完全ラベルフリーで dense SOTA」という主張への完全な反論にはなっていない
+  - **alignment tuning の知識蒸留との違い**: 表面上は似た損失（cosine 類似度、特徴量マッチング）を使うが、世界観が逆。蒸留は「持っていないものを受け取る」、alignment は「持っているものを表に出す」。新規 concept ページで明示
+  - **progressive resolution の意外な威力**: 9 段階アブレーション（図 5）で、progressive resolution（98→154→224 を 4B サンプルずつ）が COCO 検出（凍結特徴）で +10 mAP という最大の改善をもたらす。「複雑な手法より単純な訓練スケジュール工夫」が効くという CV あるある
+  - **動画 → 画像への波及効果**: 22M 動画でのファインチューンが画像性能を +0.6-4.0% 改善する事実は、「動画キャプションの記述密度の高さ」が image-only 学習を上回ることを示唆。今後の画像基盤モデル訓練で動画の活用が標準になる可能性
+  - **SAM 3 の backbone 採用の循環的関係**: SAM 2 → PEspatial の教師、PE → SAM 3 の backbone、という循環が成立。Meta 内の foundation model ファミリーが相互蒸留・相互利用で発展する構造が明確に
+  - **「対比 SOTA を JFT-3B / WebLI なしで取り戻した」**: PE 論文の最も誇らしげな主張の一つ。Google の独占的データセット（JFT-3B）や WebLI を使わず MetaCLIP キュレーションだけで対比モデル SOTA を実現した点は、研究コミュニティのオープン性に対する重要な意義を持つ
+  - **本文のみ ingest の判断**: Appendix A-F は 36 ページ（pp.19-54）と本文の 3 倍以上のボリュームがあり、訓練詳細・追加 ablation・実装詳細・データセット詳細・PE Video Dataset の詳細などを含む。「本文だけで PE の主張は把握できる」というユーザー判断は妥当。追加 ablation や実装詳細が必要になった時点で Appendix 個別 ingest で対応する
+  - 後続候補: AIMv2（Apple のキャプション化型事前学習、PE の主要比較相手）/ InternVideo2（動画ネイティブ事前学習）/ MetaCLIP 原典（PE の事前学習データキュレーション手法）/ AM-RADIO（複数 foundation model 蒸留統合）/ LocCa（SigLIP 2 の decoder ベース事前学習）/ V-JEPA 2（動画 SSL）など
+
+## [2026-05-28] lint | PE ingest 後の整合性点検 + 古い記述訂正
+
+- 点検範囲: wiki 全 85 ファイル（concepts 18 / entities 26 / sources 19 / translations 19 / index, log, overview）
+- 結果サマリ: 孤立ページ 0、index と filesystem は完全一致。健康度は良好。古い記述（86B pairs 等）と「DINOv3 が PE を dense で圧倒」断言が PE ingest で陳腐化していたため修正
+- P0 修正: 「86B pairs」→「5.4B unique pairs / 86B samples seen」の訂正と PE 年（2024 → NeurIPS 2025）の更新
+  - 更新ファイル: [[concepts/zero-shot-transfer]], [[concepts/contrastive-learning]], [[sources/clip]], [[sources/siglip]], [[entities/clip]], [[entities/siglip]]（2 ヶ所）
+- P0 修正: PE バリアントリストに PElang 追加（以前は "PEcore / PEspatial" の 2 のみ）
+  - 更新ファイル: [[index]] (line 92), [[sources/dinov3]] (略称表), [[entities/dinov3]]（並列・競合）
+- P0 副次修正: [[sources/dinov3]] の "SAM / SAM v2" → "SAM / SAM 2" 表記揺れ訂正
+- P1 修正: 「DINOv3 が PE/SigLIP 2 を dense で圧倒」を「広く優位、ただし PE PEspatial が後に部分奪還、最大スケールでは DINOv3 依然優位」に条件付き化
+  - 更新ファイル: [[overview]]（マイルストーン表 2025 行 + PE 行追加）, [[index]] (line 19), [[concepts/self-supervised-learning]] （ハイブリッド型節 + 参考セクション）
+- P2 修正: alignment-tuning へのクロスリファレンス追加
+  - 更新ファイル frontmatter: [[concepts/contrastive-learning]], [[concepts/knowledge-distillation]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]] の `related:` に [[alignment-tuning]] を、`sources:` に [[sources/perception-encoder]] を追加
+  - [[concepts/knowledge-distillation]] に「KD と Alignment Tuning の対比（世界観が逆）」セクションを新規追加（古典 KD は「持っていないものを受け取る」、alignment tuning は「持っているものを表に出す」）
+  - [[concepts/foundation-model]] と [[concepts/weakly-supervised-pretraining]] の PE 説明を本論文に基づき詳細化（NeurIPS 2025、5.4B/86B、3 バリアント、中間層発見、alignment tuning）
+- P2 副次修正: [[overview]] の "[[sources]] と [[concepts]] を列挙" を平文化（フォルダ名 wikilink は dangling 扱いになるため）
+- 残存事項（**意図的に未修正**）:
+  - [[entities/moco]] dangling リンク（[[sources/byol]], [[entities/byol]], [[entities/simclr]] から参照）: スキーマが「未作成ページマーカー」として許容、MoCo は次の ingest 候補
+  - concepts 間の bare-slug `related:` 参照（例: `[[self-supervised-learning]]` 形式）: Obsidian は解決可能、既存パターン尊重で現状維持（lint レポート P2 で現状維持推奨）
+  - [[entities/sam-2]] frontmatter alias の "SAM v2"（検索用 alias なので保持）
+- メモ:
+  - **「二次情報依存ページの誤りは原典 ingest で訂正される」という典型例**: 「PE: 86B image-text pairs」は DINOv3 や SAM 3 経由の二次情報で記述されていたが、PE 原典 ingest で「5.4B unique pairs を 86B samples seen まで訓練」が正しいと判明、6 ファイルで連鎖訂正
+  - **「圧倒」の表現変化**: DINOv3 ingest 時には「dense で PE を圧倒」と書けたが、PE ingest 後は「広く優位、ただし条件付き」に変化。**断言は最新文献の影響を受ける** ので、強い表現は文献参照とセットで残すべき
+  - **alignment tuning が KD と「世界観が逆」**という観察は、PE 論文の重要な認識論的貢献。KD ページに対比セクションを追加することで、両概念の対比が明示化された
+  - **bare-slug vs フォルダ込みパス問題**: 旧 concepts/*.md の `related:` は bare-slug（[[self-supervised-learning]]）、新規ページの alignment-tuning は同パターンを踏襲した。一貫性のため新規追加もすべて bare-slug 形式を採用。スキーマ更新の余地あり
+
+## [2026-05-28] ingest | End-to-End Object Detection with Transformers (DETR)
+
+- 取り込み: `raw/papers/End-to-End Object Detection with Transformers.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix 0.A は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2005.12872/assets/...>）から 8 枚を curl でダウンロードし `raw/assets/detr/fig{1,2,3,4,6,7,8,9}.png/jpg` に保存（fig5 は markdown に画像 URL なし）
+- 作成:
+  - [[translations/detr]] — Abstract + §1-6（Acknowledgements 含む）の全文和訳。図 1-9 を `<figure>` で埋め込み（fig5 は欠落）、表 1-5 をすべて含む
+  - [[sources/detr]] — 初学者向け要約。集合予測パラダイム / Hungarian 二部マッチング / NMS 不要化の仕組み / 並列デコーディング / Encoder-Decoder 分業（インスタンス分離 vs 末端 attention）/ Object queries の自然な特化 / パノプティック拡張 / DETR ファミリー系譜（Deformable / DAB / DN / DINO-detector / DETA / CoDETR / MDETR）/ ViT との並列性 / 用語集（DETR / Hungarian / NMS / GIoU / DC5 / FPN / PQ / things-stuff など）
+  - [[entities/detr]] — DETR モデルエンティティ（4 バリアント仕様表 / Transformer 構成 / 主要設計判断表 / アブレーション知見 / DETR ファミリー系譜図 / Foundation Model 時代の検出ヘッド標準としての位置づけ）
+  - [[concepts/object-detection]] — **新規 concept ページ**。物体検出タスク全体の俯瞰（5 系統: R-CNN / YOLO / Anchor-free / DETR / Promptable）、DETR のパラダイムシフトの説明、現代 CV foundation model における検出ヘッド標準
+- 更新:
+  - [[sources/perception-encoder]] / [[entities/perception-encoder]] — DETA と DETR-style decoder の説明に [[sources/detr]] / [[entities/detr]] リンク追加、関連ページに DETR と object-detection 追加
+  - [[entities/sam-3]] — DETR decoder の説明に DETR 系統リンク追加、関連ページに DETR と object-detection 追加
+  - [[sources/sam-3]] — 検出器説明の DETR ベース表記に DETR 系統リンク追加、用語集の DETR 略称定義に DETR 系統リンク追加
+  - [[concepts/foundation-model]] — SAM 3 の DETR detector 説明にリンク追加
+  - [[concepts/promptable-segmentation]] — DETR 系の損失標準表記にリンク追加
+  - [[index]] — sources/detr、translations/detr、entities/detr、concepts/object-detection を追加。略称表に DETR/set prediction/bipartite matching/Hungarian algorithm/Hungarian loss/NMS/anchor/proposal/object queries/GIoU/DC5/Faster R-CNN/Mask R-CNN/FPN/Panoptic Quality (PQ)/things/stuff/AP_S/AP_M/AP_L/Deformable DETR/DAB-DETR/DN-DETR/DINO-detector/auxiliary decoding losses/AdamW/Xavier init/Focal loss を登録（27 項目）
+  - [[log]]
+- メモ:
+  - **「2020 年の Transformer 革命の双子」**: DETR（2020 May, ECCV 2020）と ViT（2020 Oct, ICLR 2021）は Transformer を CV に持ち込んだ並列研究。DETR は CNN backbone を維持しつつ検出ヘッドを Transformer に置き換える「ハイブリッド型」、ViT は CNN を完全に排除する「pure Transformer 型」。**DETR の方が先**（5 月発表）であり、CV における Transformer の最初の本格的成功と言える
+  - **集合予測パラダイムの波及**: DETR のもう 1 つの革新は「物体検出を **集合の最適輸送（optimal transport）問題** に置き直した」こと。これにより (1) hand-designed components（NMS, anchor, proposal）が消える、(2) パノプティック・grounding・tracking への拡張が自然、(3) Transformer の表現力が直接効く、という三重の波及効果が生まれた
+  - **既存 wiki への接続が極めて強い**: SAM 3 の検出器 / PE PEspatial の検出 decoder（DETA）/ SAM の損失設計（focal + dice）すべてが DETR の系譜。**wiki 内で DETR への参照が 14 ページに既に存在**していたが、source/entity ページがなく略称表記述だけで支えられていた状態だった。本 ingest で「ハブ」が正しく置かれた
+  - **新概念ページ object-detection の必要性**: 既存 wiki には物体検出という中心タスクのページがなく、ViTDet / NMS / IoU 等の用語が散在していた。新規 concept ページで 5 系統の系譜（R-CNN / YOLO / Anchor-free / DETR / Promptable）と DETR のパラダイムシフトの位置づけを整理。今後の検出系研究（Deformable DETR / DINO-detector 等）の ingest で再利用される基盤
+  - **NMS 排除のメカニズムの理解**: 「NMS が不要」は表面的には推論時のアルゴリズム選択に見えるが、本質は **訓練レベルで 1 対 1 Hungarian マッチングが「同じ物体に複数スロット活性化」を構造的に許さない** ことから来る。これは推論時の選択ではなく、訓練の設計思想の帰結であることを強調
+  - **小物体弱点と Deformable DETR への伏線**: DETR 原論文は AP_S での -5.5 ポイント弱点を明示し、「FPN が Faster R-CNN を救ったように、未来の研究が DETR を救うだろう」と予言。実際 Deformable DETR（同年 10 月、Zhu et al.）がこれを解決。**論文自身が後続研究の道筋を予言した珍しい例**
+  - **訓練の特殊性が CV 検出研究の新常識を作った**: 300-500 エポック / AdamW / 補助デコーディング損失 / backbone-transformer 学習率分離は、その後の DETR ファミリーすべての標準になった。DETR 以前の検出研究の常識（SGD + 12 エポック）からの根本的転換
+  - 後続候補: Deformable DETR（DETR の sparse attention 改善）、DINO-detector（DETR ファミリー集大成）、MDETR（テキスト条件付き DETR、SAM 3 の前身）、OWL-ViT（ViT + DETR の open-vocab 検出）、DETA（PE PEspatial が採用）など
+
+## [2026-05-28] ingest | DINO: DETR with Improved DeNoising Anchor Boxes for End-to-End Object Detection
+
+- 取り込み: `raw/papers/DINO_ DETR with Improved DeNoising Anchor Boxes for End-to-End Object Detection.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix 0.A-0.D は除外）
+- **名前の衝突への配慮**: 既存 `entities/dino.md`（SSL の DINO, Caron et al., 2021）と完全同名のため、ユーザー指示により slug `dino-detector` で区別。両ページに相互の disambiguation 注記を追加
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2203.03605/assets/...>）から 8 枚を curl でダウンロードし `raw/assets/dino-detector/fig{1-8}.png/jpg` に保存
+- 作成:
+  - [[translations/dino-detector]] — Abstract + §1-5 の全文和訳。図 1-8 を `<figure>` で埋め込み、表 1-4 を含む
+  - [[sources/dino-detector]] — 初学者向け要約。3 つの新技法（CDN / Mixed QS / LFT）の詳細、DAB-DETR + DN-DETR + Deformable DETR の系譜整理、SSL DINO との混同問題の徹底説明、PE PEspatial / SAM 3 への波及、用語集（DINO/CDN/Mixed QS/LFT/DAB-DETR/DN-DETR/Deformable DETR/ATD(k)/Objects365/Florence/SwinV2-G 等）
+  - [[entities/dino-detector]] — モデル仕様（4 バリアント表）、3 つの新技法詳細、主要結果（12 epoch 49.4 / 24 epoch 51.3 / SwinL 63.3 AP）、ablation 表、DETR ファミリー系譜図、SSL DINO との詳細対比表
+- 更新:
+  - [[entities/dino]] — **disambiguation 注記を冒頭に追加**（物体検出 DINO との明確な区別）
+  - [[entities/detr]] — DINO-detector への参照を新ページにリンク、DETR ファミリー系譜図で詳細注記
+  - [[sources/detr]] — DINO-detector への参照を新ページにリンク、SSL DINO との別物注記を強調
+  - [[concepts/object-detection]] — DETR ファミリー系譜図に DINO 検出器の詳細を反映
+  - [[index]] — sources/dino-detector、translations/dino-detector、entities/dino-detector を追加。略称表に CDN/Mixed Query Selection/Look Forward Twice (LFT)/Look Forward Once (LFO)/DAB-DETR/DN-DETR/dynamic anchor box/denoising training/iterative box refinement/query selection/ATD(k)/Objects365/SwinL/SwinV2-G/Florence/Grounding DINO を新規登録（15 項目）。既存「DINO-detector」エントリを新ページにリンク、重複していた DAB-DETR/DN-DETR の旧エントリを削除して新詳細版に置換
+  - [[log]]
+- メモ:
+  - **DETR ファミリーの集大成**: 2020 DETR → 2020 Deformable DETR → 2022 Jan DAB-DETR → 2022 Mar DN-DETR → **2022 Mar DINO（本論文）** という流れの中で、DINO は前 3 つを統合し新技法 3 つを追加。この後 DETA (2022 Sep) / CoDETR (2023) / Grounding DINO (2023) / MM-Grounding-DINO (2024) と続く。**DETR が「研究用おもちゃ」から「実用 SOTA」に押し上げられた決定的研究**
+  - **名前の衝突の典型例**: SSL の DINO（Caron et al., 2021、Meta/Inria）と検出器の DINO（Zhang et al., 2022、HKUST/IDEA）は完全に独立な研究で、命名の由来も別々（**DI**stillation/**NO** labels vs **DI**mproved/de**N**oising/anch**O**r）。コミュニティの混乱を招いているが、文献では文脈で区別される。wiki では slug `dino` vs `dino-detector` で完全分離
+  - **3 つの新技法の理解**:
+    - CDN（Contrastive DeNoising）: DN-DETR + hard negative。「物体なし」を学ぶ能力の追加。重複予測抑制と小物体改善（+1.3 AP）
+    - Mixed Query Selection: 「encoder の top-K は位置として有用だがコンテンツとしては未精錬」という洞察。位置だけ初期化、コンテンツは学習可能のまま
+    - Look Forward Twice: Deformable DETR の Look Forward Once（勾配 detach）の対極。後段層の勾配で前段 box 予測を補正
+  - **小物体性能の革新**: AP_S +7.5 という改善は、DETR の伝統的弱点の解決という意味で **FPN が Faster R-CNN を救ったのと同じインパクト**。CDN の小物体 anchor 選択能力の向上（ATD(k) 分析で実証）が貢献
+  - **既存 wiki ハブが事前整備されていた**: DETR ingest 時に [[entities/detr]] / [[sources/detr]] / [[concepts/object-detection]] / index 略称表で "DINO-detector" として参照済みだったため、本 ingest で完全にハブ化された
+  - **PE PEspatial / SAM 3 への波及**: DETA decoder（PE PEspatial が採用、COCO 66.0 box AP）と DAC-DETR / Plain-DETR（SAM 3 が採用）はいずれも DINO 検出器以降の DETR ファミリー技術。**現代の最先端検出ヘッドはすべて DINO 検出器の直接的後継**
+  - **COCO SOTA 競争の転換点**: DINO-SwinL（218M）が SwinV2-G（3.0B）を 1/15 のパラメータで上回ったことで、「巨大 backbone + 古典的検出器」から「効率的 backbone + DETR 系検出器」への移行が決定的になった
+  - 後続候補: MDETR / Grounding DINO（open-vocab 拡張）、DETA（PE PEspatial の検出 decoder）、CoDETR（協調訓練 SOTA）、Plain-DETR（DINOv3 + COCO 66.1 AP）、Deformable DETR（DETR ファミリーの基礎を完成）など
+
+## [2026-05-28] ingest | Grounded Language-Image Pre-training (GLIP)
+
+- 取り込み: `raw/papers/Grounded Language-Image Pre-training.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix A-E は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2112.03857/assets/...>）から 6 枚を curl でダウンロードし `raw/assets/glip/fig{1,2,4,5,6,7}.png` に保存（fig3 と fig8 は markdown に画像 URL なし、本文中で参照されているのみ）
+- 作成:
+  - [[translations/glip]] — Abstract + §1-6（Acknowledgement 含む）の全文和訳。図 1, 2, 4-7 を `<figure>` で埋め込み、表 1-5 をすべて含む。3.1 の数式（grounding loss、target 拡張）、3.2 の X-MHA 数式、3.3 の self-training 詳細を含む
+  - [[sources/glip]] — 初学者向け要約。3 つの中核技術（unified formulation / language-aware deep fusion (X-MHA) / self-training scale-up）の詳細、5 バリアント仕様（A/B/C/T/L）、COCO 49.8 AP ゼロショット、LVIS rare カテゴリ革命、Flickr30K phrase grounding SOTA、ODinW ベンチマーク、prompt tuning の物体検出への持ち込み、SAM 3 への精神的継承、用語集
+  - [[entities/glip]] — モデル仕様（5 バリアント表、X-MHA 数式、アーキテクチャ詳細）、主要結果（COCO/LVIS/Flickr30K/ODinW 全表）、訓練データ詳細表、open-vocab 検出系統図（GLIP → Grounding DINO → SAM 3）、SAM 3 との比較表
+- 更新:
+  - [[entities/dino-detector]] — 表 3 の "GLIP" を [[entities/glip|GLIP]] にリンク
+  - [[concepts/object-detection]] — DETR ファミリー後に「**§5 Open-Vocabulary 検出**」セクション新規追加（Bansal → ViLD → MDETR → **GLIP** → OWL-ViT → Grounding DINO → MM-Grounding-DINO の系譜）、§6 Promptable 時代に GLIP の精神的継承を明記
+  - [[concepts/zero-shot-transfer]] — GLIP を「**物体検出へのゼロショット転移を確立**」した転換点として追加
+  - [[concepts/promptable-concept-segmentation]] — GLIP を SAM 3 PCS の精神的祖先として明示（テキスト名詞句で全インスタンス検出という発想を 2021 年に提示）
+  - [[sources/sam-3]] — open-vocab 検出器の弱点セクションで GLIP を最初に挙げる
+  - [[entities/sam-3]] — 関連ページに [[sources/glip]] / [[entities/glip]] を追加
+  - [[index]] — sources/glip、translations/glip、entities/glip を追加。略称表に GLIP / phrase grounding / region-word alignment / X-MHA / late fusion / deep fusion / DyHead / MDETR / ViLD / GoldG / Cap4M-Cap24M / CC-CC12M / SBU / FourODs / ODinW / EgoHands-Pothole-ThermalDogsandPeople / Flickr30K Entities / Visual Genome / GQA / LVIS APr-APc-APf を新規登録（20 項目）。既存 "Grounding DINO" エントリを GLIP リンク付きに更新
+  - [[log]]
+- メモ:
+  - **「CLIP の object-level 拡張」**: GLIP は CLIP（[[entities/clip]]）の画像レベル対比学習を **region レベル** に持ち込んだ最も成功した例。CLIP が「a photo of a {class}」プロンプトで分類を解いたのに対し、GLIP は「person. bicycle. car. ...」プロンプトで検出を解く
+  - **検出 = grounding の等価性**: 単一プロンプトで全クラスが収まる場合、検出と grounding は **理論的かつ経験的に完全に等価**（同じ DyHead モデルが両形式で COCO 49.4 AP）。これは PCS（[[concepts/promptable-concept-segmentation]]）のような後続タスクで再利用される基礎的洞察
+  - **language-aware deep fusion の重要性**: §5.2 で「物体検出で prompt tuning が full-tuning に並ぶのは GLIP のような deep fusion モデルでのみ」という発見は、PEFT（[[concepts/parameter-efficient-fine-tuning]]）研究にも波及する重要な経験的法則
+  - **self-training で grounding をスケール**: 27M grounding データ（うち 24M が web 由来疑似ラベル）は、CLIP の 400M に比べると桁違いに少ない。だが「semantic richness（5840 万のユニーク名詞句）」が量を補う証拠で、後の Grounding DINO / SAM 3 の **データ戦略の祖** となった
+  - **GLIP の弱点が SAM 3 で解決された**: GLIP は「文脈なしの絶対的存在判断」が苦手（"vaccine が画像にあるか" を判断する際に強引に位置を出してしまう）。SAM 3 の **presence head** はこれを「全 region に対するグローバルな existence score」として明示的に分離する革新。GLIP ingest により SAM 3 の presence head の意義がより明確に文脈化された
+  - **DyHead ベースの限界と Grounding DINO への移行**: GLIP は古典的 DyHead 検出器に依存していたため、後続研究は DETR ベースに移行。Grounding DINO（IDEA, 2023）は GLIP の「検出 = grounding」を DINO 検出器（[[entities/dino-detector]]）の枠組みに移植し、COCO 63.0 AP を達成。**「GLIP × DINO 検出器」という見方が成立**
+  - **ODinW ベンチマークの導入**: 13 多様タスク（EgoHands, Pothole, ThermalDogsandPeople 等）で「ゼロショット GLIP-T > 5-shot DyHead-T」「1-shot GLIP-L ≈ fully-supervised DyHead-T」を実証。これは「**1 つの foundation model で多タスクをカバー**」という実用化の道筋を示した最初の本格的成果
+  - **既存 wiki ハブが事前整備済み**: DETR / DINO 検出器 ingest 時に略称表で "Grounding DINO" として参照されていたが、その祖の GLIP がまだ wiki になかった。本 ingest で open-vocab 検出系統の **欠けていた基礎ピース** が埋められた
+  - **27 ヶ所の Foundation Model 系統への接続**: GLIP は CLIP / DINO 検出器 / SAM 3 / PE / Grounding DINO / OWL-ViT / MDETR / ViLD と多方向に接続している。**open-vocab 検出ハブ** として今後の研究 ingest の出発点になる
+  - 後続候補: Grounding DINO 原典（[Liu et al., ECCV 2024]、GLIP × DINO 検出器）/ MDETR（テキスト条件付き DETR の祖、Kamath et al., ICCV 2021）/ OWL-ViT（ViT + DETR 版 open-vocab、Minderer et al., ECCV 2022）/ ViLD（CLIP 蒸留型 open-vocab、Gu et al., ICLR 2022）など
+
+## [2026-05-28] ingest | Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection
+
+- 取り込み: `raw/papers/Grounding DINO_ Marrying DINO with Grounded Pre-Training for Open-Set Object Detection.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix A-I は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2303.05499/assets/...>）から x1-x5 の 5 枚を curl でダウンロードし `raw/assets/grounding-dino/fig{1-5}.png` に保存
+- 作成:
+  - [[translations/grounding-dino]] — Abstract + §1-6（Acknowledgement 含む）の全文和訳。図 1-5 を `<figure>` で埋め込み、表 1-7 を含む。Algorithm 1（language-guided query selection の PyTorch コード）を含む
+  - [[sources/grounding-dino]] — 初学者向け要約。3 つの中核技術（Tight 3-Phase Fusion / Language-Guided Query Selection / Sub-Sentence Level Text Representation）の詳細、Grounding DINO は **GLIP × DINO 検出器** という統合論文としての位置づけ、SAM 3 への直接の影響、Closed/Open/REC 全 3 設定での評価、用語集
+  - [[entities/grounding-dino]] — モデル仕様（T/L 2 バリアント表、X-MHA 数式、アーキテクチャ詳細）、3 つの新技術詳細、主要結果（COCO/LVIS/ODinW/RefCOCO 全表）、訓練データ詳細、ablation 表、DINO 事前学習からの転送実験、open-vocab 検出ファミリー系統図、限界（segmentation 不可、LVIS rare で GLIP に劣る、closed-set で純粋 DINO に -0.9 AP）
+- 更新:
+  - [[entities/glip]] — Grounding DINO への参照を新ページにリンク（系統図と関連ページ）
+  - [[entities/dino-detector]] / [[sources/dino-detector]] — Grounding DINO 言及を新ページにリンク
+  - [[sources/glip]] — Grounding DINO への参照を強化、3-phase fusion 等の詳細を追加
+  - [[concepts/object-detection]] — §5 Open-Vocab セクションの Grounding DINO 項目を詳細化
+  - [[concepts/zero-shot-transfer]] — Grounding DINO エントリを新規追加
+  - [[concepts/promptable-concept-segmentation]] — Grounding DINO を SAM 3 の直接の前駆として明示
+  - [[sources/sam-3]] / [[entities/sam-3]] — 既存 open-vocab 検出器の比較で Grounding DINO リンクを追加、関連ページに追加
+  - [[index]] — sources/grounding-dino、translations/grounding-dino、entities/grounding-dino を追加。略称表に tight fusion / 3-phase fusion / Language-Guided Query Selection / Cross-Modality Decoder / Sub-Sentence Level Text Representation / Word-level Text / Sentence-level Text / REC / RefCOCO/+/g / RefC / open-set object detection / closed-set object detection / OV-DETR / GLIPv2 / DetCLIP / OmDet / MM-Grounding-DINO / DINO-X を新規登録（18 項目）。既存の "Grounding DINO" エントリを新ページにリンク
+  - [[log]]
+- メモ:
+  - **「GLIP × DINO 検出器」の正統な統合**: 第一著者 Shilong Liu と DINO 検出器著者 Hao Zhang, Feng Li は同じ IDEA / HKUST グループ、共著者 Chunyuan Li, Jianwei Yang は GLIP 著者と同じ Microsoft Research。**両研究の著者が直接協力** して作った正統な統合論文。wiki に既にあった 2 つの祖（[[entities/glip]] と [[entities/dino-detector]]）の結合点として位置付けられた
+  - **Tight 3-Phase Fusion の概念整理**: 図 2 の「closed-set 検出器を backbone → neck (A) → query init (B) → head (C) の 3 フェーズに分解」という見方は、open-vocab 検出研究全体の整理に有用なメンタルモデル。GLIP は A のみ、OV-DETR は B のみ、MDETR は A+C、Grounding DINO は **A+B+C** という分類が一望できる
+  - **「Transformer 検出器が言語との融合に決定的に有利」という洞察**: Faster R-CNN のような古典的検出器は RoI Pooling や RPN という Transformer と相性の悪いモジュールを持つ。一方 DINO 検出器は層ごとに Transformer ブロックで構成されているため、各層に言語 cross-attention を挿入しやすい。これが論文のもう 1 つの重要な貢献
+  - **LVIS rare の弱点が興味深い**: 900 queries 固定が長尾分布に不利、GLIP の DyHead は全 grid を使うため rare に強い、という現象。「**DETR 系の固有の弱点**」として記録した。SAM 3 や PE PEspatial も同じ問題を抱える可能性
+  - **REC 評価への拡張の意義**: 先行 open-set 検出研究は novel カテゴリのみで評価していた → 「赤いシャツの男性」のような属性付き指示も評価軸に含めるべき、という主張。RefCOCO/+/g を open-set 検出の標準評価に組み込むパラダイムシフト
+  - **DINO 事前学習からの転送が有効**: 表 7 で DINO 事前学習からの fine-tune が LVIS で from-scratch を上回る。「**事前学習された強力な closed-set 検出器を open-set 化する道**」を示した実用的知見
+  - **Closed-set で純粋 DINO に劣る**: 表 9 で DINO-4scale 49.0 vs Grounding DINO 48.1。**言語側の追加コンポーネントが最適化を難しくしている**。open-set 性能の代償として明示された限界
+  - **既存 wiki ハブが事前整備済み**: GLIP と DINO 検出器の ingest 時に Grounding DINO への参照が両ページの「後継」「open-vocab 拡張」セクションに既に置かれていた。本 ingest により、その結合点が正しくハブ化された
+  - **SAM 3 への流れ**: Grounding DINO の弱点（segmentation 不可、認識/位置混在、動画なし）を SAM 3 が解決 — マスク生成 + presence head（認識と位置特定の分離）+ SAM 2 tracker。「**Grounding DINO の限界を完全に補完する SAM 3**」という構図が wiki 内で明確化された
+  - **MM-Grounding-DINO / DINO-X が後続**: 2024 年以降の OpenMMLab MM-Grounding-DINO と IDEA DINO-X は本論文の直接の発展。将来の ingest 候補
+  - 後続候補: MM-Grounding-DINO（OpenMMLab マルチモーダル拡張）/ DINO-X（IDEA、2024）/ MDETR（GLIP の先駆、Kamath et al., ICCV 2021）/ OWL-ViT（Google、Minderer et al., ECCV 2022）/ ViLD（CLIP 蒸留型 open-vocab、Gu et al., ICLR 2022）/ DetCLIP（large-scale captioning, NeurIPS 2022）/ GLIPv2（GLIP + segmentation）など
+
+## [2026-05-28] ingest | YOLO-World: Real-Time Open-Vocabulary Object Detection
+
+- 取り込み: `raw/papers/YOLO-World_ Real-Time Open-Vocabulary Object Detection.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix A-C は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2401.17270/assets/...>）から x1-x7 の 7 枚を curl でダウンロードし `raw/assets/yolo-world/fig{1-7}.png` に保存
+- 作成:
+  - [[translations/yolo-world]] — Abstract + §1-5 の全文和訳。図 1-7 を `<figure>` で埋め込み、表 1-8 をすべて含む。RepVL-PAN（T-CSPLayer + I-Pooling Attention）の数式、Region-Text Contrastive Loss、Prompt-Then-Detect パラダイム、CLIP vs BERT ablation 等の核心を含む
+  - [[sources/yolo-world]] — 初学者向け要約。5 つの鍵となる技術（RepVL-PAN / Prompt-Then-Detect / Region-Text Contrastive Loss / 疑似ラベリングパイプライン / CLIP text encoder の決定的優位）、GLIP / Grounding DINO との対比表（精度 vs 速度）、用語集
+  - [[entities/yolo-world]] — モデル仕様（S/M/L 3 バリアント表、X-MHA 数式、RepVL-PAN 詳細）、主要結果（LVIS / COCO / OVIS 全表）、訓練データ詳細、open-vocab 検出ファミリーの中での位置、限界、関連ページ
+- 更新:
+  - [[concepts/object-detection]] — §6 Real-Time Open-Vocab 検出セクション新規追加（YOLO-World）、抽象化階段の説明を更新
+  - [[concepts/zero-shot-transfer]] — YOLO-World エントリを新規追加
+  - [[sources/glip]] — 系統図に YOLO-World を追加（GLIP-L を疑似ラベル teacher として活用する関係を明示）、関連ページに YOLO-World 追加
+  - [[entities/glip]] — 「YOLO-World との関係（実は深い）」セクション新規追加、関連ページに YOLO-World 追加
+  - [[sources/grounding-dino]] / [[entities/grounding-dino]] — 関連ページに YOLO-World を追加（精度 vs 速度の対照軸として）
+  - [[index]] — sources/yolo-world、translations/yolo-world、entities/yolo-world を追加。略称表に YOLO-World / RepVL-PAN / T-CSPLayer / I-Pooling Attention / max-sigmoid attention / Prompt-Then-Detect / online vocabulary / offline vocabulary / re-parameterization / YOLOv8 / CSPLayer / PAN / Darknet / Region-Text Contrastive Loss / DFL / TOOD / Fixed AP / OVIS / DetCLIP / ZSD-YOLO / MMYOLO / ViLD / TensorRT を新規登録（23 項目）。重複していた DetCLIP / ViLD の旧エントリを削除して新詳細版に置換
+  - [[log]]
+- メモ:
+  - **「YOLO + open-vocabulary = リアルタイム open-vocab」の発見**: GLIP（0.12 FPS）/ Grounding DINO（1.5 FPS）/ DetCLIP（2.3 FPS）の精度志向に対し、YOLO-World（52 FPS）は **2-3 桁高速化** しつつ AP も上回るという稀有な結果。「Pareto フロンティアを根本的に押し出した」研究
+  - **Prompt-Then-Detect パラダイムの革新性**: GLIP / Grounding DINO は「画像とテキストを毎フレーム両方エンコード」していたが、YOLO-World は「テキストを事前エンコード → モデル重みに re-parameterize → 推論時はテキスト encoder を削除」。これにより **YOLOv8 と同じ推論コスト** で open-vocab 検出を実現。**実用デプロイメントの本質的解決**
+  - **CLIP text encoder への原点回帰**: GLIP（BERT）/ Grounding DINO（BERT）と異なり、YOLO-World は CLIP（自前訓練）のテキスト塔を流用。ablation で BERT 14.6 → CLIP 22.4 AP（APr で +10.1）という劇的差。**「open-vocab 検出の鍵は CLIP の image-text 整合性」** という GLIP からの洞察更新
+  - **GLIP の self-training パイプラインの実質的継承**: YOLO-World は GLIP-L を疑似ラベル生成 teacher として活用（CC3M に 246K 画像、821K 注釈）。GLIP → YOLO-World への知識転移は「**高精度 foundation model から軽量実用モデルへの間接的蒸留**」という実用パターンの典型例。本 ingest で wiki 内に GLIP の self-training → YOLO-World の継承関係が明示された
+  - **RepVL-PAN の軽量設計の妙**: T-CSPLayer の max-sigmoid attention は softmax の代わりに max を使うことで「カテゴリ間の競合を避ける」（検出では複数カテゴリ同時存在しうる）。I-Pooling Attention は **わずか 27 patch tokens** で画像をテキスト側に注入。両者とも **計算コスト極小** だが効果的
+  - **YOLO 系統での open-vocab 化の意義**: YOLOv1（2016）以来 closed-set リアルタイム標準だった YOLO を、YOLO-World が初めて open-vocab 化。**「YOLOv1-v8 → YOLO-World」という YOLO 系の自然な発展軸** が wiki に追加された
+  - **「精度志向 vs 実用志向」という直交軸**: 既存 wiki が積み上げてきた「DETR ファミリー」「GLIP ファミリー」は精度志向だったが、YOLO-World は **実用志向の対抗路線**。両軸の存在を [[concepts/object-detection]] で明示
+  - **エッジデバイス応用への道**: 自律走行、ロボティクス、AR/VR、警備カメラ等の応用では 30 FPS 前提が一般的。GLIP の 0.12 FPS では 1 フレーム検出に 8 秒、これでは実用にならなかった。YOLO-World の 52 FPS で **エッジ open-vocab 検出が初めて現実的に**
+  - **既存 wiki ハブが事前整備されていない**: GLIP / Grounding DINO ingest 時には YOLO-World への参照は wiki に 0 件だった（YOLO-World は CVPR 2024 でかなり新しい論文）。本 ingest により、open-vocab 検出系統に「**実用志向ハブ**」が追加された
+  - **概念的に CLIP に最も近い**: GLIP / Grounding DINO が CLIP の精神（image-text contrastive）を拡張しつつ BERT を使用、Grounding DINO は CLIP を使う方向に戻りつつあったが、YOLO-World は **CLIP text encoder を完全流用** することで「CLIP の正統な object-level 拡張」という側面を最も強く持つ
+  - 後続候補: MM-Grounding-DINO（OpenMMLab マルチモーダル拡張）/ DINO-X（IDEA、2024）/ YOLO-Worldv2 / OWL-ViTv2 / GLIPv2（segmentation 拡張）/ MDETR（GLIP の先駆）/ DetCLIP（YOLO-World が比較）など
+
+## [2026-05-28] ingest | Grounding DINO 1.5: Advance the "Edge" of Open-Set Object Detection
+
+- 取り込み: `raw/papers/Grounding DINO 1.5_ Advance the "Edge" of Open-Set Object Detection.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と §7 Appendix は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2405.10300/assets/...>）から x1-x16 の 16 枚を curl でダウンロードし `raw/assets/grounding-dino-1-5/fig{1-16}.png` に保存
+- 作成:
+  - [[translations/grounding-dino-1-5]] — Abstract + §1-6 全文和訳。図 1-16 を `<figure>` で埋め込み、表 1-5 をすべて含む。Pro と Edge 両モデルのアーキテクチャ詳細、Grounding-20M データセット、early/late fusion 比較、COCO/LVIS/ODinW の全結果、定性的可視化（一般物体、長尾、短/長キャプション grounding、密な物体、動画、Side-by-side 比較、エッジデバイス）を含む
+  - [[sources/grounding-dino-1-5]] — 初学者向け要約。Pro/Edge 双子戦略、4 つの改善点（ViT-L、Grounding-20M、early fusion + 負例サンプリング、Efficient Feature Enhancer）、YOLO-World との直接対比、SAM 3 / PE との関係、用語集
+  - [[entities/grounding-dino-1-5]] — Pro と Edge 両モデル仕様、Efficient Feature Enhancer の 3 段階効率化（P5 のみ融合 + vanilla self-attn + cross-scale fusion）、主要結果（COCO/LVIS/ODinW/Edge 全表）、アーキテクチャ比較（vs Grounding DINO、vs YOLO-World）、限界、関連ページ
+- 更新:
+  - [[entities/grounding-dino]] / [[sources/grounding-dino]] — Grounding DINO 1.5 への参照を「直接の後継」として追加
+  - [[entities/yolo-world]] / [[sources/yolo-world]] — Grounding DINO 1.5 Edge を real-time open-vocab 路線の直接的競合として明示
+  - [[concepts/object-detection]] — §5 Open-Vocab セクションに Grounding DINO 1.5 を追加（Pro/Edge 両方の系統図）、§6 Real-Time Open-Vocab に Grounding DINO 1.5 Edge を追加（YOLO-World との双璧として）
+  - [[concepts/zero-shot-transfer]] — Grounding DINO 1.5 エントリ新規追加
+  - [[index]] — sources/grounding-dino-1-5、translations/grounding-dino-1-5、entities/grounding-dino-1-5 を追加。略称表に Grounding DINO 1.5 / Pro / Edge / Grounding-20M / Efficient Feature Enhancer / EfficientViT-L1 / early fusion / late fusion / hallucination / negative sampling / Lite-DETR / Cross-scale feature fusion / NVIDIA Orin NX / language cache / ODinW35 / DetCLIPv2 / DetCLIPv3 / T-Rex2 / APE / GLEE-Pro / OmDet-Turbo / OWL-ST / MQ-GLIP / V3Det / GranuCap50M / WebLI / Cap24M / fixed AP / API mode を新規登録（29 項目）。既存「TensorRT」を更新
+  - [[log]]
+- メモ:
+  - **「精度と速度の両極を 1 モデルスイートで統合」**: 既存 wiki が分けていた「GLIP/Grounding DINO 系（精度）」と「YOLO-World 系（速度）」を、Grounding DINO 1.5 は **Pro/Edge の双子スイート** という形で同時に実現。**「open-vocab 検出の精度上限と実用下限の両方を同じ研究グループが追求」** という戦略的アプローチが wiki 内で明示化された
+  - **論文タイトルの "Edge" の二重の意味**: (1) **分野の先端（"advance the edge"）**、(2) **エッジコンピューティング（edge devices）**。著者陣の意図が明確に伝わる秀逸な命名
+  - **IDEA Research の中央拠点化**: DINO 検出器（2023） → Grounding DINO（2024 ECCV） → Grounding DINO 1.5（2024 May） → DINO-X（2024）と、**IDEA が open-vocab 検出の中心的開発拠点として確立**。本 ingest で IDEA の系譜が wiki 内で明確に
+  - **Grounding-20M データセットの戦略的位置**: 20M+ grounding 画像（公開ソース）を IDEA 独自のデータエンジンと注釈パイプラインで選別。元の Grounding DINO の 27M（FourODs+GoldG+Cap4M+COCO+RefC）から「**質を上げた選別データ**」へシフト。**「データの量より質」** の典型例
+  - **Efficient Feature Enhancer の 3 段階設計の意義**: (1) P5 のみ cross-modality 融合（Lite-DETR の知見）、(2) Deformable → Vanilla self-attn（エッジ GPU 実装容易性）、(3) Cross-scale feature fusion で P3/P4 統合（小物体検出維持）。**3 つの最適化を組み合わせて初めて Orin NX 10 FPS を達成**。エッジデバイス向け Transformer 系の設計指針として参考価値高い
+  - **Early/Late fusion のトレードオフ分析**: 論文 §2.1.1 で early fusion = 高再現率 + 高 box 精度 + 高 hallucination、late fusion = 低 hallucination + 低再現率 という明示的な議論。**Pro は early を保持しつつ負例サンプリング戦略改善で hallucination を緩和**。この分析は他の open-vocab 検出研究の設計選択にも応用可能
+  - **YOLO-World との直接対比**: Edge モデル（LVIS-mv 36.2 AP, Orin NX 10.7 FPS）と YOLO-Worldv2-L（32.9 AP, 同等の速度）が **互角の競争**。GD 1.5 Edge は EfficientViT + efficient enhancer（Transformer 路線）、YOLO-World は YOLOv8 + RepVL-PAN（CNN 路線）という **異なる最適化アプローチが同じ実用性能に収束**
+  - **DetCLIPv3 への +6.9 AP 改善の意義**: LVIS-mv で DetCLIPv3 (Swin-L, 48.8 AP) → GD 1.5 Pro (ViT-L, 55.7 AP) は backbone 差もあるが、**「ViT-L + 質的に選別された 20M データ」の組み合わせが大規模・多様な訓練データより効果的** という重要な経験的知見
+  - **API mode の戦略的選択**: モデル重みは API 経由のみで公開（DeepDataSpace プラットフォーム）。完全オープンソースではない点が学術コミュニティから批判されやすいが、**IDEA Research の商用化戦略の一環**。Grounding-20M の詳細が非公開なのも同様の理由
+  - **新ベンチマーク ODinW35 の導入**: GLIP/Grounding DINO 系の ODinW（13 datasets）を **35 datasets に拡張**。Grounding DINO 1.5 Pro ZS 30.2 / fine-tune 70.6 という巨大ジャンプ（+40.4）は、**open-vocab 検出の汎化能力の真の限界はまだ遠い** ことを示唆
+  - **既存 wiki ハブとの自然な統合**: Grounding DINO ingest 時に「DINO-X」「MM-Grounding-DINO」が後継候補として記載されていたが、Grounding DINO 1.5 は明示的後続として未記載だった。本 ingest により、**Grounding DINO → Grounding DINO 1.5 → DINO-X** という IDEA Research 内部の系譜が完成
+  - 後続候補: DINO-X（IDEA、2024 後半）/ MM-Grounding-DINO（OpenMMLab、2024）/ Grounded SAM（IDEA、2024）/ DetCLIPv3（NeurIPS 2024）/ T-Rex2（visual prompt）/ APE（CVPR 2024）/ GLEE-Pro（CVPR 2024）/ OmDet-Turbo（real-time、language cache）など
+
+## [2026-05-28] ingest | DINO-X: A Unified Vision Model for Open-World Object Detection and Understanding
+
+- 取り込み: `raw/papers/DINO-X_ A Unified Vision Model for Open-World Object Detection and Understanding.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2411.14347/assets/...>）から x1-x11 の 11 枚を curl でダウンロードし `raw/assets/dino-x/fig{1-11}.png` に保存
+- 作成:
+  - [[translations/dino-x]] — Abstract + §1-7 全文和訳。図 1-11 を `<figure>` で埋め込み、表 1-7 をすべて含む。Pro と Edge 両モデル、4 種ヘッド（Box/Mask/Keypoint/Language）、3 種プロンプト、Grounding-100M データセット、2 段階訓練戦略、Knowledge Distillation、FP16 量子化、prompt-free 検出、Side-by-side 比較を含む
+  - [[sources/dino-x]] — 初学者向け要約。「Grounding DINO 系統の到達点 = unified perception model」の位置づけ、5 つの鍵（3 種プロンプト/4 種ヘッド/Grounding-100M/2 段階訓練/Edge の三重最適化）、SAM 3 との並行進化、YOLO-World との対比、Grounded SAM の代替、用語集（DINO-X / Grounding-100M / Universal Object Prompt / prompt-free / OPT-125M / EfficientViT-L2 / Knowledge Distillation 等）
+  - [[entities/dino-x]] — Pro と Edge 両モデル仕様、3 種プロンプトと 4 種ヘッドの詳細、主要結果（COCO/LVIS/Few-shot Counting/Keypoint/Recognition/Captioning/Edge 全表）、アーキテクチャ比較（vs GD 1.5、vs YOLO-World、vs SAM 3）、限界、関連ページ
+- 更新:
+  - [[entities/grounding-dino-1-5]] / [[sources/grounding-dino-1-5]] — DINO-X への参照を「直接の後継」として追加
+  - [[entities/grounding-dino]] / [[sources/grounding-dino]] — DINO-X を「IDEA 系譜の現時点最新版」として追加
+  - [[entities/yolo-world]] / [[sources/yolo-world]] — DINO-X Edge を「YOLO-Worldv2-L を精度・速度両方で凌駕」として追加
+  - [[entities/sam-3]] — DINO-X を「SAM 3 と並行進化する unified perception 路線」として追加
+  - [[concepts/object-detection]] — §5 Open-Vocab と §6 Real-Time セクションに DINO-X を追加（4 ヘッド統合と Universal Object Prompt の革新性を強調）
+  - [[concepts/zero-shot-transfer]] — DINO-X エントリ新規追加
+  - [[index]] — sources/dino-x、translations/dino-x、entities/dino-x を追加。略称表に DINO-X / Pro / Edge / Grounding-100M / Grounding DINO 1.6 / Universal Object Prompt / prompt-free detection / prompt-tuning / Customized Prompt / Visual Prompt / object tokens / task tokens / RoIAlign / Mask2Former / Mask DINO / ED-Pose / OPT-125M / feature-based distillation / response-based distillation / FP16 量子化 / EfficientViT-L2 / T-Rex2 / Grounded SAM / Grounded SAM 2 / Osprey / GPT4RoI 等 / RefCOCOg / PACO / SS / S-IoU / CIDEr / METEOR / FSC147 / FSCD-LVIS / HInt / PCK@0.05 / OKS / CrowdPose / Human-Art / HaMeR / Hamba を新規登録（37 項目）。既存 API mode を更新
+  - [[log]]
+- メモ:
+  - **「Grounding DINO 系統の到達点」**: IDEA Research の DINO 検出器（2023）→ Grounding DINO（2024 ECCV）→ Grounding DINO 1.5（2024 May）→ Grounding DINO 1.6（中間版、論文なし）→ **DINO-X（2024 Nov）** の系譜で、**box 出力単一タスクから unified object-centric perception model への進化を完了**。本 ingest により、IDEA Research の open-set 検出系譜が wiki 内で **5 世代** にわたって追跡可能になった
+  - **論文タイトルの "Unified" の意味**: 3 種プロンプト（Text/Visual/Customized）+ 4 種 head（Box/Mask/Keypoint/Language）で、Grounded SAM のような multi-step pipeline を **単一モデル** に統合。「open-world detection と understanding を統合」という野心
+  - **CLIP text encoder への切り替えの意義**: GD 1.5 まで BERT を使用していた IDEA が、DINO-X で **CLIP に切り替え**（[[entities/yolo-world]] と同じ流れ）。**「open-vocab 検出の鍵は CLIP の image-text 整合性」** という観察を IDEA も追認、wiki 内で 2 つの異なる系統（YOLO 系と DINO 検出器系）が同じ結論に達したことが明示化
+  - **Universal Object Prompt の革新性**: GLIP/Grounding DINO/GD 1.5/YOLO-World はすべて「テキストプロンプト必須」。DINO-X は **prompt-tuning で「すべての物体」を表す固定 embedding を学習** → 推論時にプロンプトなしで全物体検出可能。**「画面解析、汎用カメラ、対話的でない応用」** に重要、open-vocab 検出の応用領域を拡張
+  - **軽量 language head（OPT-125M）の驚異的性能**: Osprey の Vicuna-7B（7B）を **1/56 のサイズで上回る**（LVIS-val SS 71.25 vs 65.24）。これは **「強力な visual backbone + 軽量 language head」** が region understanding の理想構成であることを実証。MLLM の常識（7B-70B が必要）への反論
+  - **長尾検出の劇的改善**: LVIS-mv APr 63.3 は GD 1.6 Pro の 57.5 から +5.8 AP、GD 1.5 Pro の 56.1 から +7.2 AP。**Grounding-100M（GD 1.5 の 5×）の効果が長尾で集中的に発現**。「データ量が長尾で効く」という古典的観察の現代 open-vocab 文脈での再確認
+  - **DINO-X Edge の三重最適化**: (1) CLIP text encoder（BERT から）、(2) Pro→Edge の Knowledge Distillation（feature + response based）、(3) FP16 量子化（浮動小数点乗算正規化）。Orin NX で **20.1 FPS**（GD 1.5 Edge 10.7 から +87%）かつ LVIS-mv 48.3 AP（YOLO-Worldv2-L 33.0 を **+15.3 AP** 凌駕）。「精度志向と実用志向の両立」という GD 1.5 の戦略を **次の段階に押し進めた**
+  - **SAM 3 との並行進化**: DINO-X（2024 Nov）と SAM 3（2025）はそれぞれ IDEA Research と Meta Superintelligence Labs から独立に **unified perception model を目指して開発**。**設計選択の違い**: DINO-X = multi-head + multi-prompt 統合（より広い）、SAM 3 = presence head + 対話性 + 動画（より深い特化）。wiki 内でこの **「並行進化する 2 つの unified perception アプローチ」** が明示化された
+  - **Grounded SAM の代替**: Grounded SAM（Grounding DINO + SAM）は IDEA Research の人気パイプライン（2024）だったが、DINO-X は **検出 + マスク + キャプションを単一モデル** に統合。マスク精度では Grounded SAM (SAM-Huge) に劣る（LVIS-mv 43.8 vs 47.7）が、**統一モデルの効率優位**。「pipeline → unified model」への移行を IDEA 自身が実証
+  - **MLLM 連携への応用提案**: 論文は「MLLM の hallucination 削減」を重要な動機として挙げる。**object-level な認識能力で MLLM の応答信頼性を高める** という応用提案は、PE / SigLIP 2 等の vision tower 系研究と異なる文脈で MLLM 接続の道筋を示す
+  - **既存 wiki ハブとの自然な統合**: GD / GD 1.5 ingest 時に「DINO-X」「MM-Grounding-DINO」が後続候補として記載されていた。本 ingest により、IDEA Research 系譜の **現時点最新版** が wiki に追加され、open-vocab 検出系統が **5 世代の系譜** として完成
+  - 後続候補: Grounded SAM 原典（IDEA, 2024）/ T-Rex2 原典（DINO-X の visual prompt 元）/ Mask2Former / Mask DINO（DINO-X mask head 元）/ ED-Pose（DINO-X keypoint head 元）/ Osprey（DINO-X language head の比較相手）/ MM-Grounding-DINO（OpenMMLab、2024）/ DetCLIPv3（NeurIPS 2024）/ APE（CVPR 2024）/ GLEE-Pro（CVPR 2024）など

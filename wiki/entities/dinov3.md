@@ -210,7 +210,7 @@ with torch.no_grad():
 - [[entities/dino]]（2021）→ [[entities/ibot]]（2022）→ [[entities/dinov2]]（2023）→ **DINOv3**（2025）
 
 ### 並列・競合
-- [[entities/perception-encoder]]（PE / PEcore / PEspatial）
+- [[entities/perception-encoder]] / [[sources/perception-encoder]]（PE / PEcore / PElang / PEspatial, NeurIPS 2025）
 - [[entities/siglip]]（SigLIP / SigLIP 2）
 - AM-RADIO（NVIDIA）, Franca, Web-DINO, EVA-CLIP-18B
 

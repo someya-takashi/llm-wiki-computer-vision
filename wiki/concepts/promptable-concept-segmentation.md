@@ -39,7 +39,9 @@ CV 応用の多くは「**シーン中のすべての X**」を要求する：
 - **AR/VR**: 「視野中のすべてのテキスト」「すべての顔」
 - **科学**: 「顕微鏡画像中のすべての細胞」
 
-既存の open-vocabulary 検出器（OWLv2, GroundingDINO, LLMDet 等）は部分的にこれを解いていたが、SAM 3 論文の評価では SA-Co/Gold で cgF₁ 一桁台しか取れないレベル。SAM 3 は単一モデルで **大幅な精度向上 + 対話性 + 動画対応** を実現した。
+既存の open-vocabulary 検出器（**GLIP** [[entities/glip]] / **Grounding DINO** [[entities/grounding-dino]] / OWLv2 / LLMDet 等）は部分的にこれを解いていたが、SAM 3 論文の評価では SA-Co/Gold で cgF₁ 一桁台しか取れないレベル。SAM 3 は単一モデルで **大幅な精度向上 + 対話性 + 動画対応** を実現した。
+
+**GLIP（[[sources/glip]]）は PCS の精神的祖先**（2021 年に「テキスト名詞句で全インスタンスを検出する」を提示）。**[[sources/grounding-dino|Grounding DINO]]（2023）はその DETR 系での発展形** で、**SAM 3 の直接の前駆**。SAM 3 は Grounding DINO に **マスク生成 + 対話性 + 動画 + presence head**（GLIP/Grounding DINO の「文脈なし存在判断」の弱点解決）を加えた発展形。
 
 ## タスクの形式定義
 

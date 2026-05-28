@@ -58,7 +58,7 @@ updated: 2026-05-26
 | **画像エンコーダ** | PE の画像塔 |
 | **Exemplar エンコーダ** | 画像 exemplar（ボックス + 正/負ラベル）を ROI プール + 位置/ラベル埋め込み + 小 transformer でエンコード |
 | **Fusion encoder** | 画像埋め込みをプロンプトトークン（テキスト + exemplar）にクロス注意で条件付け |
-| **DETR decoder** | 学習済みオブジェクトクエリが fusion 出力にクロス注意、box delta を Deformable DETR スタイルで予測 |
+| **DETR decoder** | 学習済みオブジェクトクエリが fusion 出力にクロス注意、box delta を Deformable DETR スタイルで予測（[[sources/detr]] / [[entities/detr]] の検出ヘッドを継承）|
 | **Mask head** | MaskFormer 適応 |
 | **Semantic head** | 全画素にコンセプト所属の二値ラベル |
 | **Box-region-positional bias** | Plain-DETR から、注意を各オブジェクトに集中させる |
@@ -298,3 +298,8 @@ CV foundation model の **第 4 の進化**：
 - [[entities/sa-1b]] / [[entities/sa-v]] — 先行データセット
 - [[concepts/promptable-segmentation]] — PVS（SAM 3 でも継承）
 - [[concepts/foundation-model]] — CV foundation model 系譜
+- [[sources/detr]] / [[entities/detr]] — SAM 3 の検出器が継承する DETR スタイル decoder + Deformable DETR
+- [[concepts/object-detection]] — 物体検出全体の系譜（SAM 3 は PCS で再定義）
+- [[sources/glip]] / [[entities/glip]] — open-vocab 検出パラダイムの祖、SAM 3 PCS の精神的祖先
+- [[sources/grounding-dino]] / [[entities/grounding-dino]] — GLIP × DINO 検出器、SAM 3 の直接の前駆
+- [[sources/dino-x]] / [[entities/dino-x]] — IDEA Research の unified perception model（2024 Nov）、SAM 3 と並行進化する unified perception 路線

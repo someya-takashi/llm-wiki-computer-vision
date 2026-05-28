@@ -223,7 +223,7 @@ CLIP/SigLIP では **特別な negative mining なし** で十分動作するこ
 | **2023** | **SigLIP**（Google DeepMind） | **Sigmoid 損失で根本的効率化、bias term、batch size 飽和の発見** |
 | 2024 | **SigLIP 2** | SigLIP の改良版（multi-resolution, dense prediction 強化等） |
 | 2024 | **EVA-CLIP, MetaCLIP, DFN** | データキュレーション + masking で更なる効率化 |
-| 2024 | **Perception Encoder**（Meta） | 86B 対で SigLIP 系の極限 |
+| **2025** | **Perception Encoder**（Meta, NeurIPS 2025） | 5.4B unique pairs / 86B samples seen。**「中間層に多目的な一般特徴量が育つ」発見＋ alignment tuning** で PEcore / PElang / PEspatial の 3 バリアントを構築 |
 
 SigLIP は **CLIP 以来最大のレシピ革新**として位置づけられる：
 

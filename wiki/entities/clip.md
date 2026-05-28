@@ -177,7 +177,7 @@ DINOv3 論文（[[sources/dinov3]]）における**主要ベースライン**は
 - **EVA-CLIP** (Sun et al., 2023): より良いビジョン initialization
 - **SigLIP / SigLIP 2** ([[entities/siglip]] / [[sources/siglip]]) (Zhai et al., 2023/2025): **sigmoid 損失で効率化**。CLIP の softmax を pair-wise sigmoid に置き換え、小バッチで圧倒的に勝つ + メモリ効率改善 + ノイズ頑健。**32k バッチで飽和** という発見で「対比学習 = 大バッチ」常識を覆す。4 TPU で 1 日訓練可能（SigLiT）、SO-400M で 83.2% IN-0
 - **MetaCLIP / DFN** (Meta, 2023): データキュレーションの改善
-- **Perception Encoder (PE)** ([[entities/perception-encoder]]) (Meta, 2024): 86B ペア
+- **Perception Encoder (PE)** ([[entities/perception-encoder]] / [[sources/perception-encoder]]) (Meta, NeurIPS 2025): 5.4B unique pairs / 86B samples seen。alignment tuning で 3 バリアント（PEcore / PElang / PEspatial）化
 - **CoCa, BLIP, LLaVA** など多数
 
 ### マルチモーダル AI への発展

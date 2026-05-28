@@ -8,7 +8,9 @@ sources: [[sources/dino-emerging-properties-in-self-supervised-vit]]
 updated: 2026-05-24
 ---
 
-# DINO（手法・モデル）
+# DINO（SSL 手法・モデル）
+
+> **重要な注記（名前の衝突）**: この **DINO は自己教師あり学習手法**（Caron et al., ICCV 2021）。**物体検出器の DINO**（Zhang et al., ICLR 2023、[[entities/dino-detector]] / [[sources/dino-detector]]）とは **完全に別物**。両者は偶然同名（SSL は **self-DI**stillation with **NO** labels、検出器は **D**ETR with **I**mproved de**N**oising anch**O**r boxes）。著者・所属（Meta/Inria vs HKUST/IDEA）・タスク（SSL 表現学習 vs 物体検出）・年（2021 vs 2022）すべて異なる。
 
 ## 概要
 

@@ -57,7 +57,7 @@ BERT の流儀を画像に持ち込む系統。入力の一部を隠し、隠し
 
 ### 5. ハイブリッド型（識別 + MIM）
 
-iBOT が代表。「**画像レベル目的（DINO 由来）+ パッチレベル MIM 目的**」を同時に最適化。識別型の凍結特徴量の良さと MIM の密予測性能を両立する。**DINOv2 はこの路線を完成させ、CV における基盤モデル化を達成**。さらに **DINOv3 (2025) が ViT-7B × LVD-1689M に scale し、Gram anchoring（[[gram-anchoring]]）で長時間学習による dense feature 劣化問題を解決**、PE/SigLIP 2 を dense タスクで圧倒した。
+iBOT が代表。「**画像レベル目的（DINO 由来）+ パッチレベル MIM 目的**」を同時に最適化。識別型の凍結特徴量の良さと MIM の密予測性能を両立する。**DINOv2 はこの路線を完成させ、CV における基盤モデル化を達成**。さらに **DINOv3 (2025) が ViT-7B × LVD-1689M に scale し、Gram anchoring（[[gram-anchoring]]）で長時間学習による dense feature 劣化問題を解決**、PE/SigLIP 2 に対し dense タスクで広く優位に立った。**ただし 2025 年末の PE 論文（[[sources/perception-encoder]]）は PEspatial で SAM 2.1 蒸留 + 自己蒸留により dense SOTA を部分奪還しており、SSL の dense 優位は無条件ではなくなった**（最大スケール ADE20k 等では DINOv3 7B が依然優位）。
 
 > **2025 年の逆流: WSL が SSL 技法を借用** — [[sources/siglip-2]] は CLIP/SigLIP 系統（WSL）でありながら、**SILC（Naeem et al., ECCV 2024）の local-to-global 自己蒸留** と **TIPS（Maninis et al., ICLR 2025）のマスク予測** を借用して dense feature を強化。これは SSL → WSL への技法逆流の代表例。「対比 vs 自己蒸留 vs MIM」という区分は、2025 年時点で **実用モデルでは融合** している（SigLIP 2 は対比＋自己蒸留＋MIM＋decoder＋蒸留の 5 系統融合）。
 
@@ -124,7 +124,8 @@ SwAV で導入されたデータ拡張戦略。
 - [[sources/byol]]: BYOL 論文（「負例なし SSL」の先駆け、非対比型の代表）
 - [[sources/dino-emerging-properties-in-self-supervised-vit]]: DINO 論文（本概念の主要文献の一つ）
 - [[sources/dinov2-learning-robust-visual-features-without-supervision]]: DINOv2 論文（SSL がスケールで基盤モデルになり得ることを実証）
-- [[sources/dinov3]]: DINOv3 論文（SSL が dense タスクで弱教師ありを圧倒できることを実証、Gram anchoring 導入）
+- [[sources/dinov3]]: DINOv3 論文（SSL が dense タスクで弱教師ありに広く優位に立てることを実証、Gram anchoring 導入）
+- [[sources/perception-encoder]]: 上記 DINOv3 の dense 優位主張への反論側。WSL でも alignment tuning + SAM 2.1 蒸留で dense SOTA を部分奪還
 - [[concepts/vision-transformer]]: SSL の主要ターゲットアーキテクチャ
 - [[concepts/knowledge-distillation]]: 多くの SSL 手法（BYOL, DINO 等）は自己蒸留として再解釈できる
 - [[concepts/masked-image-modeling]]: MIM の系統解説
