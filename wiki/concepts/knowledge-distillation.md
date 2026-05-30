@@ -47,6 +47,10 @@ $$
 
 巨大な教師モデル → 小型の生徒モデル。デプロイ向け。例: BERT → DistilBERT、ResNet-152 → ResNet-18。
 
+**現代 CV foundation model での実例**:
+- **[[entities/internvit-300m]]**（[[sources/mini-internvl]], OpenGVLab, 2024 Oct）: [[entities/internvl|InternViT-6B (5.9B)]] を **CLIP-ViT-L-336px で初期化した 300M 生徒に蒸留**（1/20 圧縮）。**最後の K 層の隠れ状態 + negative cosine similarity** で蒸留。CLIP-ViT-L 単体より、OCR で +8.4、Chart で +5.3、InfoVQA で +8.1 大幅優位（[[entities/mini-internvl|Mini-InternVL]] の視覚基盤）
+- **DINO-X Edge**（[[sources/dino-x]], IDEA, 2024 Nov）: Pro モデル（ViT-L）から Edge（EfficientViT-L2）へ **feature-based + response-based** の 2 重蒸留
+
 ### 2. データ拡張・擬似ラベリング（noisy student, self-training）
 
 教師モデルが大量の未ラベルデータに擬似ラベル（ソフトラベル）を付け、生徒がそれで学習する。Xie ら（2020）の Noisy Student は、ImageNet で SOTA を更新した。

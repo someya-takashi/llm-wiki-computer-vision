@@ -39,6 +39,13 @@
 - [[sources/yolo-world]] — YOLO-World（Cheng et al., CVPR 2024）。**「YOLO + open-vocabulary 検出 = リアルタイム open-vocab 検出」**: YOLOv8 を CLIP text encoder + 新ネック **RepVL-PAN**（**Text-guided CSPLayer with max-sigmoid attention** + **Image-Pooling Attention 27 patch tokens**）で open-vocab 化。**Prompt-Then-Detect パラダイム**でテキスト encoder を推論時に削除、テキスト埋め込みをモデル重みに **re-parameterize**。**LVIS ゼロショット 35.4 AP at 52 FPS V100**（Grounding DINO の 34.7× / GLIP の 433× 速度）。**Region-Text Contrastive Loss** で検出 + grounding + image-text データを統一。**GLIP-L で CC3M に疑似ラベリング**（246K 画像 / 821K 注釈）。**CLIP text encoder が決定的**（BERT 比 APr +10.1 AP）。「精度志向の GLIP / Grounding DINO」に対する「実用志向」の対抗路線、**エッジデバイスでの open-vocab 検出を可能に**。
 - [[sources/grounding-dino-1-5]] — Grounding DINO 1.5（Ren et al., IDEA Research, 2024 May）。**[[sources/grounding-dino|Grounding DINO]] の Pro/Edge 双子拡張**。論文タイトルの "Edge" は **「分野の先端」と「エッジコンピューティング」の二重の意味**。**Pro**: ViT-L backbone + **Grounding-20M** 訓練データ + early fusion + 改善された負例サンプリング。**COCO ZS 54.3 AP / LVIS-minival 55.7 AP**（DetCLIPv3 SOTA +6.9 AP）/ **ODinW35 30.2 AP** SOTA。**Edge**: EfficientViT-L1 + **Efficient Feature Enhancer**（P5 のみ cross-modality 融合 + vanilla self-attn + cross-scale fusion）。**A100 TRT 75.2 FPS / Orin NX 10.7 FPS、LVIS-mv 36.2 AP**（YOLO-Worldv2-L 32.9 超え）。**精度志向と実用志向を 1 モデルスイートで統合**。
 - [[sources/dino-x]] — DINO-X（IDEA Research, 2024 Nov）。**[[sources/grounding-dino-1-5|Grounding DINO 1.5]] の正統な後継 = unified object-centric vision model**。**3 種プロンプト**（Text [CLIP encoder]/Visual [T-Rex2 流]/Customized [prompt-tuning]）+ **4 種 perception head**（Box/Mask [Mask2Former 流]/Keypoint [ED-Pose 簡略]/Language [OPT-125M 軽量自己回帰]）+ **Grounding-100M**（GD 1.5 の 5×）。**Pro (ViT-L)**: COCO ZS 56.0 / LVIS-mv 59.8 / **LVIS rare APr 63.3**（GD 1.6 Pro から +5.8、長尾劇的改善）/ Visual Genome region caption CIDEr **201.8 SOTA**。**Edge (EfficientViT-L2)**: Knowledge Distillation (Pro→Edge) + FP16 量子化で **Orin NX 20.1 FPS**（GD 1.5 Edge から +87%）かつ LVIS-mv **48.3 AP**（YOLO-Worldv2-L 33.0 を +15.3）。**Universal Object Prompt で prompt-free 検出**という新タスク。**Grounding DINO 系統の到達点**。
+- [[sources/internvl]] — InternVL（Chen et al., OpenGVLab Shanghai AI Lab, CVPR 2024）。**視覚エンコーダを 6B にスケールアップ + 8B 言語ミドルウェア QLLaMA で LLM と整列させた初の本格的視覚言語基盤モデル**。InternViT-6B + QLLaMA を **3 段階訓練（contrastive 4.98B → generative 1.03B → SFT 4M）** で接続、対比 + 生成 + 対話を 1 モデル統合。**InternVL-C**: IN-1K ZS **83.2**（EVA-02-CLIP-E+ 82.0 超え）/ 多言語 5 言語平均 **64.0** SOTA / Kinetics-700 8F **60.6**（ViCLIP +6.3）。**InternVL-G**: Flickr30K I2T R@1 **95.7** / COCO caption CIDEr **128.2 SOTA**。**InternVL-Chat-13B (QLLaMA)**: MME **1586.4**（LLaVA-1.5 +55）/ POPE 87.6 / GQA 66.6。**ViT-22B（21.7B）を 1/3.7 のパラメータで ADE20K linear probe +12.6 mIoU 上回る**（5.9B で 47.2 vs ViT-22B 34.6）。InternVL 1.5 / 2.0 / 2.5 / 3 シリーズの起点。
+- [[sources/internvl-1-5]] — InternVL 1.5（Chen et al., OpenGVLab Shanghai AI Lab, 2024 April, technical report）。**「How Far Are We to GPT-4V?」**: オープンソース MLLM と商用 MLLM（GPT-4V / Gemini Pro / Claude-3 / Qwen-VL-Max）の能力差を初めて明確に縮めた論文。**InternViT-6B-448px-V1.5（45 層、dynamic 448）+ MLP プロジェクタ + InternLM2-20B-Chat = 26B**（[[entities/internvl\|InternVL 1.0]] の QLLaMA を廃止し LLaVA 系の MLP に統一）。**3 つの改善**: (1) **継続事前学習** で InternViT-6B 強化（後ろから 4 層目が MLLM タスクで最良 → 48 層 → 45 層、「中間層特徴」発見の先駆）、(2) **動的高解像度** 35 通りのアスペクト比 × 1-12 タイル（テスト時 40 タイル = 4K 解像度）+ Pixel Shuffle で visual token 1/4 圧縮、(3) **高品質バイリンガル（英中）データ** + PaddleOCR で大規模擬似ラベリング + LLM ベース翻訳パイプライン。**18 ベンチ中 8 SoTA**: **ChartQA 83.8 / OCRBench 724 / MMBench-CN 82.0 / CCBench 69.8 (GPT-4V +23.3) / HallusionBench 49.3 / MathVista 53.5 (GPT-4V +3.6)**。**Larger LLMs need Larger VFMs**（6B VFM vs 300M VFM、34B LLM）のアブレーション、**動的解像度はタスク依存**（OCR は高解像度、シーン推論は低解像度）の発見。**ConvBench マルチターンでは GPT-4V に大敗**（17.65 vs 39.51）。InternVL 2.0 / 2.5 / 3 の直接の起点、MLLM 競争の風向きを変えた論文。
+- [[sources/mini-internvl]] — Mini-InternVL（Gao et al., OpenGVLab Shanghai AI Lab, 2024 Oct, technical report）。**「5% のパラメータで 90% の性能」**: InternVL シリーズの **「軽量化 + ドメイン特化」分枝**を確立した論文。**[[entities/internvit-300m\|InternViT-300M]]**（**CLIP-ViT-L-336px で初期化** + **InternViT-6B から negative cosine similarity 損失で蒸留**）+ 軽量 LLM（**Qwen2-0.5B** / **InternLM2-1.8B** / **Phi-3-Mini**）で **Mini-InternVL-1B / 2B / 4B** を構築。動的解像度・Pixel Unshuffle 等の構造は [[sources/internvl-1-5\|InternVL 1.5]] と同じ。**汎用ベンチ**: Mini-InternVL-4B (4B) で **InternVL2-Llama3-76B (76B) の 90% 性能**（Avg 72.8 vs 81.4）、Gemini-Pro-1.5 とほぼ同等。**統一ドメイン適応フレームワーク**: 5 種タスク（画像分類 / grounding / 領域知覚 / 多視点 / 動画）を VQA 形式に統一、3 ドメイン（**自律走行 / 医療 / リモートセンシング**）で Mini-InternVL-DA-1B/2B/4B を構築。**自律走行 DriveLM Challenge**: Mini-InternVL-DA-2B が **2B で 26B SOTA (InternVL4Drive-v2) に匹敵**（0.5958 vs 0.6002）。**MME-RealWorld 自律走行**: DA-4B が **GPT-4o を 24.78 ポイント圧倒**（49.38 vs 24.60）。**医療 GMAI-MMBench**: DA-4B が LLaVA-Med / RadFM / Claude3-Opus を凌駕（2D Seg/Cls/Det）。**リモセン DIOR-RSVG**: DA-4B 92.04（SkyEyeGPT 超え）。**知識蒸留アブレーション**: InternViT-300M が CLIP-ViT-L (同サイズ) を OCR で +8.4 / Chart で +5.3 / InfoVQA で +8.1 圧倒。汎用:特化 = 1:4（r=0.25）で性能ピーク、Full-parameter > Freezing ViT > LoRA。
+- [[sources/internvl-2-5]] — InternVL 2.5（Chen et al., OpenGVLab Shanghai AI Lab, 2024 Dec, technical report）。**「MMMU で 70% を超えた初のオープンソース MLLM」**: MMMU 70.1%（GPT-4o 69.1 / Claude-3.5-Sonnet 68.3 / Gemini-1.5-Pro 62.2 を凌駕）。アーキテクチャは [[sources/internvl-1-5\|InternVL 1.5]] と完全に同じ ViT-MLP-LLM、**訓練戦略・データ・テスト時スケーリングのみで性能境界を拡張** という哲学。**1B/2B/4B/8B/26B/38B/78B の 7 サイズスイート** で軽量と大規模を統合。視覚: **InternViT-300M-V2.5** （1B-8B）or **InternViT-6B-V2.5**（26B+、45 層、5.5B）、LLM: **InternLM 2.5 / Qwen 2.5**。**Progressive Scaling Strategy を初めて公式化**: 小型 LLM（20B）で ViT 訓練 → 大型 LLM（72B）に転送、**Qwen2-VL の 1/12 の訓練トークン**（120B vs 1.4T）。**Test-Time Scaling**: Chain-of-Thought + Majority Voting で **MMMU +3.7 ポイント追加改善**。**データ品質**: 5.1M → 7.3M → **16.3M** サンプル、繰り返し検出 + LLM スコアリング + ヒューリスティック規則の **3 戦略フィルタリング**、CoT デッドロック問題解消。**主要結果**: MathVista **72.3**（GPT-4o 63.8 +8.5）/ MathVerse 51.7 / VCR-EN-Easy 95.7（InternVL2-2B 32.9 → 2.5-2B 93.2 +60.3 で 22K サンプル追加効果）/ RefCOCO 92.3 SOTA / Video-MME 72.1 + MVBench 76.4 + MMBench-Video 1.97 + MLVU 75.7（複数 SOTA）/ MME 2494.5 + MMB-EN/CN 88.3/88.5 + MMStar 69.5 SOTA / 純粋言語 +0.5～+1.4（vs 基盤 LLM、2.0 系は -2.1～-2.3 低下していた）。**InternViT 系統で「最終層の線形分離性が低下しつつ open-set 意味を捕捉」を独立発見**（[[concepts/alignment-tuning\|PE の中間層特徴]] と同等の現象）。**弱点**: WildVision 71.4（GPT-4o 80.6 -9.2、長応答品質）、MMVet v2 65.5（GPT-4o 71.0 / Claude-3.5 71.8）、Stage 3 post-training（DPO/RLHF）未実施。**InternVL 商用追従ラインの最終到達点**、次の InternVL 3 で「Native multimodal pretraining」へ哲学転換。
+- [[sources/internvl-3]] — InternVL 3（Zhu et al., OpenGVLab Shanghai AI Lab, 2025 Apr, technical report）。**「Native Multimodal Pre-Training パラダイムを確立、MMMU 72.2 で SOTA 更新」**: InternVL 1.0-2.5 の「LLM Chat 版から MLLM を事後改造」する伝統を捨て、**Qwen2.5 base + InternViT で、テキスト + マルチモーダルデータを共同で事前学習**（言語 50B + マルチモーダル 150B、1:3 比率）。**3 つの主要技術**: (1) **Native Multimodal Pre-Training**（全層共同訓練、視覚トークンは予測しない text-only loss + square averaging）、(2) **V2PE（Variable Visual Position Encoding）** で視覚トークンに位置インクリメント δ < 1 を使用（{1, 1/2, ..., 1/256} からランダム選択、画像内で δ 一定）、長文脈対応、$\delta=1/4$ で最良性能、(3) **MPO（Mixed Preference Optimization）** = DPO + BCO + LM 損失の混合、300K 選好データで CoT 推論強化、**+4.5 ポイント改善**（38B）。**Test-Time Scaling**: **VisualPRM-8B（Visual Process Reward Model）** で各推論ステップに +/- スコアを付与、Best-of-8 で **InternVL3-1B が +9.9 ポイント** という小型モデルで顕著な改善。**1B/2B/8B/9B/14B/38B/78B の 7 サイズ**（9B のみ InternLM3-8B base、それ以外は Qwen2.5 base）。**主要結果**: MMMU **72.2 で SOTA**（GPT-4o 70.7 / Qwen2.5-VL-72B 68.2 / Gemini-2.0-Pro 69.9 超え、Claude-3.7-Sonnet 75.0 に -2.8）/ MathVista **79.0**（GPT-4o 60.0 +19.0）/ OCRBench **906 で史上初の 900 超え** / MME 2549.8 / MMB-EN/CN 89.0/88.7 / MMStar 72.5 / MVBench 78.7 + MLVU 79.5 + CG-Bench 48.4/65.3（複数 SOTA）/ **VSI-Bench 空間推論で GPT-4o (34.0) を InternVL3-8B (42.1) で +8.1 圧倒**、3D シーン理解の新水準。**「マルチモーダル化で言語能力が強くなる」初実証**: 同じ Qwen2.5 base から派生した Qwen2.5-Chat より純粋言語 17 ベンチで **+1.6〜+8.9 強化**（小型ほど顕著、1B で +8.9）。**訓練データ + モデル重みを完全公開**（open-science 強化、`OpenGVLab/InternVL-Data`）。**弱点**: Visual Grounding でシリーズ初の退行（92.3 → 91.4、grounding データ比率低下）、Claude-3.7-Sonnet MMMU 75.0 / Gemini-2.0-Pro MathVerse 67.3 にはまだ届かない。InternVL シリーズ第 7 世代、**InternVL の哲学転換を象徴する論文**。
+- [[sources/mpo]] — MPO（Wang et al., OpenGVLab Shanghai AI Lab, 2024 Nov, technical report）。**「MLLM の CoT 推論で性能が悪化する」現象を初めて本格的に解決した論文**。著者らは「SFT が teacher forcing による分布シフトを生み、長い CoT rationale で誤差蓄積する」と分析。**3 点セット** を提案: (1) **Mixed Preference Optimization (MPO)** = **DPO（相対選好）+ BCO（絶対品質）+ SFT loss（生成過程）** の 3 損失混合（$w_p=0.8, w_q=0.2, w_g=1.0$、$\beta=0.1$）、(2) **MMPR データセット**（[[entities/mmpr\|3M 選好ペア、6 ドメイン × 18 データセット]]）、(3) **DropoutNTP**（画像なしで応答を補完して rejected 生成、**RLAIF-V の 57.5% コスト** で同等品質）。**主要結果**: **InternVL2-8B-MPO が MathVista +8.7 ポイント（67.0、10× 大きい InternVL2-76B 67.2 と同等）、M3CoT +19.9（59.3 → 79.2）、MathVision +5.3（25.7 で当時オープン MLLM 新 SOTA）**。**CoT が direct より良くなる**（M3CoT で +2.0、baseline は -2.3）。**テキスト専用ベンチでも改善**（MMPR にテキスト専用データなしにもかかわらず、TheoremQA +5.2 / IFEval +4.1）。**10 個の PO 手法を比較**（DPO/RSO/IPO/cDPO/RobustDPO/BCO/SPPO/AOT/TR-DPO/ORPO）し、**「DPO + BCO + SFT loss」が最良 CoT 性能** を発見。**「SFT loss が CoT 強化の鍵」「参照モデル凍結が必須」** という重要な観察。**[[entities/internvl-3\|InternVL 3]] の Stage 3 で正式採用**（MMPR v1.2 + 300K 選好ペア、+4.1〜+4.5 ポイント推論改善）、**[[entities/internvl-3-5\|InternVL 3.5]] では Cascade RL の Stage 1 として進化**（MPO + GSPO の 2 段階で SFT 単独から最大 +12 ポイント改善）。**InternVL シリーズの永続的技術となった**。「マルチモーダル選好最適化が言語能力も強化」という [[entities/internvl-3\|InternVL 3]] の「Native Pre-Training で言語が強くなる」発見の **先例**。
+- [[sources/internvl-3-5]] — InternVL 3.5（Wang et al., InternVL Team Shanghai AI Lab, 2025 Aug, technical report）。**「InternVL シリーズ第 8 世代、商用 GPT-5 との差をオープンソース最小に縮める」**: GPT-5（2025 Aug 7）直後の発表で **GPT-5 との Aggregate 差 3.9%** という当時オープンソース最小。**3 つの中核イノベーション**: (1) **Cascade Reinforcement Learning**（offline RL = [[entities/mpo\|MPO]] で warm-up + online RL = **GSPO（Geometric mean Sequence-level PPO、reference model 制約なし、トークン単位の geometric mean importance ratio）** で精緻化、coarse-to-fine 戦略、**GSPO 単独の半分の GPU 時間で +2.1 ポイント上回る**）、(2) **Visual Resolution Router (ViR) + Visual Consistency Learning (ViCO)**（patch ごとに 1/4 or 1/16 圧縮率を semantic richness で動的選択、視覚トークン 50% 削減で性能 99% 維持）、(3) **Decoupled Vision-Language Deployment (DvD)**（ViT/MLP/ViR を vision server、LLM を language server に分離、BF16 視覚特徴を TCP/RDMA で転送、**非同期 3 段階パイプライン** で 896 解像度時 **4.05× 推論加速**）。**MoE スケーリング初導入**: **20B-A4B（GPT-OSS-20B、OpenAI 公開モデル統合）/ 30B-A3B（Qwen3）/ 241B-A28B（最大）**。**9 サイズ × dense + MoE × Flash 効率版**で合計 18+ モデルのスイート。**LLM が Qwen3 系に統一**（InternVL 3 の Qwen2.5 から更新）。**主要結果**: MMMU **77.7（オープンソース新 SOTA、Claude-3.7-Sonnet 75.0 / Gemini-2.5-Pro 74.7 / GPT-5-nano 72.6 全部超え、GPT-5 84.2 に -6.5）**、MathVista **82.7（GPT-5 81.9 +0.8、Claude-3.7-Sonnet 66.8 / Gemini-2.5-Pro 80.9 超え）**、**VSI-Bench 69.5（GPT-5 37.5 を +32 圧倒、空間推論の新水準）**、WildVision **82.8（GPT-4o 80.6 +2.2）**、WindowsAgentArena でも GPT-4o 3.5 を圧倒、WebArena-Lite-v2 **11.7（GPT-4o 1.9 の 6×）**。**Cascade RL が全モデルサイズで SFT 単独から +6-12 ポイント改善**（2B モデルで +12.2 最大、241B-A28B で +6.5）。**Parallel Thinking（Best-of-N + VisualPRM-v1.1）でさらに +1-9 ポイント**。**マルチモーダル化で言語強化を [[entities/internvl-3\|InternVL 3]] から継続実証**（Qwen3-base 比で 1B が +6.7、241B が +2.3、16/16 ベンチで Qwen3 超え）。**全モデルとコード公開**。**弱点**: Reasoning Overall で GPT-5 に -7.2、Text Overall で -6.0、241B 全 load にエンタープライズ級 GPU 必要。**InternVL シリーズ現時点最新版**。
 
 ### Articles
 
@@ -71,6 +78,13 @@
 - [[translations/yolo-world]] — YOLO-World 原論文の本文和訳。Abstract + §1-5（References と Appendix A-C は除外、ユーザー指示）。図 1-7 を `<figure>` で埋め込み、表 1-8 を含む。RepVL-PAN（T-CSPLayer + I-Pooling Attention）、Prompt-Then-Detect、Region-Text Contrastive Loss、CLIP vs BERT ablation 等の核心を含む。
 - [[translations/grounding-dino-1-5]] — Grounding DINO 1.5 原論文の本文和訳。Abstract + §1-6（Acknowledgement 含む、References と §7 Appendix は除外）。図 1-16 を `<figure>` で埋め込み、表 1-5 を含む。Pro と Edge 両モデルのアーキテクチャ詳細、Grounding-20M、COCO/LVIS/ODinW の全結果、定性的可視化を含む。
 - [[translations/dino-x]] — DINO-X 原論文の本文和訳。Abstract + §1-7（Acknowledgement 含む、References は除外）。図 1-11 を `<figure>` で埋め込み、表 1-7 を含む。Pro と Edge 両モデル、4 種ヘッド（Box/Mask/Keypoint/Language）、3 種プロンプト、Grounding-100M、Knowledge Distillation、FP16 量子化、prompt-free 検出、Side-by-side 比較を含む。
+- [[translations/internvl]] — InternVL 原論文の本文和訳。Abstract + §1-5（Acknowledgement 含む、References と Appendix A.1-A.5 は除外、ユーザー指示）。図 1-4 を `<figure>` で埋め込み、表 1-12 を含む（表 7 のフル数値は概略のみ）。InternViT-6B のハイパーパラメータ探索、QLLaMA の cross-attn 設計、3 段階訓練（contrastive + ITC/ITM/ITG + SFT）、InternVL-C/G/Chat 4 つの推論モードを含む。
+- [[translations/internvl-1-5]] — InternVL 1.5 原論文の本文和訳。Abstract + §1-5（References は除外）。図 1-5 を `<figure>` で埋め込み、表 1-3 を含む（表 2 は 18 ベンチ × 全モデル、表 3 は ConvBench/MMT-Bench）。動的高解像度（35 種アスペクト比 × 1-40 タイル）、Pixel Shuffle、継続事前学習（InternViT V1.0 → V1.2 → V1.5）、QLLaMA 廃止 → MLP 統一、バイリンガルデータパイプライン、2 段階訓練（pre-training + fine-tuning）を含む。GPT-4V/Gemini/Claude-3/Qwen-VL-Max との横並び 18 ベンチ比較を含む。
+- [[translations/mini-internvl]] — Mini-InternVL 原論文の本文和訳。Abstract + §1-5（References は除外）。図 1-5 を `<figure>` で埋め込み（fig5 は欠番、fig6 を fig5 として配置）、表 1-13 を含む。InternViT-300M の知識蒸留（negative cosine similarity 損失、最後の K 層、CLIP-ViT-L 初期化）、Mini-InternVL の 2 段階訓練、統一ドメイン適応フレームワーク（5 種タスクの VQA 統一）、3 ドメイン（自律走行 / 医療 / リモセン）への転移結果、4 種類のアブレーション（KD 有無 / データ比率 / サンプル数 / 適応手法）を含む。
+- [[translations/internvl-2-5]] — InternVL 2.5 原論文の本文和訳。Abstract + §1-8（Acknowledgement 含む、References は除外）。図 1-10 を `<figure>` で埋め込み、表 1-15 を含む（OpenCompass 順位、InternViT 全バージョン比較、Mini-InternVL を含むモデルカタログ、訓練ハイパラ、Pre-train/Fine-tune データ、Multimodal Reasoning/OCR/Multi-Image/Real-World/Comprehensive/Hallucination/Grounding/Multilingual/Video の全 9 ベンチマーク群、LLM 17 ベンチ、ImageNet 派生 6、ADE20K + COCO-Stuff）。Progressive Scaling Strategy 公式化、Test-Time Scaling、データフィルタリングパイプライン、InternViT 中間層特徴発見を含む。
+- [[translations/internvl-3]] — InternVL 3 原論文の本文和訳。Abstract + §1-4 + Conclusion（References は除外）。図 1-3 を `<figure>` で埋め込み、表 1-13 を含む（7 サイズモデルカタログ、Multimodal Reasoning + Math（VisualPRM-Bo8 結果含む）、OCR/Chart/Document、Multi-Image + Real-World、Comprehensive + Hallucination、Grounding、Multilingual、Video、GUI Grounding、VSI-Bench 空間推論、LLM 17 ベンチ、V2PE δ アブレーション、MPO アブレーション）。Native Multimodal Pre-Training、V2PE 数式、MPO 損失（DPO + BCO + LM）、VisualPRM、InternEVO インフラを含む。
+- [[translations/mpo]] — MPO 原論文の本文和訳。Abstract + §1-6 + Implementation Details + More Ablation Studies 概要（References と Appendix §9 のデータ例図は除外）。図 1-3 を `<figure>` で埋め込み、表 1-9 を含む（DropoutNTP データ例、PO アルゴリズム比較、SFT vs MPO、RLAIF-V vs DropoutNTP、データソース、テキスト専用ベンチ、X+ 拡張、DPO 変種比較、Dropout Ratio アブレーション、データスケール、ハイパラ）。MMPR データセット、DropoutNTP の数式、MPO の 3 損失（DPO + BCO + SFT loss）、3 種のマルチモーダル CoT を含む。
+- [[translations/internvl-3-5]] — InternVL 3.5 原論文の本文和訳。Abstract + §1-4（References は除外）。図 1-5 を `<figure>` で埋め込み、表 1-18 を含む（9 サイズモデルカタログ、全 35 ベンチマーク比較、Reasoning + Math、OCR/Chart/Document、Multi-Image + Real-World、Comprehensive + Hallucination、Grounding、Multilingual、Video、GUI、Embodied、SVG、LLM 16 ベンチ、Cascade RL アブレーション、Cascade RL vs MPO vs GSPO 効率、ViR Flash 性能維持、DvD + ViR 加速）。Cascade RL（MPO + GSPO）、ViR + ViCO の数式、DvD、MoE モデル設計を含む。
 
 ## Concepts
 
@@ -112,6 +126,15 @@
 - [[entities/yolo-world]] — Tencent + 華中科技大学の YOLO-World（CVPR 2024）。YOLOv8 backbone + CLIP-base text encoder + RepVL-PAN ネック。3 バリアント（YOLO-World-S 13M / -M 29M / -L 48M、re-parameterize 版）。LVIS ZS 35.4 AP at 52 FPS V100。GLIP-T (0.12 FPS) の 433× / Grounding-DINO-T (1.5 FPS) の 35× / DetCLIP-T (2.3 FPS) の 22× 速度。**エッジデバイスでの open-vocab 検出を可能にした初の本格的研究**。GLIP-L を疑似ラベル生成 teacher として活用。
 - [[entities/grounding-dino-1-5]] — IDEA Research の Grounding DINO 1.5（2024 May）。**Pro と Edge の双子モデル**。Pro: ViT-L backbone + Grounding-20M で **COCO ZS 54.3 / LVIS-mv 55.7 / ODinW35 30.2 / Fine-tune 68.1 (LVIS-mv) / 70.6 (ODinW35) SOTA**。Edge: EfficientViT-L1 backbone + Efficient Feature Enhancer（P5 のみ cross-modal 融合）で **Orin NX 10.7 FPS / A100 TRT 75.2 FPS、LVIS-mv 36.2 AP**（YOLO-Worldv2-L 超え）。**精度志向（Pro）と実用志向（Edge）を 1 モデルスイートで統合**した IDEA Research の戦略的後継。
 - [[entities/dino-x]] — IDEA Research の DINO-X（2024 Nov、Grounding DINO 1.5 の正統な後継）。**unified object-centric vision model**。Pro: ViT-L + CLIP text encoder + 3 プロンプト (Text/Visual/Customized) + 4 ヘッド (Box/Mask/Keypoint/Language) + **Grounding-100M**（GD 1.5 の 5×）。**LVIS-mv 59.8 / rare APr 63.3 SOTA** / Visual Genome CIDEr **201.8** / FSC147 カウント MAE 5.6 / Hand pose HInt SOTA。Edge: EfficientViT-L2 + Knowledge Distillation (Pro→Edge) + FP16 で **Orin NX 20.1 FPS、LVIS-mv 48.3 AP**（YOLO-Worldv2-L 33.0 を +15.3 AP 凌駕）。**Universal Object Prompt で prompt-free 検出**。**「Grounding DINO 系統の到達点」**かつ SAM 3 と並行進化する unified perception model。
+- [[entities/internvl]] — OpenGVLab Shanghai AI Lab の **InternVL（CVPR 2024、InternVL 1.0）**。InternViT-6B（5.9B vanilla ViT, w=3200/d=48/MLP=12800/h=25）+ QLLaMA（8B = 多言語 LLaMA-7B + 1B 新規 96 query/cross-attn 層）。4 つの推論モード（**InternVL-C** 対比 / **InternVL-G** 対比+生成 / **InternVL-Chat (MLP)** LLaVA 互換 / **InternVL-Chat (QLLaMA)** フル構成）。Stage 1（4.98B 対）+ Stage 2（1.03B + ITC/ITM/ITG）+ Stage 3（4M SFT）の 3 段階訓練。**ViT-22B（21.7B）を 1/3.7 の 5.9B パラメータで ADE20K linear probe +12.6 mIoU 上回る**画期的成果。Vicuna-7B/13B / InternLM 接続可能。InternVL 1.2 / 1.5 / 2.0 / 2.5 / 3 シリーズの起点。
+- [[entities/internvl-1-5]] — OpenGVLab Shanghai AI Lab の **InternVL 1.5（2024 April、InternVL シリーズ第 4 世代）**。InternViT-6B-448px-V1.5（5.9B、**45 層 = 元 48 層 - 3**、dynamic 448）+ **MLP プロジェクタ（~150M、QLLaMA を完全廃止）** + InternLM2-20B-Chat = **26B**。**動的高解像度**: 35 通りのアスペクト比 × 1-12 タイル訓練 / 40 タイル zero-shot テスト（4K 相当）+ Pixel Shuffle で visual token 1/4 圧縮。**継続事前学習**: V1.0（CVPR 2024, 224、48 層）→ V1.2（448 固定、45 層、Yi-34B）→ V1.5（448 dynamic、InternLM2-20B-Chat）。**18 ベンチ中 8 SoTA**（ChartQA 83.8 / OCRBench 724 / MMBench-CN 82.0 / **CCBench 69.8 で GPT-4V +23.3** / MathVista 53.5 で GPT-4V +3.6 / HallusionBench 49.3）。**ConvBench マルチターン対話では GPT-4V に大敗**（17.65 vs 39.51）。バイリンガル（英中）OCR データを PaddleOCR で擬似ラベリング。MIT + InternLM2 ライセンス。HF: `OpenGVLab/InternVL-Chat-V1-5`。
+- [[entities/mini-internvl]] — OpenGVLab Shanghai AI Lab の **Mini-InternVL（2024 Oct）**。**InternVL シリーズの「軽量化 + ドメイン特化」分枝**。3 サイズ: **Mini-InternVL-1B**（Qwen2-0.5B + InternViT-300M）/ **2B**（InternLM2-1.8B + InternViT-300M）/ **4B**（Phi-3-Mini + InternViT-300M）。動的解像度・MLP プロジェクタ・Pixel Unshuffle は [[entities/internvl-1-5\|InternVL 1.5]] と同じ構造。**InternVL2-Llama3-76B の 90% 性能を 5% パラメータで**（Mini-InternVL-4B Avg 72.8 vs 76B Avg 81.4）。**Mini-InternVL-DA-1B/2B/4B**: 自律走行 / 医療 / リモセンに **統一フレームワーク**で適応、**MME-RW 自律走行で GPT-4o を +24.78 圧倒、GMAI-MMBench 医療で LLaVA-Med / RadFM / Claude3-Opus 超え、DriveLM Challenge で 2B が 26B SOTA に匹敵**。MIT + 各 LLM ライセンス。HF: `OpenGVLab/Mini-InternVL-Chat-{1B/2B/4B}-V1-5`。
+- [[entities/internvit-300m]] — OpenGVLab の **InternViT-300M**。**CLIP-ViT-L-336px で初期化 + [[entities/internvl\|InternViT-6B]] から知識蒸留**（negative cosine similarity 損失、最後 K 層）した 300M 軽量視覚エンコーダ。**Mini-InternVL の視覚バックボーン**。CLIP-ViT-L 単体より OCR で +8.4 / Chart で +5.3 / InfoVQA で +8.1 圧倒。多ドメイン視覚知識（自然画像 + OCR + chart + multidisciplinary）を継承。**「VFM の知識蒸留で軽量化問題を解く」** という方向性を確立。MIT ライセンス。HF: `OpenGVLab/InternViT-300M-448px` / `InternViT-300M-448px-V2_5`（InternVL 2.5 で V2.5 へ強化）。
+- [[entities/internvl-2-5]] — OpenGVLab Shanghai AI Lab の **InternVL 2.5（2024 Dec、InternVL シリーズ第 6 世代）**。**1B/2B/4B/8B/26B/38B/78B の 7 サイズスイート + InternVL2.5-Pro（非公開）**。視覚: **InternViT-300M-V2.5**（1B-8B）or **InternViT-6B-448px-V2.5**（26B+、45 層、5.5B、QK-Norm + RMSNorm）。LLM: **InternLM 2.5（1.8B/7B/20B-Chat）+ Qwen 2.5（0.5B/3B/32B/72B-Instruct）**。アーキテクチャは [[entities/internvl-1-5\|InternVL 1.5]] / 2.0 と完全に同じ ViT-MLP-LLM。**訓練 3 段階**（MLP warmup + ViT incremental learning [任意] + Full instruction tuning）+ **Progressive Scaling Strategy**（小型 LLM で ViT 訓練 → 大型 LLM 転送、Qwen2-VL の 1/12 訓練トークン）。**主要結果**: MMMU 70.1（**70% を超えた初の OS MLLM**）/ MathVista 72.3 / RefCOCO 92.3 / MMB 88.3/88.5 / MMStar 69.5 / Video-MME 72.1 / MVBench 76.4 / MLVU 75.7 / MME 2494.5。MIT + InternLM2/Qwen2.5 ライセンス。HF: `OpenGVLab/InternVL2_5-{1B/2B/4B/8B/26B/38B/78B}`。
+- [[entities/internvl-3]] — OpenGVLab Shanghai AI Lab の **InternVL 3（2025 Apr、InternVL シリーズ第 7 世代）**。**1B/2B/8B/9B/14B/38B/78B の 7 サイズ**。視覚: [[entities/internvl-2-5\|InternVL 2.5]] と同じ **InternViT-300M-V2.5 / InternViT-6B-V2.5** を再利用。LLM: **Qwen2.5 base モデル**（0.5B/1.5B/7B/14B/32B/72B）+ **InternLM3-8B**（9B のみ）。**訓練パラダイム転換**: 「LLM Chat 版から MLLM 事後改造」(InternVL 1.0-2.5) → **「Native Multimodal Pre-Training」**（テキスト 50B + マルチモーダル 150B = 200B トークンの共同事前学習、1:3 比率、全層共同訓練、text-only loss + square averaging）。**新技術**: (1) **V2PE**（視覚トークンに位置インクリメント δ < 1、{1, 1/2, ..., 1/256} からランダム、$\delta=1/4$ 最良）、(2) **MPO**（DPO + BCO + LM 損失、300K 選好データ、+4.5 ポイント推論改善）、(3) **VisualPRM-8B**（Process Reward Model、Best-of-N で小型 +9.9）。**主要結果**: MMMU **72.2 で SOTA**（Claude-3.7-Sonnet 75.0 のみ上）/ MathVista 79.0（GPT-4o +19.0）/ OCRBench **906**（史上初の 900 超え）/ MME 2549.8 / MMB 89.0/88.7 / MMStar 72.5 / Video-MME 72.7/75.7 / MVBench 78.7 / MLVU 79.5 / VSI-Bench 空間推論で **InternVL3-8B (42.1) が GPT-4o (34.0) を +8.1 圧倒**。**Qwen2.5-Chat より純粋言語が強い**（+1.6〜+8.9）「マルチモーダル化で言語が強くなる」初実証。**訓練データ完全公開**（`OpenGVLab/InternVL-Data`）。MIT + Qwen2.5/InternLM3 ライセンス。**InternVL シリーズの哲学転換を象徴**。
+- [[entities/mpo]] — OpenGVLab の **MPO（Mixed Preference Optimization）アルゴリズム**（2024 Nov）。MLLM の CoT 推論改善のための **3 損失混合 PO 法**: **DPO（相対選好、$w_p=0.8$）+ BCO（絶対品質、$w_q=0.2$）+ SFT loss（生成過程、$w_g=1.0$）**。学習率 5e-6、KL ペナルティ $\beta=0.1$、1 epoch、参照モデル凍結。**10 PO アルゴリズム比較で「DPO + BCO + SFT loss」が最良 CoT 性能**。**InternVL2-8B-MPO で MathVista +8.7（67.0、10× 大きい InternVL2-76B 67.2 と同等）、M3CoT +19.9、MathVision 25.7 で当時オープン SOTA**。テキスト専用ベンチでも +0.9 改善（TheoremQA +5.2、IFEval +4.1）。[[entities/internvl-3\|InternVL 3]] の Stage 3 で正式採用（+4.1～+4.5 ポイント推論改善）、**[[entities/internvl-3-5\|InternVL 3.5]] では Cascade RL の Stage 1 として進化**（MPO + GSPO の 2 段階）。HF: `OpenGVLab/InternVL2-8B-MPO`.
+- [[entities/internvl-3-5]] — OpenGVLab Shanghai AI Lab の **InternVL 3.5（2025 Aug、InternVL シリーズ第 8 世代）**。**9 サイズ × dense + MoE × Flash 効率版 = 18+ モデルのスイート**。Dense: **1B/2B/4B/8B/14B/38B（Qwen3-base + InternViT-300M/6B）**。MoE: **20B-A4B（GPT-OSS-20B、OpenAI 公開モデル統合）/ 30B-A3B（Qwen3-30B-A3B）/ 241B-A28B（Qwen3-235B-A22B、最大）**。**3 つの中核イノベーション**: (1) **Cascade RL = offline RL（MPO）+ online RL（GSPO、reference 制約なし、トークン geometric mean importance ratio）**、GSPO 単独の半分の GPU 時間で +2.1 ポイント上回る、全モデルサイズで SFT 単独から +6-12 ポイント改善、(2) **ViR + ViCO**（patch ごとに 1/4 or 1/16 圧縮率を semantic richness で動的選択、視覚トークン 50% 削減で性能 99% 維持）、(3) **DvD**（ViT/MLP/ViR を vision server、LLM を language server に分離、非同期 3 段階パイプライン、896 解像度で **4.05× 推論加速**）。**主要結果**: MMMU **77.7（オープンソース新 SOTA、GPT-5 84.2 に -6.5）**、MathVista **82.7（GPT-5 81.9 +0.8）**、**VSI-Bench 69.5（GPT-5 37.5 を +32 圧倒）**、WildVision **82.8（GPT-4o 超え）**、WindowsAgentArena で GPT-4o 圧倒、Cascade RL 全サイズで +6-12 改善、Parallel Thinking でさらに +1-9 改善。**Qwen3-base 比で言語 16 ベンチ中 15 で上回る**（InternVL 3 の発見継続）。**GPT-5 との Aggregate 差 3.9%** という当時オープンソース最小。MIT + Qwen3/GPT-OSS ライセンス。HF: `OpenGVLab/InternVL3_5-{1B/2B/4B/8B/14B/38B/20B-A4B/30B-A3B/241B-A28B}` + Flash 版。**InternVL シリーズ現時点最新版**。
+- [[entities/mmpr]] — OpenGVLab の **MMPR（MultiModal PReference dataset）**（2024 Nov）。**約 3M サンプル**（正解あり 2.5M + 正解なし 750K）の MLLM 用選好データセット。**6 ドメイン × 18 データソース**（General VQA / Science / Chart / Mathematics / OCR / Document）。**2 つのパイプライン**: (1) **正誤判定ベース**（最大 32 解答サンプリング、最大 15 ペア / クエリ、temperature 1.0）、(2) **DropoutNTP**（応答を半分で切り詰めて画像なしで補完、Dropout Ratio 0.5 最適）。**RLAIF-V の 57.5% コスト**（選好ペアあたり 571.2 vs 992.7 トークン）。**InternVL 3 で MMPR v1.2（拡張版）使用、Stage 3 で 300K ペアを抽出**。VisualPRM400K（VisualPRM-8B 訓練データ）も MMPR v1.2 ベース。HF: `OpenGVLab/MMPR-v1.2`、MIT ライセンス。
 - [[entities/siglip]] — Google の SigLIP / SigLIP 2。CLIP の sigmoid 損失改良（v1）＋ 全部入りレシピ統合（v2: LocCa decoder + 自己蒸留＋マスク予測 + ACID + 多言語 + NaFlex）。DINOv3 の主要競合（弱教師あり）。
 - [[entities/sam]] — SAM（Meta, 2023）。CV における初の本格的セグメンテーション基盤モデル。ViT-B/L/H 3 種、Apache 2.0、データエンジンで 1.1B マスクを使い訓練。
 - [[entities/sam-2]] — SAM 2（Meta, 2024）。SAM の動画拡張版。Hiera 画像エンコーダ + streaming memory、Hiera-T/S/B+/L 4 種、Apache 2.0。画像でも SAM v1 比 6× 高速。
@@ -134,6 +157,7 @@
 - [[entities/sa-1b]] — SAM の訓練データ。データエンジンで構築された 11M 画像 × 1.1B マスク（既存最大の 400 倍）。研究用途で公開。
 - [[entities/sa-v]] — SAM 2 の訓練データ。50.9K 動画 × 642.6K masklet × 35.5M マスク（既存 VOS の 53 倍）。**CC by 4.0** で公開。
 - [[entities/sa-co]] — SAM 3 の訓練・評価データ。SA-Co/HQ（5.2M 画像 + 4M unique NP + 52M マスク）+ SA-Co Benchmark（**207K concepts**、既存の 50 倍以上）+ SA-Co/SYN（合成 38M 句）+ SA-Co/VIDEO（52.5K 動画）。
+- [[entities/mmpr]] — MMPR（MultiModal PReference dataset、2024 Nov）。**約 3M サンプル**（正解あり 2.5M + 正解なし 750K）の MLLM 用選好データセット。**6 ドメイン × 18 データソース**。DropoutNTP + 正誤判定ベースの 2 パイプラインで構築。MMPR v1.2（拡張版）が InternVL 3 の MPO Stage 3 で使用される。HF: `OpenGVLab/MMPR-v1.2`。
 
 ### People
 
@@ -327,6 +351,351 @@
 | OKS | Object Keypoint Similarity（COCO 標準） | [[sources/dino-x]] |
 | CrowdPose / Human-Art | 困難な姿勢推定ベンチマーク（混雑、芸術的表現） | [[sources/dino-x]] |
 | HaMeR / Hamba | hand pose の SOTA 手法 | [[sources/dino-x]] |
+| InternVL | Internal Vision-Language model（OpenGVLab, CVPR 2024）、6B 視覚 + 8B 言語ミドルウェア | [[sources/internvl]] / [[entities/internvl]] |
+| InternViT-6B | 5.9B vanilla ViT（width 3200 / depth 48 / MLP 12800 / 25 heads）、InternVL の視覚エンコーダ | [[entities/internvl]] |
+| QLLaMA | Query LLaMA（8B = 多言語 LLaMA-7B + 1B 新規 96 queries+cross-attn）、InternVL の言語ミドルウェア | [[sources/internvl]] |
+| InternVL-C | InternVL Contrastive（InternViT のみ + QLLaMA [EOS]、対比モード） | [[entities/internvl]] |
+| InternVL-G | InternVL Generative（InternViT + QLLaMA 96 queries、対比 + 生成統合） | [[entities/internvl]] |
+| InternVL-Chat | InternVL + LLM デコーダ（MLP or QLLaMA glue + Vicuna/InternLM） | [[entities/internvl]] |
+| QFormer | Querying Transformer（BLIP-2 の 188M glue layer、BERT-base 初期化、32 queries） | [[sources/internvl]] |
+| ITC / ITM / ITG | Image-Text Contrastive / Matching / Grounded Generation（BLIP-2 系 3 損失） | [[sources/internvl]] |
+| LLaMA / Vicuna / InternLM | LLM 系（Meta / lmsys / Shanghai AI Lab）、InternVL の言語デコーダ候補 | [[entities/internvl]] |
+| BLIP / BLIP-2 / InstructBLIP | Salesforce の VLM 系列（QFormer の祖）、InternVL の比較相手 | [[sources/internvl]] |
+| LLaVA / LLaVA-1.5 / LLaVA-NeXT | Visual Instruction Tuning の代表作（Liu et al., 2023）、InternVL-Chat の直接比較 | [[sources/internvl]] |
+| MME | Multimodal Evaluation（14 サブタスクの総合認知ベンチマーク、Fu et al., 2023） | [[sources/internvl]] |
+| POPE | Polling-based Object Probing Evaluation（物体ハルシネーション、Li et al., 2023） | [[sources/internvl]] |
+| Tiny LVLM | LVLM 用軽量ベンチマーク | [[sources/internvl]] |
+| VQAv2 / GQA / VizWiz / TextVQA / NoCaps | VLLM 評価標準セット | [[sources/internvl]] |
+| OK-VQA / A-OK-VQA / IconQA / AI2D | 外部知識・図表 VQA | [[sources/internvl]] |
+| OCR-VQA / ChartQA / DocVQA / InfoVQA / ST-VQA / LLaVAR | OCR/文書 VQA | [[sources/internvl]] |
+| LAION-COCO / COYO / Wukong / CC3M / CC12M / SBU | InternVL Stage 1/2 訓練用 Web 画像-テキスト対 | [[sources/internvl]] |
+| LAION-en / LAION-multi | 公開 Web 画像-テキスト（LAION-5B 系、英語/多言語） | [[sources/internvl]] |
+| ViT-22B | Google の 21.7B ViT（JFT-3B 訓練、2023）、InternViT-6B の主要比較相手 | [[sources/internvl]] |
+| ViT-G / ViT-e / EVA-02-ViT-E / ViT-6.5B | 大型 ViT 系列、InternViT-6B のスケール比較 | [[sources/internvl]] |
+| CoCa / LiT-22B | Google の対比 + 生成 / locked image チューニング、JFT-3B 系 | [[sources/internvl]] |
+| Qwen-VL / Qwen-VL-Chat | Alibaba の VLM、InternVL-Chat と同時期の競合 | [[sources/internvl]] |
+| Flamingo / IDEFICS / KOSMOS-2 / Shikra | 初期 VLLM 系（Cross-Attn / Linear glue） | [[sources/internvl]] |
+| Emu / Emu-I / DreamLLM / PaLI-X-55B | 生成 VLLM 系 | [[sources/internvl]] |
+| glue layer | 視覚エンコーダと LLM をつなぐ層（QFormer/MLP/Linear/Cross-Attn/QLLaMA 等の総称） | [[sources/internvl]] |
+| VLLM | Vision Large Language Model（画像入力可能な LLM、LLaVA/BLIP-2 等の総称） | [[sources/internvl]] |
+| AGI | Artificial General Intelligence（汎用人工知能） | [[sources/internvl]] |
+| JFT-3B | Google 非公開の 3B 弱教師あり分類データ（ViT-22B / CoCa / LiT-22B が使用） | [[sources/internvl]] |
+| InternVL 1.5 | InternVL シリーズ第 4 世代（2024 April）、26B、GPT-4V 対抗の MLLM | [[sources/internvl-1-5]] / [[entities/internvl-1-5]] |
+| InternVL 1.2 | InternVL の第 3 世代（2024 Feb）、40B、QLLaMA 廃止、Yi-34B 連携 | [[entities/internvl-1-5]] |
+| InternViT-6B-448px-V1.2 | InternViT 第 2 版（45 層、固定 448）、Yi-34B 連携 | [[entities/internvl-1-5]] |
+| InternViT-6B-448px-V1.5 | InternViT 第 3 版（45 層、dynamic 448）、InternLM2-20B 連携 | [[entities/internvl-1-5]] |
+| InternLM2-20B-Chat | Shanghai AI Lab の独自 LLM 20B Chat 版（InternVL 1.5 の LLM） | [[entities/internvl-1-5]] |
+| Pixel Shuffle | 空間 → チャンネル変換（超解像由来、InternVL 1.5 で visual token 1/4 圧縮） | [[sources/internvl-1-5]] |
+| Dynamic High-Resolution | 動的高解像度（InternVL 1.5 の中心的貢献、35 種アスペクト比） | [[sources/internvl-1-5]] |
+| 35 種アスペクト比 | 1-12 タイルの全組合せ（1:1, 1:2, ..., 2:6） | [[sources/internvl-1-5]] |
+| Thumbnail | グローバル文脈用 448×448 サムネイル（タイルに併設） | [[sources/internvl-1-5]] |
+| Continuous Learning（VFM） | InternViT を継続事前学習で強化する戦略（V1.0 → V1.5） | [[sources/internvl-1-5]] |
+| ViT-MLP-LLM | LLaVA 系の標準アーキテクチャ（QFormer ではなく MLP プロジェクタ） | [[sources/internvl-1-5]] |
+| MLP プロジェクタ | 2 層 MLP + GELU、ViT 出力 → LLM 埋め込み空間（LLaVA 流） | [[entities/internvl-1-5]] |
+| GPT-4V | OpenAI の GPT-4 with Vision（2023 秋、商用 MLLM の代表） | [[sources/internvl-1-5]] |
+| Gemini Ultra/Pro 1.0/1.5 | Google の Gemini 系列 MLLM | [[sources/internvl-1-5]] |
+| Claude-3 Opus/Sonnet/Haiku | Anthropic の Claude-3 ファミリー MLLM | [[sources/internvl-1-5]] |
+| Qwen-VL-Max/Plus | Alibaba の Qwen-VL 商用版 | [[sources/internvl-1-5]] |
+| Grok-1.5V | xAI の MLLM、RealWorldQA を公開 | [[sources/internvl-1-5]] |
+| MM1 | Apple の 30B MLLM（2024 春） | [[sources/internvl-1-5]] |
+| Step-1V | StepFun の 100B MLLM | [[sources/internvl-1-5]] |
+| HPT Pro | HyperGAI の MLLM | [[sources/internvl-1-5]] |
+| LLaVA-NeXT | LLaVA の高解像度対応後継（2024 早春） | [[sources/internvl-1-5]] |
+| Mini-Gemini | 35B MLLM（2024） | [[sources/internvl-1-5]] |
+| DocOwl-1.5 | 8B 文書 MLLM | [[sources/internvl-1-5]] |
+| Text-Monkey | 10B OCR MLLM | [[sources/internvl-1-5]] |
+| CogVLM | 智谱 AI の VLM | [[sources/internvl-1-5]] |
+| DeepSeek-VL | DeepSeek 系列（SigLIP-L + SAM-B dual encoder） | [[sources/internvl-1-5]] |
+| LLaVA-HR | LLaVA High-Res（CLIP-ViT + CLIP-ConvNext dual encoder） | [[sources/internvl-1-5]] |
+| mixture-of-features | Tong et al. が提案した CLIP + DINOv2 結合 | [[sources/internvl-1-5]] |
+| UReader | タイル分割の祖（Ye et al., 2023） | [[sources/internvl-1-5]] |
+| PaddleOCR | Baidu の OCR エンジン、InternVL 1.5 の OCR データ生成に使用 | [[sources/internvl-1-5]] |
+| DocVQA | 文書理解 VQA ベンチマーク | [[sources/internvl-1-5]] |
+| ChartQA | 図表理解 VQA ベンチマーク | [[sources/internvl-1-5]] |
+| InfoVQA / InfographicVQA | インフォグラフィック VQA | [[sources/internvl-1-5]] |
+| OCRBench | OCR 総合評価ベンチマーク | [[sources/internvl-1-5]] |
+| MMBench-EN/CN | マルチモーダル総合ベンチマーク（英/中） | [[sources/internvl-1-5]] |
+| CCBench | Chinese Culture Benchmark（中国文化理解） | [[sources/internvl-1-5]] |
+| MMMU | Massive Multi-discipline Multimodal Understanding（多分野理解） | [[sources/internvl-1-5]] |
+| AI2D | Allen Institute 2D（科学図解理解） | [[sources/internvl-1-5]] |
+| MathVista | 数学的視覚推論ベンチマーク | [[sources/internvl-1-5]] |
+| MMVet | 視覚汎用能力ベンチマーク | [[sources/internvl-1-5]] |
+| SEED | 視覚生成・理解の総合評価ベンチマーク | [[sources/internvl-1-5]] |
+| RealWorldQA / RWQA | 実世界の空間理解ベンチマーク（Grok チーム公開） | [[sources/internvl-1-5]] |
+| HallusionBench / HallB | 視覚ハルシネーション評価 | [[sources/internvl-1-5]] |
+| ConvBench | マルチターン対話評価（Liu et al., 2024） | [[sources/internvl-1-5]] |
+| MMT-Bench | 162 subtask の包括ベンチマーク | [[sources/internvl-1-5]] |
+| VLMEvalKit | InternVL 1.5 評価用フレームワーク（OpenCompass 系） | [[sources/internvl-1-5]] |
+| OpenCompass | Shanghai AI Lab の LLM 評価フレームワーク | [[sources/internvl-1-5]] |
+| Wukong-OCR | Wukong（華為の中国語データ）+ PaddleOCR で生成 | [[sources/internvl-1-5]] |
+| LaionCOCO-OCR | LaionCOCO + PaddleOCR で生成 | [[sources/internvl-1-5]] |
+| GRIT | Grounded Image-Text dataset（KOSMOS-2 系） | [[sources/internvl-1-5]] |
+| All-Seeing | Wang et al. 2023 の universal perception データ | [[sources/internvl-1-5]] |
+| SynthDoG | Synthetic Document Generator（合成文書 OCR） | [[sources/internvl-1-5]] |
+| ALLaVA | バイリンガル LLaVA 指示データ | [[sources/internvl-1-5]] |
+| ShareGPT4V | GPT-4V で生成したバイリンガル指示データ | [[sources/internvl-1-5]] |
+| LVIS-Instruct4V | LVIS 指示データ | [[sources/internvl-1-5]] |
+| OpenHermes2.5 | テキスト指示データ | [[sources/internvl-1-5]] |
+| COIG-CQIA | 中国語指示データ | [[sources/internvl-1-5]] |
+| Nous-Hermes-2-Yi-34B | Yi-34B ベースのチャット LLM（InternVL 1.2 が使用） | [[sources/internvl-1-5]] |
+| Mini-InternVL | OpenGVLab の軽量 MLLM 系列（2024 Oct） | [[sources/mini-internvl]] / [[entities/mini-internvl]] |
+| Mini-InternVL-1B / 2B / 4B | Mini-InternVL の 3 サイズ（Qwen2-0.5B / InternLM2-1.8B / Phi-3-Mini ベース） | [[entities/mini-internvl]] |
+| Mini-InternVL-DA | Domain-Adapted Mini-InternVL（自律走行/医療/リモセン特化版） | [[entities/mini-internvl]] |
+| InternViT-300M | CLIP-ViT-L 初期化 + InternViT-6B 蒸留の 300M VFM | [[entities/internvit-300m]] |
+| Pixel Unshuffle | InternVL 1.5 の Pixel Shuffle と同じ（呼称違い）、4 patches → 1 token | [[sources/mini-internvl]] |
+| Qwen2-0.5B | Alibaba の超軽量 LLM | [[entities/mini-internvl]] |
+| InternLM2-1.8B | Shanghai AI Lab の超軽量 LLM | [[entities/mini-internvl]] |
+| Phi-3-Mini | Microsoft の軽量 LLM（3.8B） | [[entities/mini-internvl]] |
+| InternVL2 / InternVL2-Llama3-76B | InternVL シリーズ第 5 世代（2024 Jul）、1B-108B レンジ | [[sources/mini-internvl]] |
+| InternVL4Drive-v2 | InternVL 1.5 派生の 26B 自律走行 SOTA（CVPR 2024 Challenge） | [[sources/mini-internvl]] |
+| DriveLM / DriveLM-nuScenes | 自律走行 VLM ベンチマーク（317K サンプル、CVPR 2024 Challenge） | [[sources/mini-internvl]] |
+| DriveGPT4 / DriveMLM / DriveVLM | 自律走行 VLM 系列 | [[sources/mini-internvl]] |
+| BDD-X | Berkeley Deep Drive eXplanation（DriveGPT4 が使用） | [[sources/mini-internvl]] |
+| MME-Realworld (AD) | MME の自律走行サブドメイン | [[sources/mini-internvl]] |
+| CAM_FRONT / CAM_BACK / CAM_LEFT 等 | nuScenes の 6 視点カメラ位置 | [[sources/mini-internvl]] |
+| Action Description / Justification | 自律走行 VLM の動作記述と理由付けタスク | [[sources/mini-internvl]] |
+| Speed Signal / Turning Angle | 自律走行 VLM の制御信号予測タスク | [[sources/mini-internvl]] |
+| ADAPT | 自律走行説明モデル（Mini-InternVL の比較相手） | [[sources/mini-internvl]] |
+| GMAI-MMBench | 医療 AI 総合 MLLM ベンチマーク | [[sources/mini-internvl]] |
+| PMC-OA / PMC-VQA / PMC-Image | PubMed Central の医療画像-テキスト対 | [[sources/mini-internvl]] |
+| MedICaT / MedPix | 医療画像データセット | [[sources/mini-internvl]] |
+| MIMIC-CXR | MIT の胸部 X 線データ | [[sources/mini-internvl]] |
+| Open-i | NIH の医療画像データ | [[sources/mini-internvl]] |
+| Quilt-1M | 組織病理学画像-テキスト対 | [[sources/mini-internvl]] |
+| RP3D | X 線画像-テキスト対 | [[sources/mini-internvl]] |
+| Retina Image Bank | 網膜画像データ | [[sources/mini-internvl]] |
+| LLaVA-Med / Qilin-Med-VL / RadFM | 医療特化 MLLM | [[sources/mini-internvl]] |
+| 2D Seg C / 2D Seg M / 2D Cls / 2D Det / 2D Mcls | GMAI-MMBench の医療評価指標 | [[sources/mini-internvl]] |
+| GeoChat | リモートセンシング MLLM（LLaVA-1.5 + 7B） | [[sources/mini-internvl]] |
+| EarthGPT / SkyEyeGPT / SkySenseGPT | リモートセンシング MLLM 系列 | [[sources/mini-internvl]] |
+| RSVQA / RSVQA-LR / RSVQA-HR | リモートセンシング VQA ベンチマーク（Low/High Res） | [[sources/mini-internvl]] |
+| FIT-RS | リモートセンシング VQA データ | [[sources/mini-internvl]] |
+| DIOR-RSVG | リモートセンシング視覚的グラウンディングデータ | [[sources/mini-internvl]] |
+| ChemVLM | 化学特化 MLLM | [[sources/mini-internvl]] |
+| Cambrian-1 | NYU の 7B MLLM（Mini-InternVL の比較相手） | [[sources/mini-internvl]] |
+| Qwen2-VL / Qwen2-VL-2B / Qwen-VL-Chat | Alibaba の MLLM 系列 | [[sources/mini-internvl]] |
+| LLaVA-OneVision | LLaVA の動画拡張版（2024 Aug） | [[sources/mini-internvl]] |
+| LLaVA-NeXT-mistral-7B | LLaVA-NeXT の mistral 版 | [[sources/mini-internvl]] |
+| MiniCPM-V 2.0 | Tsinghua の軽量 MLLM（3B） | [[sources/mini-internvl]] |
+| DeepSeek-VL-1.3B | DeepSeek の軽量 MLLM | [[sources/mini-internvl]] |
+| Fuyu / MoMa / Chameleon | 視覚エンコーダ不要の MLLM 系 | [[sources/mini-internvl]] |
+| ZeRO1 | DeepSpeed のメモリ最適化技法（Zero Redundancy Optimizer Stage 1） | [[sources/mini-internvl]] |
+| Negative Cosine Similarity Loss | InternViT-300M の蒸留損失 | [[sources/mini-internvl]] |
+| Domain Adaptation (DA) | Mini-InternVL の独自フレームワーク、特定ドメインへの転移 | [[sources/mini-internvl]] |
+| VQA Format | Mini-InternVL のドメイン適応で全タスクを定式化する統一形式 | [[sources/mini-internvl]] |
+| ref / box / image / IMG_CONTEXT | InternVL 系の特殊トークン | [[sources/mini-internvl]] |
+| Multi-view Images | 6 視点（自律走行）の画像処理形式 | [[sources/mini-internvl]] |
+| Interleaved Image Format | "Frame1: <img>..." の動画表現形式 | [[sources/mini-internvl]] |
+| CVPR 2024 Autonomous Driving Challenge | DriveLM 公式リーダーボード | [[sources/mini-internvl]] |
+| InternVL 2.5 | InternVL シリーズ第 6 世代（2024 Dec）、MMMU 70% 突破の初 OS MLLM | [[sources/internvl-2-5]] / [[entities/internvl-2-5]] |
+| InternVL 2.0 | InternVL シリーズ第 5 世代（2024 Jul）、1B-76B、論文なし | [[sources/internvl-2-5]] |
+| InternVL2-1B/2B/4B/8B/26B/40B/76B | InternVL 2.0 のサイズバリアント（vs 2.5 と比較頻出） | [[sources/internvl-2-5]] |
+| InternVL2.5-1B/2B/4B/8B/26B/38B/78B | InternVL 2.5 の 7 サイズ | [[entities/internvl-2-5]] |
+| InternVL2.5-Pro | InternVL 2.5 の非公開最強モデル | [[entities/internvl-2-5]] |
+| InternViT-6B-448px-V2.5 | InternViT-6B 第 4 版（45 層、5.5B、dynamic 448、NTP loss） | [[entities/internvl-2-5]] |
+| InternViT-300M-448px-V2.5 | InternViT-300M 第 3 版（蒸留 + V2.5 多様データで段階訓練） | [[entities/internvl-2-5]] / [[entities/internvit-300m]] |
+| InternLM 2.5 | Shanghai AI Lab の最新 LLM 系列（1.8B/7B/20B-Chat） | [[entities/internvl-2-5]] |
+| Qwen 2.5 | Alibaba の最新 LLM 系列（0.5B/3B/32B/72B-Instruct） | [[entities/internvl-2-5]] |
+| NTP loss | Next Token Prediction loss（自己回帰 LM の標準損失、InternViT V1.0+ が採用） | [[sources/internvl-2-5]] |
+| QK-Norm | Query-Key Normalization（InternViT-6B の安定化技法） | [[sources/internvl-2-5]] |
+| Pixel Unshuffle / Pixel Shuffle | 空間 → チャンネル変換（4 patches → 1 token、1/4 圧縮） | [[sources/internvl-2-5]] |
+| Stage 1 / 1.5 / 2 | InternVL 2.5 の 3 段階訓練（MLP warmup / ViT incremental [任意] / Full instruction tuning） | [[entities/internvl-2-5]] |
+| Progressive Scaling Strategy | 小型 LLM で ViT 訓練 → 大型 LLM に転送、Stage 1.5 スキップ可（本論文で公式化） | [[sources/internvl-2-5]] |
+| Test-Time Scaling | 推論時計算を増やして性能向上（CoT + Majority Voting） | [[sources/internvl-2-5]] |
+| Chain-of-Thought (CoT) | "Let's think step by step" で明示的推論（MMMU で +3.7） | [[sources/internvl-2-5]] |
+| Majority Voting | 複数応答の多数決でロバスト化 | [[sources/internvl-2-5]] |
+| Random JPEG Compression | 品質 75-100 ランダム JPEG 圧縮 augmentation | [[sources/internvl-2-5]] |
+| Square Averaging Loss | w_i = 1/x^0.5 の NTP 損失重み付け（token / sample averaging の中間） | [[sources/internvl-2-5]] |
+| Multimodal Data Packing | 複数サンプルを長系列に連結、GPU 利用率向上 | [[sources/internvl-2-5]] |
+| Repetition Detection | LLM ベースの繰り返しパターン検出フィルタ | [[sources/internvl-2-5]] |
+| LLM-Based Quality Scoring | LLM が 0-10 でデータ品質スコアリング | [[sources/internvl-2-5]] |
+| ChatML | LLM 訓練用のロール付き対話形式 | [[sources/internvl-2-5]] |
+| MMMU-Pro | MMMU の強化版（standard 10 options / vision / overall） | [[sources/internvl-2-5]] |
+| MATH-Vision | 競技レベル数学（3,040 問、testmini + full） | [[sources/internvl-2-5]] |
+| MathVerse | 視覚数学（2,612 問、6 バージョン） | [[sources/internvl-2-5]] |
+| OlympiadBench | バイリンガル五輪・高考レベル数学・物理 | [[sources/internvl-2-5]] |
+| CharXiv | 科学論文 chart 理解（RQ: reasoning / DQ: descriptive） | [[sources/internvl-2-5]] |
+| VCR | Visual Caption Restoration（画像内テキスト復元） | [[sources/internvl-2-5]] |
+| SEED-Bench-2-Plus | text-rich 視覚タスク（charts/maps/webs、2,300 問） | [[sources/internvl-2-5]] |
+| Mantis-Eval | 複数画像推論ベンチ（217 問） | [[sources/internvl-2-5]] |
+| MMIU | 7 種類の複数画像関係 × 52 タスク | [[sources/internvl-2-5]] |
+| MuirBench | 12 タスク × 10 種類の複数画像関係 | [[sources/internvl-2-5]] |
+| BLINK | 14 タスク視覚知覚（複数画像中心） | [[sources/internvl-2-5]] |
+| MIRB | 複数画像理解 4 カテゴリ | [[sources/internvl-2-5]] |
+| WildVision-Bench | 500 人手キュレーション、GPT-4o 採点 | [[sources/internvl-2-5]] |
+| R-Bench | 実世界画像劣化への頑健性 | [[sources/internvl-2-5]] |
+| MMBench v1.1 | MMBench の精緻版 | [[sources/internvl-2-5]] |
+| MMVet v2 | MMVet 拡張版（interleaved image-text 追加） | [[sources/internvl-2-5]] |
+| MMHal-Bench | 96 問の hallucination 評価（GPT-4o 採点） | [[sources/internvl-2-5]] |
+| CRPE | オブジェクト関係 hallucination | [[sources/internvl-2-5]] |
+| MMMB | 6 言語多言語マルチモーダル（en/zh/pt/ar/tr/ru） | [[sources/internvl-2-5]] |
+| Multilingual MMBench | MMBench の 6 言語版（GPT-4 翻訳） | [[sources/internvl-2-5]] |
+| MTVQA | 9 言語 text-centric VQA | [[sources/internvl-2-5]] |
+| Video-MME | 全スペクトル動画分析（subtitle あり/なし） | [[sources/internvl-2-5]] |
+| MVBench | 20 動画タスク（perception → cognition、16 frames） | [[sources/internvl-2-5]] |
+| MMBench-Video | 動画理解 + 時間推論 | [[sources/internvl-2-5]] |
+| MLVU | 長動画理解（3 分 - 2 時間） | [[sources/internvl-2-5]] |
+| LongVideoBench | 長フレーム入力 referring reasoning | [[sources/internvl-2-5]] |
+| CG-Bench | clue-based 動画理解（1,219 動画 + 12,000 QA） | [[sources/internvl-2-5]] |
+| MMLU / CMMLU / C-Eval | LLM 5-shot 知識ベンチ | [[sources/internvl-2-5]] |
+| GAOKAO-Bench | 中国高考ベース LLM ベンチ | [[sources/internvl-2-5]] |
+| TriviaQA / NaturalQuestions | LLM 0-shot QA | [[sources/internvl-2-5]] |
+| C3 | 中国語多肢選択読解 | [[sources/internvl-2-5]] |
+| RACE | 英語高校生試験読解 | [[sources/internvl-2-5]] |
+| WinoGrande / HellaSwag / BBH | 常識推論 / NLI / 難タスク推論 | [[sources/internvl-2-5]] |
+| GSM8K / MATH / TheoremQA | 小学・高校・STEM 数学 | [[sources/internvl-2-5]] |
+| HumanEval / MBPP / MBPP-CN | コード生成（Python） | [[sources/internvl-2-5]] |
+| Linear Probing / Attention Pooling Probing | 凍結特徴の線形 / attention pooling 評価 | [[sources/internvl-2-5]] |
+| Head Tuning / Full Tuning | セグメンテーション凍結 backbone + head / 全層訓練 | [[sources/internvl-2-5]] |
+| UperNet | セマンティックセグ標準 head | [[sources/internvl-2-5]] |
+| Grounding-DINO-L / UNINEXT-H / ONE-PEACE | 視覚的グラウンディング SOTA 比較相手（InternVL 2.5 が超え） | [[sources/internvl-2-5]] |
+| TextHawk2 / Ferret-v2 / CogVLM-Grounding | grounding 機能付き MLLM | [[sources/internvl-2-5]] |
+| NVLM / Molmo / LLaVA-OneVision | 同時期競合 MLLM | [[sources/internvl-2-5]] |
+| MiniCPM-V 2.6 / Ovis 1.6 / Phi-3.5-Vision / Aquila-VL / Cambrian / VILA-1.5 | 同時期軽量・中型 MLLM | [[sources/internvl-2-5]] |
+| InternVL4Drive-v2 | InternVL 派生の 26B 自律走行 SOTA | [[sources/internvl-2-5]] / [[sources/mini-internvl]] |
+| OpenAI o1 | OpenAI の reasoning-focused モデル（2024 Sep、test-time scaling の象徴） | [[sources/internvl-2-5]] |
+| InternVL 3 | InternVL シリーズ第 7 世代（2025 Apr）、Native Multimodal Pre-Training、MMMU 72.2 SOTA | [[sources/internvl-3]] / [[entities/internvl-3]] |
+| InternVL3-1B/2B/8B/9B/14B/38B/78B | InternVL 3 の 7 サイズ | [[entities/internvl-3]] |
+| InternLM3-8B | Shanghai AI Lab の最新 8B LLM（InternLM 2.5 後継、InternVL3-9B が使用） | [[entities/internvl-3]] |
+| Qwen2.5 base | Alibaba Qwen2.5 のベースモデル（Chat/Instruct ではない、InternVL 3 が起点に使用） | [[entities/internvl-3]] |
+| Native Multimodal Pre-Training | テキスト + マルチモーダル共同事前学習（本論文の中核哲学） | [[sources/internvl-3]] |
+| V2PE | Variable Visual Position Encoding（視覚トークンに位置インクリメント δ < 1） | [[sources/internvl-3]] |
+| δ (delta) | V2PE の視覚トークン位置インクリメント（{1, 1/2, 1/4, ..., 1/256}） | [[sources/internvl-3]] |
+| MPO | Mixed Preference Optimization（DPO + BCO + LM 損失） | [[sources/internvl-3]] |
+| DPO | Direct Preference Optimization（Rafailov et al., 2023） | [[sources/internvl-3]] |
+| BCO | Binary Classifier Optimization（個別応答の絶対品質を独立評価） | [[sources/internvl-3]] |
+| VisualPRM | Visual Process Reward Model（各推論ステップに +/- スコア） | [[sources/internvl-3]] |
+| VisualPRM-8B | InternVL3-8B ベースの 8B critic モデル | [[entities/internvl-3]] |
+| VisualPRM400K | VisualPRM 訓練データ（MMPR v1.2 ベース、InternVL3 で拡張） | [[sources/internvl-3]] |
+| MMPR v1.2 | Multimodal Preference Repository v1.2（多モーダル選好データ） | [[sources/internvl-3]] |
+| Best-of-N / Bo8 | テスト時スケーリング: N=8 個の応答から最良選択 | [[sources/internvl-3]] |
+| InternEVO | InternVL 3 用に拡張された ZeRO 最適化訓練フレームワーク（50-200% 高速化） | [[sources/internvl-3]] |
+| Head-Parallel | 32K トークン系列対応の並列化技法 | [[sources/internvl-3]] |
+| InternVL-Data | InternVL3 公開訓練データセット（HF: `OpenGVLab/InternVL-Data`） | [[entities/internvl-3]] |
+| GUI Grounding | スクリーンショット上の UI 要素の位置特定 | [[sources/internvl-3]] |
+| ScreenSpot / ScreenSpot-V2 | GUI grounding ベンチマーク | [[sources/internvl-3]] |
+| UI-TARS-72B | ByteDance の GUI エージェント特化 MLLM | [[sources/internvl-3]] |
+| Aguvis-72B | GUI 特化 MLLM（ScreenSpot SOTA） | [[sources/internvl-3]] |
+| VSI-Bench | Visual-Spatial Intelligence Benchmark（3D 空間推論） | [[sources/internvl-3]] |
+| MathVision | Math-Vision の別名（InternVL 3 論文表記） | [[sources/internvl-3]] |
+| DynaMath | 動的数学推論ベンチマーク | [[sources/internvl-3]] |
+| WeMath | 視覚数学ベンチマーク | [[sources/internvl-3]] |
+| LogicVista | 論理推論ベンチマーク | [[sources/internvl-3]] |
+| Claude-3.7-Sonnet | Anthropic Claude-3 系列の reasoning 強化版 | [[sources/internvl-3]] |
+| Gemini-2.0-Pro / Flash | Google Gemini-2 系列 | [[sources/internvl-3]] |
+| Gemini-2.5-Pro | Google Gemini-2.5 系列（最新） | [[sources/internvl-3]] |
+| Qwen2.5-VL-3B/7B/32B/72B | Alibaba Qwen2.5-VL 系列（InternVL 3 の直接競合） | [[sources/internvl-3]] |
+| QvQ-72B-Preview | Alibaba の reasoning-focused 視覚 MLLM | [[sources/internvl-3]] |
+| Ovis2-16B / 34B | Ovis シリーズ後継 MLLM | [[sources/internvl-3]] |
+| MiniCPM-o2.6 | MiniCPM-V 2.6 後継 | [[sources/internvl-3]] |
+| Oryx-1.5-32B | 動画 MLLM | [[sources/internvl-3]] |
+| VideoLLaMA2-72B | DAMO 動画 MLLM | [[sources/internvl-3]] |
+| OmniCorpus | 大規模多モーダル interleaved コーパス（Shanghai AI Lab） | [[sources/internvl-3]] |
+| Tongyi Qianwen LICENSE | Qwen2.5 のライセンス（商用制約あり、InternVL 3 ライセンス継承） | [[sources/internvl-3]] |
+| GLM-4v-Plus | 智谱 AI の MLLM（InternVL 3 比較相手） | [[sources/internvl-3]] |
+| Step-1o | StepFun の MLLM（InternVL 3 比較相手） | [[sources/internvl-3]] |
+| ChatGPT-4o-latest | OpenAI の最新 GPT-4o（2024 Nov 等） | [[sources/internvl-3]] |
+| MPO (paper) | Mixed Preference Optimization 提案論文（Wang et al., 2024 Nov） | [[sources/mpo]] / [[entities/mpo]] |
+| MMPR | MultiModal PReference dataset（約 3M ペア、本論文で公開） | [[entities/mmpr]] |
+| MMPR v1 | MMPR 初版（InternVL2-8B-MPO 用） | [[entities/mmpr]] |
+| MMPR v1.2 | MMPR 拡張版（InternVL 3 + VisualPRM 用） | [[entities/mmpr]] |
+| DropoutNTP | Dropout Next-Token Prediction（画像なしで応答補完、本論文の独自貢献） | [[sources/mpo]] |
+| InternVL2-8B-MPO | MPO 訓練後の InternVL2-8B（本論文の代表モデル） | [[entities/mpo]] |
+| BCO | Binary Classifier Optimization（Jung et al. 2024、chosen→1/rejected→0） | [[sources/mpo]] |
+| RLAIF-V | divide-and-conquer 方式のマルチモーダル選好データ生成（Yu et al. 2024） | [[sources/mpo]] |
+| Teacher Forcing | SFT で正解トークンを与えて訓練、分布シフトの原因 | [[sources/mpo]] |
+| Distribution Shift | SFT 訓練と推論のあいだの分布のズレ、CoT で深刻化 | [[sources/mpo]] |
+| Bradley-Terry model | 1952 年提案、ペア比較から選好順序を推定する確率モデル（DPO 系の基礎） | [[sources/mpo]] |
+| Reference Model π₀ | DPO 系で凍結される元モデル（KL 制約用） | [[sources/mpo]] |
+| Policy Model π_θ | DPO 系で更新される学習可能モデル | [[sources/mpo]] |
+| KL Penalty β | DPO の reference からの逸脱罰則係数（MPO では 0.1） | [[sources/mpo]] |
+| Reward Shift δ | BCO の安定化用、過去報酬の moving average | [[sources/mpo]] |
+| RSO | Statistical Rejection Sampling Optimization（DPO の hinge 損失版） | [[sources/mpo]] |
+| IPO | Identity Preference Optimization（DPO の overfitting 対策版） | [[sources/mpo]] |
+| cDPO / RobustDPO | preference label のノイズに頑健な DPO 変種 | [[sources/mpo]] |
+| SPPO | Self-Play Preference Optimization | [[sources/mpo]] |
+| AOT | Distributional Preference Alignment via Optimal Transport | [[sources/mpo]] |
+| TR-DPO | reference model を定期的に同期する DPO 変種 | [[sources/mpo]] |
+| ORPO | Odds Ratio Preference Optimization（reference model 不要） | [[sources/mpo]] |
+| Smaug | Pal et al. 2024、DPO が gibberish を生む現象を分析 | [[sources/mpo]] |
+| Object HalBench | object-level hallucination ベンチマーク | [[sources/mpo]] |
+| InstructGPT | OpenAI の RLHF 初期実装（Ouyang et al. 2022） | [[sources/mpo]] |
+| PPO-Max | PPO の安定化版 | [[sources/mpo]] |
+| M3CoT | Multi-domain Multi-step Multi-modal CoT（マルチモーダル CoT ベンチ） | [[sources/mpo]] |
+| Geo170K / GeoQA+ / GEOS / GeomVerse / Geometry3K / CLEVR-Math | 数学 grounding データセット（MMPR 構築用） | [[entities/mmpr]] |
+| DVQA / MapQA / ChartQA | チャート VQA（MMPR） | [[entities/mmpr]] |
+| OCRVQA / STVQA / SROIE / InfoVQA / TextVQA | OCR VQA（MMPR） | [[entities/mmpr]] |
+| AI2D / ScienceQA | 科学 VQA（MMPR） | [[entities/mmpr]] |
+| TheoremQA | 複雑科学問題（MPO で +5.2、テキスト専用） | [[sources/mpo]] |
+| IFEval | Instruction-Following Evaluation（MPO で +4.1） | [[sources/mpo]] |
+| GAOKAO | 中国高考、テキスト LLM 評価 | [[sources/mpo]] |
+| 3H | helpful, honest, harmless（InstructGPT の目標） | [[sources/mpo]] |
+| Background Knowledge-based CoT | 背景知識ベース CoT（Science 用、MMPR） | [[sources/mpo]] |
+| Visual Content-based CoT | 視覚内容ベース CoT（Chart/OCR/Document 用、MMPR） | [[sources/mpo]] |
+| Grounded CoT | grounding 付き CoT（General VQA 用、MMPR） | [[sources/mpo]] |
+| Dropout Ratio (DR) | DropoutNTP の応答切り詰め比率（最適 0.5） | [[sources/mpo]] |
+| token cost per pair | 選好ペアあたりトークン数（DropoutNTP 571.2 vs RLAIF-V 992.7） | [[sources/mpo]] |
+| InternVL 3.5 | InternVL シリーズ第 8 世代（2025 Aug）、Cascade RL + MoE + ViR + DvD、MMMU 77.7 | [[sources/internvl-3-5]] / [[entities/internvl-3-5]] |
+| InternVL3.5-1B/2B/4B/8B/14B/38B | InternVL 3.5 の Dense モデル 6 サイズ | [[entities/internvl-3-5]] |
+| InternVL3.5-20B-A4B | InternVL 3.5 の MoE モデル（GPT-OSS-20B、activated 4B） | [[entities/internvl-3-5]] |
+| InternVL3.5-30B-A3B | InternVL 3.5 の MoE モデル（Qwen3-30B-A3B、activated 3B） | [[entities/internvl-3-5]] |
+| InternVL3.5-241B-A28B | InternVL 3.5 の最大 MoE モデル（Qwen3-235B-A22B、activated 28B） | [[entities/internvl-3-5]] |
+| InternVL3.5-Flash | ViR を統合した InternVL 3.5 効率版（視覚トークン 50% 削減で性能 99% 維持） | [[entities/internvl-3-5]] |
+| Cascade RL | Cascade Reinforcement Learning（offline MPO + online GSPO の 2 段階、InternVL 3.5 の中核） | [[sources/internvl-3-5]] |
+| GSPO | Geometric mean Sequence-level PPO（online RL、reference 制約なし、トークン単位 geometric mean ratio） | [[sources/internvl-3-5]] |
+| GRPO | Group Relative Policy Optimization（DeepSeek 系の online RL、GSPO の元） | [[sources/internvl-3-5]] |
+| GSPO importance ratio | $s_i = (\pi_\theta/\pi_{\text{old}})^{1/\|y_i\|}$、トークン単位の geometric mean | [[sources/internvl-3-5]] |
+| ViR | Visual Resolution Router（patch ごとに 1/4 or 1/16 圧縮率を動的選択） | [[sources/internvl-3-5]] |
+| ViCO | Visual Consistency Learning（ViR 訓練用 2 段階手法: consistency + router training） | [[sources/internvl-3-5]] |
+| patch router | ViR のバイナリ分類器（cross-entropy 訓練） | [[sources/internvl-3-5]] |
+| loss ratio r_i | ViR target 用、L(I_1/16) / L(I_1/4) | [[sources/internvl-3-5]] |
+| k-th percentile threshold τ | ViR の動的閾値（target 分布をバランス） | [[sources/internvl-3-5]] |
+| Pixel Shuffle (1/16) | InternVL 3.5 の高圧縮率版（patch を 64 token に圧縮） | [[sources/internvl-3-5]] |
+| DvD | Decoupled Vision-Language Deployment（ViT/MLP を vision server、LLM を language server に分離） | [[sources/internvl-3-5]] |
+| Vision Server | DvD の視覚処理サーバ（ViT + MLP + ViR） | [[sources/internvl-3-5]] |
+| Language Server | DvD の言語処理サーバ（LLM のみ） | [[sources/internvl-3-5]] |
+| 非同期 3 段階パイプライン | DvD の Vision → Transfer → Language の重ね合わせ実行 | [[sources/internvl-3-5]] |
+| RDMA | Remote Direct Memory Access（DvD 視覚特徴転送の高速オプション） | [[sources/internvl-3-5]] |
+| Qwen3 series | Alibaba の最新 LLM（0.6B/1.7B/4B/8B/14B/32B/30B-A3B/235B-A22B、InternVL 3.5 の主軸） | [[entities/internvl-3-5]] |
+| GPT-OSS-20B | OpenAI 公開の MoE LLM（InternVL 3.5-20B-A4B が採用） | [[entities/internvl-3-5]] |
+| Activated Parameters (A4B/A3B/A28B) | MoE モデルの活性パラメータ数表記 | [[entities/internvl-3-5]] |
+| Thinking Mode | Qwen3 等の reasoning モード（Deep Thinking に使用） | [[sources/internvl-3-5]] |
+| Deep Thinking | InternVL 3.5 の Test-Time Scaling 手法（Thinking モード起動の step-by-step 推論） | [[sources/internvl-3-5]] |
+| Parallel Thinking | InternVL 3.5 の Test-Time Scaling 手法（Best-of-N + VisualPRM-v1.1） | [[sources/internvl-3-5]] |
+| VisualPRM-v1.1 | InternVL 3.5 の critic モデル（InternVL 3 の VisualPRM 後継） | [[entities/internvl-3-5]] |
+| MMPR-Tiny | MMPR-v1.2 から accuracy 0.2-0.8 でフィルタリングした online RL データ（70K クエリ） | [[entities/mmpr]] / [[entities/internvl-3-5]] |
+| InternEVO / XTuner | InternVL 3.5 の訓練フレームワーク | [[sources/internvl-3-5]] |
+| FSDP | Fully Shared Data Parallelism（XTuner の最適化） | [[sources/internvl-3-5]] |
+| DeepGEMM | FP8 GEMM カーネル（DeepSeek 提案、XTuner で使用） | [[sources/internvl-3-5]] |
+| liger-kernel | fused cross-entropy operator | [[sources/internvl-3-5]] |
+| FlashAttention-3 | 高速 attention 実装（packed inputs 対応） | [[sources/internvl-3-5]] |
+| TMA-Adaptive FP8 Grouped GEMM | MoE 訓練用の特殊カーネル | [[sources/internvl-3-5]] |
+| verl | online RL 段階のコードベース | [[sources/internvl-3-5]] |
+| window attention with sink | GPT-OSS-20B の特殊 attention（InternVL3.5-20B-A4B で Triton 版実装） | [[sources/internvl-3-5]] |
+| GPT-5 / GPT-5-nano | OpenAI の最新フロンティア MLLM（2025 Aug） | [[sources/internvl-3-5]] |
+| GLM-4.1V-9B / GLM-4.5V | 智谱 AI の最新マルチモーダル MLLM | [[sources/internvl-3-5]] |
+| Step-3 / Step3-321B-A38B | StepFun の MLLM | [[sources/internvl-3-5]] |
+| Kimi-VL-A3B-2506 | Moonshot Kimi-VL の MoE 版 | [[sources/internvl-3-5]] |
+| MiMo-VL-RL-8B | Xiaomi の RL 強化 MLLM | [[sources/internvl-3-5]] |
+| Keye-VL-8B | 快手 Keye の MLLM | [[sources/internvl-3-5]] |
+| Ovis-2B/4B/8B/2-16B/2-34B | Ovis シリーズ MLLM | [[sources/internvl-3-5]] |
+| MiniCPM-V-4 / MiniCPM-o-2.6 | Tsinghua の軽量 MLLM | [[sources/internvl-3-5]] |
+| Skywork-R1V3-38B | 昆仑万维 Skywork の reasoning MLLM | [[sources/internvl-3-5]] |
+| QvQ-72B-Preview | Alibaba の reasoning MLLM | [[sources/internvl-3-5]] |
+| Doubao-1.5-Pro | ByteDance Doubao | [[sources/internvl-3-5]] |
+| Seed1.5-VL | ByteDance の MLLM（ScreenSpot-v2 商用 SOTA） | [[sources/internvl-3-5]] |
+| WindowsAgentArena | Windows GUI エージェントベンチ | [[sources/internvl-3-5]] |
+| WebArena-Lite-v2 | Web エージェントベンチ | [[sources/internvl-3-5]] |
+| OSWorld / OSWorld-G | OS-level GUI エージェントベンチ | [[sources/internvl-3-5]] |
+| SGP-Bench | SVG 理解ベンチ | [[sources/internvl-3-5]] |
+| SArena-Icon | SVG 生成ベンチ（Text2SVG / Img2SVG） | [[sources/internvl-3-5]] |
+| ERQA | embodied reasoning ベンチ | [[sources/internvl-3-5]] |
+| SpaCE-10 | 空間理解ベンチ | [[sources/internvl-3-5]] |
+| OmniSpatial | 包括的空間ベンチ | [[sources/internvl-3-5]] |
+| Llama-4-Scout / Maverick | Meta Llama-4 系 | [[sources/internvl-3-5]] |
+| DeepSeek-V3-671B-A37B | DeepSeek の最大 MoE | [[sources/internvl-3-5]] |
+| Reward Hacking | RL モデルが reward を gaming する現象 | [[sources/internvl-3-5]] |
+| Request Throughput | DvD の評価指標（requests/s） | [[sources/internvl-3-5]] |
 | GLIP | Grounded Language-Image Pre-training（Li et al., CVPR 2022）、open-vocab 検出パラダイムの祖 | [[sources/glip]] / [[entities/glip]] |
 | phrase grounding | 文中の phrase と画像内の物体/領域の対応を見つけるタスク（GLIP の核） | [[sources/glip]] |
 | region-word alignment | 画像 region と単語 token の埋め込み内積（GLIP の中核） | [[sources/glip]] |

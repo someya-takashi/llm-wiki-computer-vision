@@ -145,6 +145,27 @@ iBOT 損失を基盤として継承しつつ、新規の **Gram anchoring**（[[
 
 ---
 
+## Online vs Frozen-External Tokenizer：対比設計
+
+**online tokenizer** が「自己進化するトークナイザ」だとすれば、その対極にあるのが「**事前学習済み外部モデルを凍結トークナイザとして使う**」というアプローチ。
+
+| 観点 | **Online Tokenizer**（[[entities/ibot]] / [[entities/dinov2]]） | **Frozen External Tokenizer**（[[entities/eva-x]] / EVA-02）|
+|---|---|---|
+| トークナイザの由来 | student の EMA から自動派生 | 別途事前学習された強力 CLIP（EVA-CLIP / MGCA 等） |
+| 訓練の独立性 | self-contained（外部依存なし）| 外部 CLIP の品質に依存 |
+| 適用しやすさ | 任意ドメインで始められる | 強い CLIP のあるドメインのみ |
+| 計算コスト | EMA 更新が必要 | 凍結のため軽い |
+| 代表例 | iBOT, DINOv2, DINOv3 | EVA, EVA-02, EVA-X |
+
+両アプローチは思想的に対立しつつ補完的：
+
+- online は **「ドメイン横断的に汎化する基盤モデル」**を作るときに有利（DINOv2 のように Web 規模データで自己改善）
+- frozen-external は **「強い既存 CLIP を活かして新ドメインに転移」** するときに有利（EVA-X が EVA-CLIP を医療 X 線に持ち込んだ例）
+
+EVA-X (npj Digital Medicine 2025) はこの設計対比の象徴的事例。詳細: [[sources/eva-x]]
+
+---
+
 ## 他手法との関係
 
 ### vs Knowledge Distillation（[[concepts/knowledge-distillation]]）
@@ -178,3 +199,4 @@ BYOL は student の最後に追加の MLP predictor を入れて崩壊を防ぐ
 - [[concepts/knowledge-distillation]] — online tokenizer は自己蒸留の特殊形
 - [[concepts/self-supervised-learning]] — SSL 全般
 - [[entities/dinov2]] / [[entities/dinov3]] — online tokenizer を継承する後継モデル
+- [[entities/eva-x]] / [[sources/eva-x]] — online の対極設計（凍結外部 CLIP トークナイザ）の代表例。胸部 X 線基盤モデル

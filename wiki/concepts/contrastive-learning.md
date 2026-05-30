@@ -3,7 +3,7 @@ type: concept
 aliases: [Contrastive Learning, 対比学習, contrastive representation learning]
 tags: [paradigm, ssl, training-technique, representation-learning]
 related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[knn-evaluation-protocol]], [[alignment-tuning]]
-sources: [[sources/simclr]], [[sources/clip]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
+sources: [[sources/simclr]], [[sources/simclr]], [[sources/clip]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
 updated: 2026-05-28
 ---
 
@@ -55,6 +55,26 @@ $$
 ここでは「**augmentation 不変性**」を学習する。color jitter, crop, blur 等を変えても同じ意味になるように。
 
 > **補足: なぜ強い拡張が必要か** — 軽い拡張だと正例ペアが「ほぼ同じ」になり学習信号が弱い。SimCLR は意図的に強い random crop, color jitter, Gaussian blur, solarization 等を使う。これが対比学習の最大の特徴で、MAE 等の MIM が augmentation 不要なのと対照的。
+
+#### SimCLR の核心設計（[[sources/simclr]]）
+
+SimCLR（Chen et al., ICML 2020）は「何が対比学習を効かせるか」を体系的なアブレーションで解明した。3 つの重要な発見：
+
+**① 拡張の構成が決定的** — 単一の拡張（クロップのみ、カラー歪みのみ）では性能が低い。**ランダムクロップ×カラー歪みの組み合わせ**が突出して重要。理由: クロップのみだと同じ画像の 2 パッチはほぼ同じカラーヒストグラムを共有し、ショートカットを使える。カラー歪みを加えると、モデルは色に頼らず意味的一致を見つけなければならなくなる。
+
+**② 非線形射影ヘッドが最大の単独改善要因**
+
+```
+エンコーダ出力 h → [射影ヘッド g] → z
+                              ↑
+                    ここで NT-Xent 損失を計算（訓練後は捨てる）
+                    下流タスクには h を使う
+```
+
+射影なし: ~57%、線形射影: ~60%、**非線形 MLP: ~63-64%**（+10% 以上）。
+*なぜ機能するか*: z は変換不変になるよう訓練されるため、色・向きなどの情報が消える。g がそのバッファ役を担い、h に豊かな情報を維持させる。
+
+**③ 対比学習は教師あり学習より強い拡張を必要とする** — カラー歪みを強くすると SSL の性能は向上するが、同じ拡張を教師あり学習に適用すると性能が下がる。対比学習はショートカット特徴（カラー統計など）を使えなくすることを学習信号として活用するため。
 
 #### SimCLR の核心設計（[[sources/simclr]]）
 

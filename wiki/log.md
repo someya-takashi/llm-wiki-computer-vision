@@ -408,6 +408,193 @@
   - **Ohio State University の貢献**: SimCLR/FixMatch（Google）/MixMatch（Google）/FlexMatch（東工大・MSRA）/DINOv2（Meta）に続き、Ohio State から SeSL 研究の主要貢献。研究機関の地理的多様化が継続
   - 後続候補: FineSSL（CLIP × 平衡マージン softmax SeSL）/ V-PETL Bench（PEFT ベンチマーク）/ LoRA 原典 / AdaptFormer 原典 / VPT 原典 / FreeMatch / SoftMatch 原典 / Visual Task Adaptation Benchmark（VTAB）原典 など
 
+## [2026-05-28] ingest | Self-Supervised Learning Powered by Synthetic Data From Diffusion Models: Application to X-Ray Images (I-SynMed)
+
+- 取り込み: `raw/papers/Self-Supervised Learning Powered by Synthetic Data From Diffusion Models_ Application to X-Ray Images.md`（IEEE Access 2025、Web クリップ markdown）
+- **特例: 画像取得不可** — IEEE Xplore の画像 URL は認証が必要で、curl で取得を試みた 5 ファイルは全て同サイズ（4141 bytes）のエラーレスポンス。`raw/assets/i-synmed/` ディレクトリは作成せず、翻訳内では原典 URL を参照する形で対応
+- 作成:
+  - [[translations/i-synmed]] — Abstract（原典 markdown では切れている）+ §1-5 + 謝辞の全文和訳。図 1-9・表 1-7 の数値情報を本文中にテキストで保持（References は除外、独立 Appendix なし）
+  - [[sources/i-synmed]] — 初学者向け要約。「DDPM 合成画像 → DINO 事前学習」パイプラインの設計詳細 / 統計検定結果（p=0.107〜0.999、すべて有意差なし）/ なぜ「合成 = 実」が成立するかの仮説 / IEEE Access の位置づけと top-tier ML 会議との質的差の明示 / DDPM の memorization 問題への注意喚起
+  - [[entities/i-synmed]] — I-SynMed パイプライン（4 phase 図 / DDPM・DINO のハイパラ / 全ベンチマーク数値表 / アブレーション結果）
+  - [[concepts/diffusion-model]] — **新規 concept ページ**。DDPM/Stable Diffusion 系列の俯瞰。順方向・逆方向拡散の数式 / 再パラメータ化トリック / UNet 標準アーキテクチャと DiT への発展 / 系譜図（DPM 2015 → DDPM 2020 → DDIM 2021 → SDE 2021 → LDM 2022 → DiT 2023 → Sora 2024）/ DAE との理論的関係 / SSL × 合成データ事前学習の位置づけ / 限界（推論コスト・memorization 問題）
+- 更新:
+  - [[concepts/self-supervised-learning]] — frontmatter sources/related に i-synmed / diffusion-model 追加、参考セクションに合成データ×SSL の現代的接続を明示
+  - [[concepts/denoising-autoencoder]] — 関連ページに diffusion-model / i-synmed 追加（DAE → DDPM の理論的継承を強化）
+  - [[entities/dino]] — 「応用領域：医療画像」セクション新規追加（I-SynMed での DINO+ViT-16 採用、DDPM 合成データとの組み合わせ）、関連ページに i-synmed / diffusion-model 追加
+  - [[index]] — sources/translations/entities/concepts の各セクションに追加、略称表に DDPM/Stable Diffusion/DDIM/LDM/DiT/Classifier-free Guidance/score-based SDE/I-SynMed/UNet/FID/IS/SSIM/t-SNE/COVIDx CXR-4/NIH Chest X-ray/SIIM-ACR Pneumothorax/LightlySSL/バイオマーカー/フェデレーテッドラーニング を新規登録（19 項目）
+  - [[log]]
+- メモ:
+  - **「合成 = 実」を統計的に実証した応用研究**: 手法的新規性は低い（DDPM + DINO の組み合わせ）が、医療画像領域での「合成データ事前学習」の実証的根拠として価値がある。複数の下流タスク（肺炎/気胸の分類・セグメンテーション）で統計検定（t-test, Mann-Whitney U, Shapiro-Wilk, FDR 補正）込みで「有意差なし」を確認している点が良質
+  - **DDPM の memorization 問題は未検証**: 論文の motivation は「プライバシー保護のための合成データ」だが、Carlini et al. 2023 等が指摘する拡散モデルの訓練データ記憶問題に正面から取り組んでいない。論文自身も「将来研究」と認める重大な制限
+  - **新規 concept ページ [[concepts/diffusion-model]] を作成**: wiki に拡散モデルの体系的解説が欠けていたため、本 ingest を機会に新規作成。今後 Stable Diffusion / Sora / ControlNet / Diffusion Transformer 等の ingest で繰り返し参照される基盤概念
+  - **DAE → DDPM の理論的継承**: [[concepts/denoising-autoencoder]] 内に既に「拡散モデルとの繋がり」セクションがあったため、専用 concept ページとの相互リンクで補完。「**MAE と拡散モデルは DAE という祖先を共有する**」という見方がさらに明確化
+  - **画像取得不可の運用例**: IEEE Xplore は CDN 認証が厳しく、Web Clipper でクリップした markdown 内の画像 URL から curl/wget で取得できない。CLAUDE.md §7 の「ダウンロードできない場合は元 URL をそのまま使う」を実践、翻訳ファイル内で IEEE URL を引用してコメント注釈
+  - **IEEE Access の位置づけ**: トップ ML 会議（NeurIPS/ICCV/CVPR）ではなく open access ジャーナル（採択率高め）に投稿されている事実を sources ページ内で明示。wiki 利用者が論文の出自と質を理解するための重要情報
+  - **DINO の医療応用事例として価値**: 既存 [[entities/dino]] エンティティの応用領域セクションを追加することで、DINO が医療画像でも有効であることを wiki 内で参照可能にした
+  - **ablation の wiki 知識との整合**: DINO+ViT が MoCo+ResNet を大きく上回るという結果は、[[concepts/self-supervised-learning]] の「ViT は SSL と相性が良い」「DINO は自己蒸留として強力」という既存知見と一致
+  - **後続候補**: Stable Diffusion（Rombach et al. 2022）/ Latent Diffusion 原典 / DDPM 原典（Ho et al. 2020）/ Classifier-free Guidance 原典 / Score-based SDE / DiT（Diffusion Transformer）/ DreamBooth / ControlNet / Sora / MedSAM / RadFM など。医療画像基盤モデル系統と拡散モデル系統の双方を強化すべき
+
+## [2026-05-28] ingest | EVA-X: a foundation model for general chest x-ray analysis with self-supervised learning
+
+- 取り込み: `raw/papers/EVA-X_ a foundation model for general chest x-ray analysis with self-supervised learning - npj Digital Medicine.md`（npj Digital Medicine 2025、Web クリップ markdown）
+- ダウンロード: `raw/assets/eva-x/` に fig1-6.webp を Springer Nature の CDN から取得（一度 fig4 が HTML エラーレスポンスを返したが、再試行で WebP 取得成功）
+- 作成:
+  - [[translations/eva-x]] — Abstract + §1-4（Methods 含む完全本文）+ Data/Code availability の全文和訳。図 1-6 を `<figure>` で埋め込み、表データ・数式を本文中に保持（References と Acknowledgments と Supplementary は除外）
+  - [[sources/eva-x]] — 初学者向け要約。EVA-02 系統の医療版という位置づけ / dual ViT（学習可能 + 凍結 CLIP トークナイザ）の核心設計 / iBOT との詳細対比（online vs frozen external tokenizer）/ I-SynMed との対比表 / 11 下流タスク SOTA の具体的数値 / EVA-X-Ti (6M) が 13× FLOPs の MGCA-B を上回る効率性の意義 / 1% ラベルで COVID-19 精度 95% の意味
+  - [[entities/eva-x]] — EVA-X モデルファミリー（Ti/S/B 3 サイズ）スペックシート。アーキテクチャ詳細 / 全実験数値表 / iBOT との対比表 / EVA 系統の系譜
+- 更新:
+  - [[concepts/self-supervised-learning]] — frontmatter sources に eva-x 追加、参考セクションに eva-x 関連ページ追加
+  - [[concepts/masked-image-modeling]] — 「EVA / EVA-02 / EVA-X 系統：凍結 CLIP トークナイザによる MIM」セクション新規追加（EVA 系統が MIM の主要な新潮流であることを明示）
+  - [[concepts/online-tokenizer]] — 「Online vs Frozen-External Tokenizer：対比設計」セクション新規追加（iBOT/DINOv2 系の online と EVA/EVA-X 系の frozen external の対立を明示化、両者の補完性を整理）
+  - [[concepts/foundation-model]] — 関連ページに eva-x / i-synmed 追加（医療基盤モデルの代表例として）
+  - [[entities/ibot]] — 後続セクションに EVA-X を追加（iBOT の online tokenizer を凍結外部 CLIP に置き換えた設計バリアント）
+  - [[entities/i-synmed]] — 「EVA-X との対比」セクション新規追加（同じ胸部 X 線 SSL でも対照的な 2 アプローチを明示）
+  - [[index]] — sources/translations/entities の各セクションに追加、略称表に EVA-X/EVA/EVA-02/EVA-CLIP/MGCA/MedKLIP/BioViL/GLoRIA/Medical MAE/SelfMedMAE/Merged-520K/CXR14/CheXpert/MIMIC-CXR/Ark+/CXR-Foundation/CheXagent/XrayGPT/dual ViT/frozen external tokenizer/Sub-LN/Deepseek-v3/Grad-CAM/UperNet を新規登録（24 項目）
+  - [[log]]
+- メモ:
+  - **医療基盤モデルの本格構築の代表例**: npj Digital Medicine（Nature 系列）に掲載された質の高い研究。「EVA-02 の設計レシピが医療に転移できる」を実証。I-SynMed（IEEE Access）とは対照的に、システム研究としての規模感と完成度
+  - **online vs frozen-external tokenizer という対比軸の確立**: iBOT 系（online、self-evolving）と EVA 系（frozen external pretrained CLIP）の設計対立は MIM 研究の重要な分岐点。新規セクションで [[concepts/online-tokenizer]] に整理。両者は対立しつつ補完的（online はドメイン横断的、frozen は強い既存 CLIP を活かす）
+  - **I-SynMed との対比ペア**: 同じ「胸部 X 線 + SSL」でも、データ（合成 vs 実）、SSL アルゴリズム（DINO vs MIM）、ジャーナルの質（IEEE Access vs npj Digital Medicine）、規模感（応用 vs システム）が全く異なる。両 entity ページに相互比較表を配置
+  - **EVA-X-Ti (6M) の効率性インパクト**: 13× FLOPs を持つ MGCA-B を上回るという結果は、設計優位性の端的な証拠。「より小さく、より速く、より良い」を達成
+  - **1% ラベルで 95% 精度の臨床的意義**: ラベルアノテーションが希少な医療現場では、この効率性が直接的な実用価値を持つ。深層学習の医療普及のボトルネック解消につながる
+  - **訓練の安定性が異次元**: EVA-X の標準偏差 0.03 は Medical MAE/MGCA/BioViL 比で 2-5 倍の安定性。臨床実装可能性に直結する重要指標
+  - **EVA 系統の wiki 入口**: 今回の ingest で EVA / EVA-02 / EVA-CLIP の名前と概念が wiki に初登場。これらの原典 ingest を将来の優先候補に
+  - **Discussion で LLM 統合に言及**: CheXagent / XrayGPT 等の医療 VLM との組み合わせを将来課題として明記。医療画像エージェントの方向性を予示
+  - **データバイアスへの自己批判**: 論文自体が Glocker et al. 2023 を引用し「CXR14/CheXpert/MIMIC の異質性とバイアス」を認めている誠実さ。出版倫理の高さを示す
+  - **Deepseek-v3 でレポート解析**: 中国の LLM を実世界アノテーションに使用（F1 99% 対医師）。海外の Llama や GPT-4 ではなく国産 LLM を使う中国研究の傾向
+  - **後続候補**: EVA / EVA-02 / EVA-CLIP 原典（自然画像基盤モデル系統）/ MGCA 原典（医療 CLIP）/ MAE 系医療版（Medical MAE, SelfMedMAE 原典）/ Ark+（Nature 2025 医療基盤モデル）/ CXR-Foundation (ELIXR) / CheXagent / XrayGPT / MedSAM など。医療基盤モデルと EVA 系統の両方を強化すべき
+
+## [2026-05-27] ingest | A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)
+
+- 取り込み: `raw/papers/A Simple Framework for Contrastive Learning of Visual Representations.md`
+- ダウンロード: `raw/assets/simclr/` に fig1.png（性能比較棒グラフ）、fig5.png（拡張アブレーション行列）、fig7.png（モデルスケール比較）、fig9.png（バッチサイズ×エポック数比較）を保存
+- 作成:
+  - [[translations/simclr]] — Abstract + §1-8 + Appendix A-C の全文和訳（References のみ除外）
+  - [[sources/simclr]] — 初学者向け要約ページ（4 コンポーネント設計 / 主要アブレーション / 実験結果 / 限界 / 用語）
+  - [[entities/simclr]] — SimCLR モデルエンティティ（4 コンポーネント表 / 主要結果 / 後継手法系統図）
+- 更新:
+  - [[concepts/contrastive-learning]] — frontmatter sources 追加 + §1「インスタンス識別」内に SimCLR 核心設計サブセクション追加（3 つの発見、射影ヘッドのフロー図、拡張構成の重要性）、関連ページに simclr 追加
+  - [[concepts/self-supervised-learning]] — frontmatter sources に simclr 追加
+  - [[index]] — sources/simclr、translations/simclr、entities/simclr を追加、略称表に SimCLR/NT-Xent/LARS/MoCo/PIRL/Global BN を登録
+- メモ:
+  - **「何が効くかを解明した論文」**: SimCLR の貢献は新しい手法の提案というより、既存要素の何が効いていたかを体系的アブレーションで解明したこと。非線形射影ヘッドの発見（+10%以上）が最大のインパクト
+  - **二次情報→一次情報昇格**: [[concepts/contrastive-learning]] には以前から SimCLR への言及があったが、源論文を ingest することで一次情報に基づいたより詳細なセクションに置換
+  - **既存の contrastive-learning.md との整合**: ページ構造はほぼ既存のまま維持し、Section 1「インスタンス識別」の下に SimCLR のサブセクションを追加する形をとった
+  - **新概念ページは作らなかった**: NT-Xent、LARS 等は sources/simclr.md と index 略称表で完結。MoCo のエンティティページも現時点では不要と判断
+  - 後続候補: MoCo / BYOL / SimSiam（非対比型 SSL の実装解明系）、SimCLR v2（知識蒸留への発展）など
+
+## [2026-05-27] ingest | Bootstrap Your Own Latent: A New Approach to Self-Supervised Learning (BYOL)
+
+- 取り込み: `raw/papers/Bootstrap Your Own Latent A New Approach to Self-Supervised Learning.md`
+- ダウンロード: `raw/assets/byol/` に fig1.png（ImageNet 比較バーチャート）、fig2.png（BYOL アーキテクチャ図）、fig3a.png（バッチサイズ比較）、fig8.png（BYOL スケッチ / 全体アーキテクチャ）を保存
+- 作成:
+  - [[translations/byol]] — Abstract + §1-6 + Appendix A-B の全文和訳（References のみ除外）
+  - [[sources/byol]] — 初学者向け要約ページ（2 ネットワーク構造 / predictor の役割 / 崩壊回避の機構 / アブレーション結果 / SimCLR との詳細比較 / 用語）
+  - [[entities/byol]] — BYOL モデルエンティティ（アーキテクチャ表 / 主要結果 / 後継手法系統図）
+- 更新:
+  - [[concepts/self-supervised-learning]] — frontmatter sources に byol 追加、BYOL の説明文を拡充（predictor + EMA が両方必要、74.3% vs 69.3%）、参考セクションに byol を追加
+  - [[index]] — sources/byol、translations/byol、entities/byol を追加、略称表に BYOL/predictor を登録
+  - [[log]]
+- メモ:
+  - **「負例は必須か → 否」への答え**: BYOL の最大の貢献は「predictor + EMA ターゲットの組み合わせで崩壊を防げる」という発見。この結果が SimSiam（EMA も除去）、DINO（cross-entropy + centering）へと続く非対比 SSL の流れを確立した
+  - **二次情報→一次情報昇格**: [[concepts/self-supervised-learning]] には以前から BYOL の記述があったが（「predictor + momentum + BN」）、原典 ingest により「predictor + EMA target（どちらか一方では崩壊する）」という正確な知見に更新
+  - **τ アブレーションの重要性**: τ=0（直接コピー）→崩壊、τ=1（固定ランダム）→18.8% でも崩壊せず（これが BYOL の着想源）、τ=0.99 が最適という実験結果は直観と理論の双方を補強する重要データ
+  - **新概念ページは作らなかった**: predictor / bootstrapping は sources/byol.md と index 略称表で完結。SimSiam（BYOL から EMA も除去）は次の ingest 候補
+  - 後続候補: SimSiam（stop-gradient のみで崩壊防止）、MoCo / MoCo v2（momentum encoder 元祖）、DINO 系（BYOL の自己蒸留解釈を完成）、SimCLR v2（知識蒸留）など
+
+## [2026-05-27] ingest | MixMatch: A Holistic Approach to Semi-Supervised Learning
+
+- 取り込み: `raw/papers/MixMatch_ A Holistic Approach to Semi-Supervised Learning.md`
+- ダウンロード: `raw/assets/mixmatch/` に fig1.png（ラベル推定図）、fig4.png（SVHN+Extra 比較グラフ）を保存（fig2/fig3 は原典 markdown に URL 未埋め込み）
+- 作成:
+  - [[translations/mixmatch]] — Abstract + §1-5 + Appendix A-C（記号定義 / CIFAR-10 全数値表 / SVHN 全数値表 / SVHN+Extra 全数値表 / 13 層 ConvNet 結果）の全文和訳（References のみ除外）
+  - [[sources/mixmatch]] — 初学者向け要約ページ（ラベル推定 + シャープニング + MixUp の 3 ステップ / アブレーション重要性順位 / 差分プライバシー応用 / SimCLR/BYOL との比較 / 用語）
+  - [[entities/mixmatch]] — MixMatch エンティティ（アルゴリズム構成図 / ハイパーパラメータ表 / 主要結果表 / アブレーション表 / 後継手法表）
+  - [[concepts/semi-supervised-learning]] — 半教師あり学習の新規 concept ページ（自己教師あり学習との区別、一貫性正則化 / エントロピー最小化 / MixUp の 3 系統、系譜図、SSL 略称衝突問題の明示）
+- 更新:
+  - [[concepts/self-supervised-learning]] — related に [[semi-supervised-learning]] 追加、参考セクションに「半教師あり学習：SSL 略称の衝突注意」を追加
+  - [[index]] — sources/mixmatch、translations/mixmatch、entities/mixmatch、concepts/semi-supervised-learning を追加、略称表に MixMatch/MixUp/Label Guessing/Sharpening/SeSL/Mean Teacher/VAT/FixMatch/Brier スコア/PATE/Wide ResNet/WRN を登録
+  - [[log]]
+- メモ:
+  - **半教師あり vs 自己教師あり**: MixMatch は SSL（Self-Supervised Learning）ではなく SeSL（Semi-Supervised Learning）。wikiで「SSL」という略称を持つ [[concepts/self-supervised-learning]] との混同を避けるため、新規 concept ページ [[concepts/semi-supervised-learning]] を作成して区別を明示した
+  - **MixUp が最大の貢献要素**: アブレーション（表 4）でラベルあき・なし横断 MixUp を除去すると 11.08% → 39.11%（+28pt）という最大の劣化。シャープニング（+16pt）、K 回平均（+5pt）より重要
+  - **シャープニングは DINO へ**: MixMatch のシャープニング関数（温度 T=0.5）の思想は、後の DINO の centering + sharpening に受け継がれた。ただし DINO では自己教師あり学習での崩壊防止が目的となり、役割が変化
+  - **Mean Teacher の EMA は MixMatch に不要**: SVHN では Mean Teacher の EMA が効くが、MixMatch に追加しても不変または僅かに悪化（表 4）。EMA の効果は文脈依存。BYOL/DINO での EMA は目的が異なる（崩壊防止）
+  - **差分プライバシーへの応用が際立つ**: PATE フレームワークとの組み合わせで ε=0.97（VAT: 4.96）という 55 倍のプライバシー改善。ラベル効率の良さがプライバシー保証を直接強化する
+  - **新概念ページ [[concepts/semi-supervised-learning]] を作成**: MixMatch は CV wiki で初の半教師あり学習論文。ラベルあり少量 + ラベルなし大量という文脈が今後の ingest で繰り返し現れる可能性があり、独立 concept として早期に確立した
+  - 後続候補: FixMatch（高信頼閾値 + RandAugment の MixMatch 後継）、SimSiam（stop-gradient のみで崩壊防止）、MoCo / MoCo v2（momentum encoder 元祖）、UDA（強力なデータ拡張版一貫性正則化）など
+
+## [2026-05-27] ingest | FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence
+
+- 取り込み: `raw/papers/FixMatch- Simplifying Semi-Supervised Learning with Consistency and Confidence.pdf`（PDF 形式）
+- 画像対応: ユーザーが手動取得した fig1 を `raw/images/fixmatch_fig1.png` → `raw/assets/fixmatch/fig1.png` に移動（mkdir + mv）。他の図は PDF から取得不可のため省略
+- 作成:
+  - [[translations/fixmatch]] — Abstract + §1-6 + Broader Impact + Appendix A-E（アルゴリズム擬似コード / 全数値表 + ハイパーパラメータ表 + τ アブレーション / ImageNet 実装詳細 / 拡張手法 Augmentation Anchoring + Distribution Alignment + 他データタイプ応用 / RandAugment + CTAugment + Cutout 変換詳細）の全文和訳（References のみ除外）。Figure 1 を `<figure>` + `<figcaption>` で埋め込み
+  - [[sources/fixmatch]] — 初学者向け要約ページ。弱→強の非対称性（役割分担の図解） / τ=0.95 の「量より質」の原則 / 確証バイアスの説明 / 自然なカリキュラム学習 / MixMatch との設計差分 / CIFAR-100 異常（Distribution Alignment 不在の理由）/ weight decay の重要性 / barely supervised 結果 / 用語集
+  - [[entities/fixmatch]] — FixMatch エンティティ（アルゴリズム擬似コード / ハイパーパラメータ表 / 全ベンチマーク結果表 / barely supervised 結果 / ImageNet 結果 / τ アブレーション表）
+- 更新:
+  - [[concepts/semi-supervised-learning]] — frontmatter sources に fixmatch 追加、「FixMatch のポジション」セクション新規追加（弱→強の非対称性 / 確証バイアス / 後継への原則継承 / SSL との思想的接続）、参考セクションに fixmatch 関連ページ追加
+  - [[index]] — sources/fixmatch、translations/fixmatch、entities/fixmatch を追加、略称表の FixMatch エントリを [[entities/mixmatch]] → [[entities/fixmatch]] に更新、RandAugment / CTAugment / Cutout / confirmation bias / DA / barely supervised / τ を新規登録
+  - [[log]]
+- メモ:
+  - **「シンプルさによる勝利」**: FixMatch が MixMatch を CIFAR-10/250 ラベルで 11.08% → 5.07% に改善したのは、構成要素を増やしたからではなく減らしたから（MixUp なし、Brier スコアなし、λ_u ウォームアップなし）。「弱→強の非対称性」という単一の設計原則が核心
+  - **τ=0.95 で 98% を捨てる**: 疑似ラベルの 98% を捨て残り 2% だけ使う設定が最良という結果は、半教師あり学習の「確証バイアス」問題を正面から解決した。「質 > 量」の原則として後の FlexMatch / FreeMatch / SoftMatch に引き継がれた
+  - **CIFAR-100 での逆転**: FixMatch は CIFAR-100 低ラベル条件で ReMixMatch に負ける（48.85% vs 44.28%）。Distribution Alignment（DA）を追加すると 40.14% で逆転する。「FixMatch の設計思想は正しいがクラス多数設定では DA が必須」という重要な例外として記録
+  - **弱→強の非対称性と SSL の接続**: FixMatch の「弱い拡張 → 局所的ターゲット、強い拡張 → グローバルな学習」は、DINO の multi-crop（局所 → 大域）や teacher-student の EMA 非対称性と思想的に通底する。SeSL と SSL は独立して発展しているが、「データ拡張による不変性の学習」という点で同じ根を持つことを [[concepts/semi-supervised-learning]] に明記
+  - **barely supervised の衝撃**: 1 クラス 1 枚（計 10 ラベル）で 64% 中央値は、「ラベルが極端に少ない現実的シナリオ」での SSL 事前学習なし SeSL の可能性を示す。医療画像・希少疾患等の応用意義が大きい
+  - **weight decay の重要性が特記事項**: §5.2 で 1 桁小さい weight decay が CIFAR-10 で +10pt 悪化をもたらすという事実は、実装者が見落としやすいが決定的に重要なハイパーパラメータ設定
+  - 後続候補: FlexMatch（動的閾値 FixMatch）/ UDA（強力なデータ拡張版一貫性正則化）/ ReMixMatch（分布アライメント統合）/ SimSiam（stop-gradient のみで崩壊防止）/ MoCo / MoCo v2 など
+
+## [2026-05-27] ingest | FlexMatch: Boosting Semi-Supervised Learning with Curriculum Pseudo Labeling
+
+- 取り込み: `raw/papers/FlexMatch_ Boosting Semi-Supervised Learning with Curriculum Pseudo Labeling.md`（ar5iv 由来 markdown）
+- ダウンロード: `raw/assets/flexmatch/` に fig1.png（CPL 概念図）、fig2.png（実行時間比較）、fig4a.png（τ アブレーション）の 3 枚を ar5iv URL から保存（markdown 形式のため URL 直接取得可能）
+- 作成:
+  - [[translations/flexmatch]] — Abstract + §1-6 + Broader Impact + Appendix A（ハイパーパラメータ表 / クラスごと精度 / 中央値エラー率 / Precision/Recall/F1/AUC）+ Appendix B（TorchSSL 概要 / BatchNorm Controller / 全 4 データセットベンチマーク表 8-11）の全文和訳。図1・2・4a を `<figure>` + `<figcaption>` で埋め込み（References のみ除外）
+  - [[sources/flexmatch]] — 初学者向け要約ページ。CPL の動的閾値設計（σ_t(c) の直感 / β_t(c) の計算 / ウォームアップ機構 / 凸マッピング関数）/ FixMatch との設計差分表 / SVHN 失敗事例の詳細考察（クラス不均衡 × 簡単タスクの組み合わせ）/ カリキュラム学習思想の接続 / アブレーション 3 要素 / FreeMatch・SoftMatch への流れ
+  - [[entities/flexmatch]] — FlexMatch エンティティ（CPL 核心式フロー / 全ベンチマーク結果比較表 / 収束速度比較 / クラスごと精度表 / 後継手法表）
+- 更新:
+  - [[concepts/semi-supervised-learning]] — frontmatter sources に flexmatch 追加、「FlexMatch のポジション」セクション新規追加（CPL のカリキュラム学習思想 / SVHN 失敗の教訓 / 適応閾値への系譜転換）、参考セクションに flexmatch 関連ページ追加
+  - [[entities/fixmatch]] — 後継手法セクション新規追加（FlexMatch / FreeMatch / SoftMatch の比較表）、関連ページに entities/flexmatch 追加
+  - [[index]] — sources/flexmatch、translations/flexmatch、entities/flexmatch を追加、略称表に FlexMatch/CPL/σ_t(c)/β_t(c)/カリキュラム学習/TorchSSL/FreeMatch/SoftMatch を登録
+  - [[log]]
+- メモ:
+  - **「固定閾値 → 適応閾値」への転換点**: FlexMatch が 2021 年に「クラスごとに閾値が違って当然」を証明したことで、2022 年以降の SeSL 論文では適応閾値が設計の標準軸になった。FixMatch の「τ=0.95 で 98% 捨てても平気」に対する「でも全クラスに同じを課すのは非合理」という答え
+  - **CPL のゼロコスト設計**: 追加パラメータなし・追加推論なしという設計制約は、論文全体を通じて一貫した主張。実装は「損失計算時に予測クラスをカウントするだけ」という単純さで、後の TorchSSL や他手法への統合を容易にした
+  - **SVHN 失敗事例の重要性**: 論文が正直に「CPL が裏目に出るケース」を分析している点が貴重。「クラス不均衡 + 簡単タスク」の組み合わせでは FixMatch の固定高閾値の方が安定する。これは CPL の仮定（ラベルなしデータがクラス間でバランス）が崩れるケースとして明示化すべき知識
+  - **収束速度の劇的改善**: CIFAR-100/400L で 200K 反復時点（FixMatch: 56.35%、FlexMatch: 94.29%）という差は、単なる最終精度改善を超えた実用的インパクト。特に「早期終了で十分な性能を出したい」場面での価値が大きい
+  - **TorchSSL の副産物**: FlexMatch と同時公開された TorchSSL（PyTorch ベース 9 手法統合コードベース）は、SSL 研究の再現性向上と公正な比較を目的としている。BatchNorm Controller など実装上の知見も含む
+  - **東工大 × Microsoft という組み合わせ**: SimCLR/FixMatch が Google Research、MixMatch が Google Research、DINOv2 が Meta という中で、FlexMatch は東工大（奥村・篠崎研）と Microsoft Research Asia からの貢献。SeSL 研究の地理的多様性
+  - 後続候補: FreeMatch / SoftMatch（閾値適応の発展形）/ UDA（強い拡張版一貫性正則化）/ ReMixMatch（分布アライメント統合）など
+
+## [2026-05-28] ingest | Revisiting Semi-Supervised Learning in the Era of Foundation Models
+
+- 取り込み: `raw/papers/Revisiting Semi-Supervised Learning in the Era of Foundation Models.pdf`（30 ページ PDF、本文のみ、ユーザー指示で Appendix A-C を除外）
+- 画像対応: ユーザーが手動取得した 6 枚を `raw/images/fig{1..6}.png` → `raw/assets/revisiting-ssl-foundation-models/fig{1..6}.png` に移動（mkdir + mv）
+- 作成:
+  - [[translations/revisiting-ssl-foundation-models]] — Abstract + §1-7 + Acknowledgment の本文和訳（References, Appendix A-C は除外）。図 1（Venn 図 + アンサンブル curve）/ 図 2（V-PET 4 フェーズ図）/ 図 3（SSL 精度比較）/ 図 4（エントロピー比較）/ 図 5（ランキング頻度）/ 図 6（スケーリング分析）を `<figure>` で埋め込み。表 1-4 を全て含む
+  - [[sources/revisiting-ssl-foundation-models]] — 初学者向け要約。「VFM 上では既存 SSL は Labeled-only PEFT を凌駕できない」という衝撃的発見 / V-PET の 4 フェーズ設計 / Mean Labels が Logits/Probs を凌駕する理由（キャリブレーション問題）/ 7 教師なし基準による公正ハイパラチューニング / VTAB ベース 6 データセット新ベンチマーク / MixMatch→FixMatch→FlexMatch→V-PET の系譜上対比表
+  - [[entities/v-pet]] — V-PET アルゴリズム（4 フェーズ擬似コード / ハイパラ表 / 全 12 設定結果表 / Mean Labels の優位性 / 系譜上の対比 / 計算コスト）
+  - [[concepts/parameter-efficient-fine-tuning]] — **新規 concept ページ**。PEFT の必要性 / 5 種類の分類（加算型 / 低ランク型 / プロンプト型 / 選択型 / プロジェクション型）/ LoRA・AdaptFormer・VPT・BitFit・ConvPass・Fact-TT の特性比較表 / SeSL × PEFT の出会いと V-PET / CV 領域での発展経緯（2019 Adapter → 2025 V-PET）
+- 更新:
+  - [[concepts/semi-supervised-learning]] — frontmatter sources に revisiting-ssl-foundation-models 追加、tags に foundation-model / peft 追加、related に foundation-model / parameter-efficient-fine-tuning 追加、「2025 年の転換点：VFM 時代の SeSL の再検討」セクション新規追加（3 つの発見・V-PET 概要・系譜上の位置づけ）、参考に v-pet / PEFT 概念追加
+  - [[concepts/foundation-model]] — 「VFM 時代の SeSL への波及」セクション新規追加、関連ページに PEFT / SeSL / V-PET / revisiting-ssl-foundation-models 追加
+  - [[entities/fixmatch]] — 「VFM 時代における評価（2025 年）」セクション新規追加（DINOv2/LoRA で FixMatch 47.6% vs Labeled Only 56.0% という大幅悪化を明示）、関連ページに v-pet 追加
+  - [[entities/flexmatch]] — 同様に VFM 時代評価セクション追加（DINOv2/LoRA で FlexMatch 48.6% vs Labeled Only 56.0%）
+  - [[index]] — sources/translations/entities/concepts の各セクションに追加、略称表に VFM/PEFT/LoRA/AdaptFormer/BitFit/VPT/V-PET/Mean Labels/VTAB/DTD/SUN397/RESISC45/Retinopathy/CLEVR-C/AMI/ARI/V-Measure/FMI/BNM/RankMe/CHI/FineSSL/SoftMatch 等を新規登録（24 項目）
+  - [[log]]
+- メモ:
+  - **スクラッチ前提 → 基盤モデル前提への大転換**: MixMatch (2019) → FixMatch (2020) → FlexMatch (2021) の系譜は全て「Wide ResNet をスクラッチから訓練する」前提だった。本論文はこの前提を VFM 時代に問い直し、「VFM 上では既存 SSL の貢献は驚くほど小さい」を実証。SeSL 研究のパラダイムシフトを宣言した重要研究
+  - **DINOv2 上での既存 SSL の悪化**: 表 3 の数値が最も衝撃的。FixMatch/FlexMatch/SoftMatch/FineSSL が DINOv2 ベースで Labeled Only より顕著に悪化（−4 〜 −8pt）。SSL がむしろ汎化能力を破壊している証拠
+  - **V-PET のミニマリスト設計**: 「閾値 τ=0、強拡張なし、MixUp なし、1 ラウンド self-training、Mean Labels アンサンブル」と引き算ばかりで FixMatch/FlexMatch を凌駕する。シンプルさの新たな勝利（FixMatch が MixMatch を凌駕した時と同じパターン）
+  - **Mean Labels（one-hot 平均）の発見**: Mean Logits / Mean Probabilities ではなく one-hot 化してから平均することで、異なるモデルの「キャリブレーション差」を無効化。図 4 が示すエントロピーギャップが定量的根拠
+  - **PEFT が SeSL の主役に**: LoRA / AdaptFormer / BitFit / VPT 等の PEFT 手法群が VFM × SeSL の中心ツールに昇格。新規 concept ページ [[concepts/parameter-efficient-fine-tuning]] を作成して整理。これは将来の VFM 系 ingest で繰り返し参照される基盤概念
+  - **公正ハイパラチューニング（7 教師なし基準）**: 過去 SeSL 研究の多くがテストセットでのチューニングという隠れたデータリークを抱えていた問題に対し、AMI/ARI/V-Measure/FMI/BNM/RankMe/CHI の 7 基準を平均ランクで統合するプロトコルを提案。今後の SeSL 評価の標準になる可能性
+  - **新ベンチマーク（VTAB ベース）の妥当性**: CIFAR/Food101 では凍結 VFM の線形プローブが既に高精度を出してしまうため、SSL の効果を評価できない。DTD/SUN397/RESISC45/Retinopathy/CLEVR-C/KITTI という「VFM が苦戦する」6 領域を選定したのは説得力ある設計判断
+  - **既存 wiki 概念群との強い接続**: 本論文は CLIP/DINOv2（[[entities/clip]]/[[entities/dinov2]]）をバックボーンとし、FixMatch/FlexMatch（[[entities/fixmatch]]/[[entities/flexmatch]]）を主要比較対象とする。wiki の既存 6 ページ以上に直接影響。VFM × SeSL という新しい交差領域を確立
+  - **Ohio State University の貢献**: SimCLR/FixMatch（Google）/MixMatch（Google）/FlexMatch（東工大・MSRA）/DINOv2（Meta）に続き、Ohio State から SeSL 研究の主要貢献。研究機関の地理的多様化が継続
+  - 後続候補: FineSSL（CLIP × 平衡マージン softmax SeSL）/ V-PETL Bench（PEFT ベンチマーク）/ LoRA 原典 / AdaptFormer 原典 / VPT 原典 / FreeMatch / SoftMatch 原典 / Visual Task Adaptation Benchmark（VTAB）原典 など
+
 ## [2026-05-28] ingest | Perception Encoder: The best visual embeddings are not at the output of the network
 
 - 取り込み: `raw/papers/Perception Encoder- The best visual embeddings are not at the output of the network.pdf`（54 ページ PDF、本文 pp.1-10 のみ、ユーザー指示で References pp.11-18 と Appendix A-F pp.19-54 を除外）
@@ -662,3 +849,229 @@
   - **MLLM 連携への応用提案**: 論文は「MLLM の hallucination 削減」を重要な動機として挙げる。**object-level な認識能力で MLLM の応答信頼性を高める** という応用提案は、PE / SigLIP 2 等の vision tower 系研究と異なる文脈で MLLM 接続の道筋を示す
   - **既存 wiki ハブとの自然な統合**: GD / GD 1.5 ingest 時に「DINO-X」「MM-Grounding-DINO」が後続候補として記載されていた。本 ingest により、IDEA Research 系譜の **現時点最新版** が wiki に追加され、open-vocab 検出系統が **5 世代の系譜** として完成
   - 後続候補: Grounded SAM 原典（IDEA, 2024）/ T-Rex2 原典（DINO-X の visual prompt 元）/ Mask2Former / Mask DINO（DINO-X mask head 元）/ ED-Pose（DINO-X keypoint head 元）/ Osprey（DINO-X language head の比較相手）/ MM-Grounding-DINO（OpenMMLab、2024）/ DetCLIPv3（NeurIPS 2024）/ APE（CVPR 2024）/ GLEE-Pro（CVPR 2024）など
+
+## [2026-05-28] ingest | InternVL: Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks
+
+- 取り込み: `raw/papers/InternVL_ Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References と Appendix A.1-A.5 は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2312.14238/assets/x1-x4.png>）から 4 枚を curl でダウンロードし `raw/assets/internvl/fig{1-4}.png` に保存（x5 は Appendix 内のため除外）
+- 作成:
+  - [[translations/internvl]] — Abstract + §1-5 + Acknowledgement の全文和訳。図 1-4 を `<figure>` で埋め込み、表 1-12 を含む（表 7 のフル数値マトリクスは概略のみ）。InternViT-6B のハイパーパラメータ探索（variant 1-6）、QLLaMA の 96 query + cross-attn 設計、3 段階訓練（contrastive 4.98B → ITC/ITM/ITG 1.03B → SFT 4M）、InternVL-C/G/Chat 4 モードを含む
+  - [[sources/internvl]] — 初学者向け要約。「6B 視覚 + 8B 言語ミドルウェアで LLM と整列させた初の本格的視覚言語基盤モデル」の位置づけ、3 つの主要設計（パラメータ均衡 / 整合表現 / 段階的整列）、QFormer 比較（188M → 8B の 42×）、視覚知覚 + 視覚言語 + マルチモーダル対話の全結果、限界（訓練コスト・LLaMA 依存）、用語集（InternViT-6B / QLLaMA / InternVL-C/G/Chat / VLLM / QFormer / ITC/ITM/ITG / LAION-COCO / COYO / Wukong / ViT-22B 等を網羅）
+  - [[entities/internvl]] — InternViT-6B + QLLaMA + InternVL-C/G/Chat 4 モードの仕様、3 段階訓練、視覚知覚 + 視覚言語 + マルチモーダル対話の全結果、vs CLIP / vs BLIP-2 / vs LLaVA-1.5 / vs ViT-22B の 4 アーキテクチャ比較、公開モデルカタログ（HuggingFace `OpenGVLab/`）、系譜上の位置（CLIP → InternVL → InternVL 1.5/2.0/2.5/3）
+- 更新:
+  - [[concepts/foundation-model]] — §A WSL 系セクションに InternVL を追加（「視覚エンコーダを 6B、言語ミドルウェアを 8B にスケールアップした初の本格的試み、ViT-22B を 1/3.7 で +12.6 mIoU 上回る」）
+  - [[concepts/weakly-supervised-pretraining]] — §A CLIP 系セクションに InternVL を追加（「SigLIP 2 / PE が対比学習自体を改良する路線なのに対し、InternVL は対比 + 生成 + LLM 接続を 1 モデルで統合し、glue layer を 188M → 8B にスケール」）
+  - [[concepts/zero-shot-transfer]] — InternVL エントリ新規追加（「視覚エンコーダを 6B + 8B QLLaMA で 1 モデル統合、多言語 + 動画でも頑健にゼロショット転移」）+ 関連ページに [[entities/internvl]] 追加
+  - [[entities/clip]] — マルチモーダル AI への発展セクションに InternVL を追加（「CLIP の対比学習を 6B 視覚 + 8B 言語ミドルウェアにスケールアップ。CLIP の対比 + zero-shot を 14B 規模で完成形に」）
+  - [[index]] — sources/internvl、translations/internvl、entities/internvl を追加。略称表に InternVL / InternViT-6B / QLLaMA / InternVL-C/G/Chat / QFormer / ITC/ITM/ITG / LLaMA / Vicuna / InternLM / BLIP / BLIP-2 / InstructBLIP / LLaVA / LLaVA-1.5 / MME / POPE / Tiny LVLM / VQAv2 / GQA / VizWiz / TextVQA / NoCaps / OK-VQA / IconQA / AI2D / OCR-VQA / ChartQA / DocVQA / InfoVQA / ST-VQA / LLaVAR / LAION-COCO / COYO / Wukong / CC3M / CC12M / SBU / LAION-en / LAION-multi / ViT-22B / ViT-G / ViT-e / EVA-02-ViT-E / ViT-6.5B / CoCa / LiT-22B / Qwen-VL / Flamingo / IDEFICS / KOSMOS-2 / Shikra / Emu / DreamLLM / PaLI-X-55B / glue layer / VLLM / AGI / JFT-3B を新規登録（30+ 項目）
+  - [[overview]] — VLM セクションに InternVL を追加、Foundation Model セクションに「14B クラス対比 + 生成統合の起点」として明示、CV 基盤モデル 3 大系統の WSL 内で位置づけ
+  - [[log]]
+- メモ:
+  - **「初の本格的 6B 視覚 + 8B 言語ミドルウェア」**: 論文は CLIP-L (304M) → InternViT-6B (5.9B) という **19 倍視覚スケール** と、QFormer (188M, BLIP-2) → QLLaMA (8B) という **42 倍 glue scale** を同時に実現した最初の論文。後の InternVL 1.5 / 2.0 / 2.5 / 3 シリーズの直接の起点
+  - **3 段階訓練の意義**: CLIP 流の対比訓練（Stage 1 = 4.98B 対）で頑健な視覚表現を獲得し、BLIP-2 流の ITC/ITM/ITG（Stage 2 = 1.03B）で生成能力を獲得し、LLaVA 流の SFT（Stage 3 = 4M）で対話化。**「過去 5 年の VLM 流派をすべて取り込んだ統合レシピ」**
+  - **ViT-22B（Google, 2023）への対抗**: 21.7B パラメータ + 非公開 JFT-3B の ViT-22B に対し、**5.9B + 公開データ 4.98B** の InternViT-6B が ADE20K linear probe **47.2 vs 34.6（+12.6 mIoU）** という驚異的な差で勝利。**「公開データ + 適切なスケール + 適切な訓練 = JFT 不要」** を実証
+  - **QLLaMA = 「QFormer の 42× 巨大化版」の意義**: BLIP-2 が 188M QFormer で「軽量 glue で十分」と主張したのに対し、InternVL は **「glue 自体を 8B スケールにして LLaMA 初期化すれば、LLM 接続も対比も生成もすべて 1 モジュールでこなせる」** と反論。CV における「glue layer scaling」議論の起点
+  - **既存 wiki ハブとの自然な統合**: WSL 系（[[entities/clip]] / [[entities/siglip]] / [[entities/perception-encoder]]）の競合系列に位置づけ。**[[entities/perception-encoder]]（2025 NeurIPS）と並ぶ「6B+ 視覚エンコーダの対比学習スケール」軍備拡張** の先駆け。**[[entities/siglip-2]](2025)** が「対比学習自体を改良（sigmoid + 全部入り）」なのに対し、InternVL は「対比 + 生成 + LLM 統合」軸。**[[entities/dinov2]] / [[entities/dinov3]]** との対比は「テキスト誘導 vs テキストなし純粋 SSL」の代表的競合軸
+  - **動画 + 多言語のゼロショット強さ**: Kinetics-700 8F 60.6（ViCLIP +6.3）/ 多言語 IN-1K 平均 64.0（OpenCLIP-XLM-R-H +8.1）。**動画と多言語の両方で当時 SoTA** という稀有な複合性能
+  - **OpenGVLab のシリーズ戦略**: InternImage（純粋画像）/ InternVideo（動画）/ InternVL（マルチモーダル）/ InternLM（言語）のシリーズが Shanghai AI Lab の Intern ブランドとして展開。**中国 AI 大規模研究機関の代表的成果**
+  - 後続候補: InternVL 1.5（dynamic high-res, 2024-04）/ InternVL 2.0 / 2.5 / 3 series / Qwen-VL / Qwen2-VL / Gemini-Vision API 周辺 / LLaVA-NeXT / LLaVA-OneVision / MiniGPT-4 v2 / Flamingo / BLIP-2 原典 / EVA-CLIP / EVA-02 / MetaCLIP など
+
+## [2026-05-29] ingest | InternVL 1.5: How Far Are We to GPT-4V? Closing the Gap to Commercial Multimodal Models with Open-Source Suites
+
+- 取り込み: `raw/papers/How Far Are We to GPT-4V_ Closing the Gap to Commercial Multimodal Models with Open-Source Suites.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2404.16821/assets/x1-x5.png>）から 5 枚を curl でダウンロードし `raw/assets/internvl-1-5/fig{1-5}.png` に保存
+- 作成:
+  - [[translations/internvl-1-5]] — Abstract + §1-5 の全文和訳（References のみ除外）。図 1-5 を `<figure>` で埋め込み、表 1-3 を含む（表 2 は 18 ベンチ × 全商用・OS モデルの巨大マトリクス）。動的高解像度（35 種アスペクト比 × 1-40 タイル）、Pixel Shuffle、継続事前学習（InternViT V1.0 → V1.2 → V1.5）、QLLaMA 廃止 → MLP 統一、バイリンガルデータパイプライン、2 段階訓練、定性比較（vs GPT-4V）を含む
+  - [[sources/internvl-1-5]] — 初学者向け要約。「**26B オープンソース MLLM で GPT-4V との差を 8/18 ベンチマークで埋めた到達点**」の位置づけ、3 つの改善（継続事前学習 + 動的高解像度 + バイリンガル）、QLLaMA 廃止の意義、ChartQA/OCRBench/CCBench/MathVista での商用超え、ConvBench での GPT-4V 大敗、定性比較（vs GPT-4V）、用語集（MLLM 関連 70+ 項目を網羅）
+  - [[entities/internvl-1-5]] — InternViT-6B-448px-V1.5 / V1.2 / V1.0 比較、Pixel Shuffle 詳細、動的解像度 35 種、訓練 2 段階、全 18 ベンチ結果、vs InternVL 1.0 / vs LLaVA-NeXT-35B / vs GPT-4V の 3 アーキテクチャ比較、モデルカタログ（HuggingFace 公開リソース）、InternVL シリーズ全体（V1.0 → V3）の系譜
+- 更新:
+  - [[entities/internvl]] — InternVL 1.5 を「**InternVL シリーズ第 4 世代、CVPR 2024 とは別の technical report**」として系譜表に明示、QLLaMA 廃止の経緯を反映
+  - [[sources/internvl]] — 「QLLaMA は InternVL 1.5 で完全廃止され LLaVA 系の MLP プロジェクタに統一された（軽量 glue で十分という業界トレンドの追認）」を明示、後続バージョン参照を更新
+  - [[concepts/foundation-model]] — §A WSL 系セクションに InternVL 1.5 を追加
+  - [[concepts/weakly-supervised-pretraining]] — §A CLIP 系セクションに InternVL 1.5 を追加（「対比学習基盤モデルから MLLM への完全シフトの転換点」）
+  - [[concepts/zero-shot-transfer]] — InternVL 1.5 エントリ追加（「training 1-12 タイル → test 40 タイル zero-shot、single-image 訓練のみで multi-image zero-shot」）+ 関連ページに entities/internvl-1-5 追加
+  - [[index]] — 3 つの新規ページ + 略称表に **50+ 項目**（InternVL 1.5 / 1.2 / InternViT V1.2/V1.5 / InternLM2-20B-Chat / Pixel Shuffle / Dynamic High-Resolution / 35 種アスペクト比 / Thumbnail / Continuous Learning / ViT-MLP-LLM / MLP プロジェクタ / GPT-4V / Gemini / Claude-3 / Qwen-VL-Max/Plus / Grok-1.5V / MM1 / Step-1V / HPT Pro / LLaVA-NeXT / Mini-Gemini / DocOwl-1.5 / Text-Monkey / CogVLM / DeepSeek-VL / LLaVA-HR / mixture-of-features / UReader / PaddleOCR / DocVQA / ChartQA / InfoVQA / OCRBench / MMBench / CCBench / MMMU / AI2D / MathVista / MMVet / SEED / RealWorldQA / HallusionBench / ConvBench / MMT-Bench / VLMEvalKit / OpenCompass / Wukong-OCR / LaionCOCO-OCR / GRIT / All-Seeing / SynthDoG / ALLaVA / ShareGPT4V / LVIS-Instruct4V / OpenHermes2.5 / COIG-CQIA / Nous-Hermes-2-Yi-34B）を新規登録
+  - [[overview]] — VLM セクションに InternVL 1.5 を追加（InternVL 1.0 → InternVL 1.5 の進化を明示、GPT-4V との差を初めて縮めた MLLM として位置づけ）、ingest 済みリストを更新
+  - [[log]]
+- メモ:
+  - **「QLLaMA 廃止」の戦略的意義**: InternVL 1.0（CVPR 2024）の「8B QLLaMA で対比 + 生成 + LLM 接続を統合」という野心的設計を、InternVL チーム自身が **1.2 で廃止し LLaVA 系の MLP プロジェクタに統一**。理由: (a) 訓練コスト高、(b) LLM 交換のたび QLLaMA 再訓練必要、(c) MLLM タスクでは MLP で十分。**業界トレンド（軽量 glue layer）への完全追随** であり、CV 系論文として希少な「自分の主要貢献を翌作で捨てる」事例
+  - **「How Far Are We to GPT-4V?」の問いへの答え**: 「OCR と中国語ではもう追いついた、数学でも GPT-4V を上回った、しかしマルチターン対話と多分野知識（MMMU）ではまだ遠い」。**18 ベンチ中 8 SoTA は当時オープンソース MLLM の到達最高水準**
+  - **動的高解像度の発明的価値**: 35 種アスペクト比 × 1-12 タイル（テスト 40 タイル）+ Pixel Shuffle で visual token 1/4 圧縮 = **「LLM 文脈長制約下で 4K 文書をどう扱うか」の標準解法を確立**。後の Qwen-VL2 / NVLM 等の dynamic resolution はこれに追随
+  - **継続事前学習の威力**: InternViT-6B が V1.0（224、48 層、対比学習）→ V1.2（448、**45 層 = 48 - 3**、MLLM）→ V1.5（dynamic 448、45 層、bilingual）と進化。**「後ろから 4 層目が MLLM タスクで最良」** という発見は、[[entities/perception-encoder|PE]] の「最良特徴は中間層に育つ」発見の **約 1 年早い先取り**。CV foundation model における「中間層特徴量の優位性」の重要な実例
+  - **バイリンガル OCR の実装の妙**: Wukong（華為の中国語 Web 画像）と LaionCOCO（英語 Web 画像）に **PaddleOCR で擬似 OCR ラベリング** する大胆な手法。さらに英語データセット（COYO, GRIT）を **LLM ベース翻訳パイプライン**（InternLM2 / Qwen / Yi-34B / GPT-3.5）で中国語化。**中国語 MLLM の OCR 性能を一気に商用超えに引き上げた** 鍵
+  - **「Larger LLMs need Larger VFMs」の再確認**: アブレーション §4.3 で「6B VFM + 34B LLM vs 300M VFM + 34B LLM」を比較し、11 ベンチ中 9 で 6B VFM が勝利。**LLaVA 系が長年無視してきた「VFM スケーリングも重要」** という [[entities/internvl|InternVL 1.0]] の主張を再確認
+  - **動的解像度はタスク依存**: OCR は高解像度 → 良くなるが、AI2D / MMMU / MMBench / HallusionBench は **高解像度でわずかに悪化**。「シーン推論にはグローバル context が大事、高解像度はそれを薄める」という直感的説明。**「すべてのタスクに高解像度を強要するべきでない」** という、後の MLLM 設計者への重要な教訓
+  - **MMMU と MMT-Bench での退行は LLM サイズ縮小に起因**: InternVL 1.2 (40B, LLM=34B) → InternVL 1.5 (26B, LLM=20B) で MMMU -6.4 / MMT -4.4。**「多分野知識タスクでは LLM パラメータが効く」** という当然の事実の確認。InternVL 1.5 は 26B 軽量化と OCR・中国語特化を取って MMMU を捨てた戦略的判断
+  - **ConvBench マルチターン対話で GPT-4V との差は大**: 17.65 vs 39.51 = **-21.86**。オープンソース中で首位だが、商用フロンティアとの差は依然として大きい。**single-image 訓練のみで multi-image にゼロショット対応するが、真の多ターン対話はまだ限界**
+  - **既存 wiki ハブとの自然な統合**: [[entities/internvl]]（InternVL 1.0、CVPR 2024）の直接の発展形として位置づけ。**MLLM 系列（LLaVA-NeXT / Mini-Gemini / DocOwl-1.5 / DeepSeek-VL / CogVLM 等）** の wiki 化が初めて本格化、今後の MLLM ingest（Qwen-VL2, NVLM, LLaVA-OneVision 等）のハブが用意された
+  - **OpenGVLab InternVL シリーズの全貌**: 1.0（2023-12, CVPR 2024）→ 1.2 + Plus（2024-02）→ **1.5（2024-04, 本論文）** → 2.0（2024-07）→ 2.5（2024-12）→ 3（2025-04）。**約 1 年半で 6 つのメジャーアップデート**、Shanghai AI Lab + SenseTime + 清華大学 + 香港中文大学の中国コアコンソーシアム
+  - 後続候補: InternVL 2.0 / 2.5 / 3（OpenGVLab シリーズ続き）/ Qwen-VL / Qwen2-VL / Qwen2.5-VL（Alibaba 系）/ LLaVA-NeXT / LLaVA-OneVision / LLaVA-1.6（LLaVA 系）/ DeepSeek-VL / DeepSeek-VL2 / NVLM / Mini-Gemini / CogVLM / CogVLM2 / Phi-3-vision / Florence-2（小型）/ GPT-4V / Claude-3.5 Sonnet（商用、公開情報のみ）など
+
+## [2026-05-29] ingest | Mini-InternVL: A Flexible-Transfer Pocket Multimodal Model with 5% Parameters and 90% Performance
+
+- 取り込み: `raw/papers/Mini-InternVL_ A Flexible-Transfer Pocket Multimodal Model with 5% Parameters and 90% Performance.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2410.16261/assets/x{1,2,3,4,6}.png>）から 5 枚を curl でダウンロードし `raw/assets/mini-internvl/fig{1-4,6}.png` に保存（fig5 は欠番）
+- 作成:
+  - [[translations/mini-internvl]] — Abstract + §1-5 の全文和訳（References のみ除外）。図 1-4 + fig6 を `<figure>` で埋め込み、表 1-13 を含む。InternViT-300M の知識蒸留（negative cosine similarity 損失、最後 K 層、CLIP-ViT-L 初期化）、Mini-InternVL の 2 段階訓練、統一ドメイン適応フレームワーク（5 種タスクの VQA 統一）、3 ドメイン（自律走行 / 医療 / リモセン）への転移結果、4 種類のアブレーション（KD 有無 / データ比率 / サンプル数 / 適応手法）を含む
+  - [[sources/mini-internvl]] — 初学者向け要約。「**5% パラメータ × 90% 性能の軽量 MLLM スイート + 統一ドメイン適応フレームワーク**」の位置づけ、InternVL シリーズ二分岐の意義、3 ドメイン適応の詳細結果、アブレーション（KD 効果、データ比率、訓練手法）、用語集（MLLM/ドメイン関連 90+ 項目）
+  - [[entities/mini-internvl]] — Mini-InternVL の 3 サイズ + DA 版モデルカタログ、訓練 2 段階 + ドメイン適応の Stage 3、統一フレームワーク 5 タスクの VQA 形式、全結果テーブル、vs InternVL 1.5 / vs Qwen2-VL-2B / vs MiniCPM-V 2.0 の比較
+  - [[entities/internvit-300m]] — InternViT-300M 単独ページ。CLIP-ViT-L 初期化 + InternViT-6B 蒸留の詳細、蒸留損失（negative cosine similarity、最後 K 層）、訓練データ（5 カテゴリ）、vs CLIP-ViT-L / vs InternViT-6B 比較、系譜上の位置
+- 更新:
+  - [[entities/internvl]] — InternVL シリーズ表に Mini-InternVL を追加、**「InternVL の二分岐」**（InternVL 1.5 vs Mini-InternVL）を明示
+  - [[entities/internvl-1-5]] — InternVL シリーズ系譜に Mini-InternVL を追加
+  - [[concepts/knowledge-distillation]] — §1 モデル圧縮の章で InternViT-300M を具体例として明示（DINO-X Edge と並列）
+  - [[concepts/foundation-model]] — §A WSL 系に Mini-InternVL を追加（「軽量化 + ドメイン特化」分枝として）
+  - [[concepts/weakly-supervised-pretraining]] — §A CLIP 系に Mini-InternVL を追加（「VFM の知識蒸留で WSL の軽量化問題を解く」方向性）
+  - [[index]] — 4 つの新規ページ（sources / translations / entities/mini-internvl / entities/internvit-300m）+ 略称表に **50+ 項目**（Mini-InternVL / DA バリアント / InternViT-300M / Pixel Unshuffle / Qwen2-0.5B / InternLM2-1.8B / Phi-3-Mini / DriveLM / DriveGPT4 / BDD-X / MME-RW / CAM 系 / GMAI-MMBench / PMC-OA/VQA/Image / MedICaT / MIMIC-CXR / Quilt-1M / LLaVA-Med / RadFM / GeoChat / RSVQA / FIT-RS / DIOR-RSVG / SkyEyeGPT / SkySenseGPT / Cambrian-1 / Qwen2-VL / LLaVA-OneVision / MiniCPM-V / DeepSeek-VL / Fuyu/MoMa/Chameleon / ZeRO1 / Negative Cosine Similarity Loss / Domain Adaptation 等）を新規登録
+  - [[overview]] — VLM/MLLM セクションに Mini-InternVL を追加、Foundation Model 3 大系統に追加、ingest 済みリストを更新
+  - [[log]]
+- メモ:
+  - **「InternVL シリーズの二分岐」**: InternVL 1.0 → 1.5 が「**商用追従 + 大規模化**」の方向に進化したのに対し、Mini-InternVL は **「軽量化 + ドメイン特化」** という別の方向に分岐。**InternViT-6B が教師として両系統の起点に位置する**ことが wiki 内で明示化。Shanghai AI Lab が InternVL シリーズで「両極をカバー」する戦略を採ったことが示される
+  - **知識蒸留の現代的応用**: Mini-InternVL の最大の独自貢献は **「VFM の知識蒸留」**。CLIP-ViT-L-336px で初期化した 300M の生徒を、InternViT-6B（5.9B）から **最後の K 層 + negative cosine similarity** で蒸留。**「CLIP の初期表現 + InternViT-6B の多ドメイン知識」** という 2 段階で、CLIP 単体より大幅に強い軽量 VFM を構築。CLIP-ViT-L 単体との比較で OCR +8.4 / Chart +5.3 / InfoVQA +8.1 と顕著な優位。これは **CV foundation model の軽量化路線（MobileCLIP, CLIPA-v2 等）への重要な貢献**
+  - **「5% パラメータで 90% 性能」のキャッチコピー**: Mini-InternVL-4B (4B) が InternVL2-Llama3-76B (76B) の **平均ベンチスコア 81.4 → 72.8（90%）** を達成、Gemini-Pro-1.5 (73.6) とほぼ同等。これは消費者 GPU（RTX 3090, 4090）での MLLM 展開可能性を初めて現実化した重要な結果
+  - **統一ドメイン適応フレームワークの革新性**: 5 種類のタスク（画像分類 / grounding / 領域知覚 / 多視点 / 動画）を **VQA 形式** に統一する設計。**GeoChat / LLaVA-Med / DriveGPT4 が各々独自のフォーマットを採用** する中、Mini-InternVL は **「同一モデルアーキテクチャ + 同一データ形式 + 同一訓練スケジュール」** で複数ドメインに転移。これは **MLLM の "OS"** を作る試みであり、後の研究（MLLM の universal adapter 探求）に影響
+  - **DriveLM での衝撃**: Mini-InternVL-DA-2B (**2B**) が CVPR 2024 Autonomous Driving Challenge SOTA の InternVL4Drive-v2 (**26B**) と **同等スコア 0.5958 vs 0.6002 を達成**。**1/13 のサイズで匹敵**。さらに MME-RealWorld 自律走行で DA-4B が **GPT-4o を +24.78 ポイント圧倒**（49.38 vs 24.60）、Claude 3.5 Sonnet も +17.28 圧倒。**「専門 MLLM より、ドメイン適応された汎用 MLLM の方が強い」** という重要な発見
+  - **医療画像での商用超え**: Mini-InternVL-DA-4B が GMAI-MMBench の **2D Seg C / Seg M / Cls** で LLaVA-Med、RadFM (14B)、Claude3-Opus を凌駕。GPT-4V には届かないが、**4B の DA モデルが医療特化 14B モデルを超える** ことを実証。InternViT-300M に **PMC-VQA 等の医療データが蒸留段階で含まれている** ことが効いている
+  - **リモートセンシングでの動的解像度の威力**: GeoChat / SkySenseGPT 等の既存リモセン MLLM は **単一解像度しか扱えない**。Mini-InternVL は **InternVL 1.5 由来の動的解像度** で高解像度衛星画像を効果的に処理、DIOR-RSVG で **92.04** を達成（SkyEyeGPT 88.59 超え）
+  - **アブレーション結果の実用的価値**: (a) 知識蒸留が CLIP より OCR/Document/Chart で +8 ポイント前後の優位、(b) 汎用:特化 = 1:4（r=0.25）が自律走行で最適、(c) 訓練データの 1/4 で性能維持（計算 4× 削減）、(d) Full-parameter > Freezing ViT > LoRA の順、LoRA は grounding で弱い。これらは **後の MLLM ドメイン適応研究の標準的セッティング** になる可能性
+  - **OpenGVLab の戦略**: InternViT-6B を **「教師として系列を統合する VFM」** として活用。InternVL 1.0 では対比 + 生成、InternVL 1.5 では継続事前学習、Mini-InternVL では蒸留。**1 つの強力な VFM が様々な派生形を生む** という戦略は、Meta の DINOv2/v3 や Google の SigLIP/SigLIP 2 とは異なるアプローチ
+  - **LLM ベンダー選択の実用性**: Mini-InternVL は LLM 部分を **Qwen2-0.5B (Alibaba) / InternLM2-1.8B (Shanghai AI Lab) / Phi-3-Mini (Microsoft)** と異なるベンダーから採用。これは **「視覚側は内製で蒸留、LLM 側は外部から最良のものを選ぶ」** という分業を実証。Phi-3-Mini が「教科書データ訓練の強い軽量 LLM」だったことが Mini-InternVL-4B の MMMU 高スコアに効いた
+  - **既存 wiki ハブとの自然な統合**: [[entities/internvl-1-5|InternVL 1.5]]（2024 April）の補完として位置づけ。「InternVL の二分岐」が wiki で明示化。**[[entities/internvit-300m|InternViT-300M]] という独立 entity ページ** を作ることで、CLIP / DINOv2 / SigLIP 等の VFM 比較群に **「KD で作られた軽量 VFM」** という新カテゴリを追加
+  - 後続候補: InternVL 2.0 / 2.5 / 3 (OpenGVLab 続き) / Qwen2-VL 原典 / Qwen2.5-VL / DeepSeek-VL2 / NVLM / Phi-3-Vision 原典 / MiniCPM-V 2.6 / LLaVA-OneVision / Cambrian-1 / Apple AIMv2 / Apple MobileCLIP / Apple FastVLM など軽量 MLLM 系
+
+## [2026-05-29] ingest | InternVL 2.5: Expanding Performance Boundaries of Open-Source Multimodal Models with Model, Data, and Test-Time Scaling
+
+- 取り込み: `raw/papers/Expanding Performance Boundaries of Open-Source Multimodal Models with Model, Data, and Test-Time Scaling.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2412.05271/assets/x1-x10.png>）から 10 枚を curl でダウンロードし `raw/assets/internvl-2-5/fig{1-10}.png` に保存
+- 作成:
+  - [[translations/internvl-2-5]] — Abstract + §1-8 + Acknowledgement の全文和訳（References のみ除外）。図 1-10 を `<figure>` で埋め込み、表 1-15 を含む（OpenCompass 順位、InternViT 全バージョン比較、モデルカタログ、訓練ハイパラ、Pre-train/Fine-tune データ、9 ベンチマーク群（Multimodal Reasoning / OCR / Multi-Image / Real-World / Comprehensive / Hallucination / Grounding / Multilingual / Video）、LLM 17 ベンチ、ImageNet 派生 6、ADE20K + COCO-Stuff）
+  - [[sources/internvl-2-5]] — 初学者向け要約。「**MMMU で 70% を超えた初のオープンソース MLLM + 段階的スケーリング戦略を公式化**」の位置づけ、InternVL シリーズ商用追従ライン最終到達点、Progressive Scaling Strategy / Test-Time Scaling / データフィルタリング / InternViT 中間層特徴発見の詳細、用語集（MLLM/データ/ベンチ 100+ 項目）
+  - [[entities/internvl-2-5]] — InternVL 2.5 の 7 サイズスイート + Pro 詳細仕様、InternViT 系統の系譜（V1.0-V2.5）、3 段階訓練 + Progressive Scaling Strategy、全結果（MMMU/MathVista/OCR/Grounding/Video/言語/視覚すべて）、vs InternVL 1.5 / 2.0 / GPT-4o / Claude-3.5-Sonnet の 4 比較、InternVL シリーズ系譜全体
+- 更新:
+  - [[entities/internvl]] — InternVL シリーズ表に InternVL 2.5 を追加、**「InternVL の二分岐を 2.5 が再統合（軽量も大規模も全部入り）」** を明示
+  - [[entities/internvl-1-5]] — シリーズ系譜表に InternVL 2.5（MMMU 70.1%、Progressive Scaling）を追加
+  - [[entities/mini-internvl]] — シリーズ系譜に InternVL 2.5（Mini-InternVL の軽量化路線を吸収）を追加
+  - [[entities/internvit-300m]] — V2.5 への進化を追加（多様データで段階的事前学習）、系譜図に InternVL 2.5 を追加
+  - [[concepts/foundation-model]] — §A WSL 系セクションに InternVL 2.5 を追加（MMMU 70% 突破、Progressive Scaling、Qwen2-VL 1/12 訓練トークン、PE と同等の中間層特徴発見）
+  - [[concepts/weakly-supervised-pretraining]] — §A CLIP 系に InternVL 2.5 を追加（同じ哲学）
+  - [[concepts/zero-shot-transfer]] — InternVL 2.5 エントリ追加（Test-Time Scaling: CoT + Majority Voting）+ 関連ページに entities/internvl-2-5 追加
+  - [[concepts/alignment-tuning]] — 既存研究のヒントセクションに **「InternVL 1.5 の InternViT V1.2 → V1.5 の 48 → 45 層削除」** と **「InternVL 2.5 のセグ/分類アブレーション」** を **PE の中間層特徴発見の同時期独立観察** として追加
+  - [[index]] — 3 つの新規ページ（sources/internvl-2-5、translations/internvl-2-5、entities/internvl-2-5）+ 略称表に **70+ 項目**（InternVL 2.5/2.0 / 7 サイズ / Pro / InternViT-V2.5 系 / InternLM 2.5 / Qwen 2.5 / NTP loss / QK-Norm / Pixel Unshuffle / Stage 1/1.5/2 / Progressive Scaling / Test-Time Scaling / CoT / Majority Voting / Random JPEG / Square Averaging / Data Packing / Repetition Detection / LLM Quality Scoring / ChatML / MMMU-Pro / MATH-Vision / MathVerse / OlympiadBench / CharXiv / VCR / SEED-2-Plus / Mantis-Eval / MMIU / MuirBench / BLINK / MIRB / WildVision / R-Bench / MMBench v1.1 / MMVet v2 / MMHal / CRPE / MMMB / Multilingual MMBench / MTVQA / Video-MME / MVBench / MMBench-Video / MLVU / LongVideoBench / CG-Bench / MMLU / CMMLU / C-Eval / GAOKAO / TriviaQA / NaturalQuestions / C3 / RACE / WinoGrande / HellaSwag / BBH / GSM8K / MATH / TheoremQA / HumanEval / MBPP / Linear Probing / Attention Pooling Probing / Head Tuning / Full Tuning / UperNet / Grounding-DINO-L / UNINEXT-H / ONE-PEACE / TextHawk2 / Ferret-v2 / CogVLM-Grounding / NVLM / Molmo / LLaVA-OneVision / MiniCPM-V 2.6 / Ovis 1.6 / Phi-3.5-Vision / Aquila-VL / Cambrian / VILA-1.5 / InternVL4Drive-v2 / OpenAI o1）を新規登録
+  - [[overview]] — VLM/MLLM セクションに InternVL 2.5 を追加（InternVL 1.5 → Mini-InternVL → InternVL 2.5 の進化を明示）、Foundation Model 3 大系統に追加、ingest 済みリスト更新
+  - [[log]]
+- メモ:
+  - **「MMMU 70% 突破の象徴的意義」**: 2024 年中盤まで MMMU は「商用 vs オープン」の最後の砦の 1 つで、GPT-4o (69.1) / Claude-3.5-Sonnet (68.3) / Gemini-1.5-Pro (62.2) というラインがあった。InternVL2.5-78B が **70.1** で **初めてオープン MLLM が 70 を超え**、商用フロンティアとの差を完全に閉じた瞬間。MLLM 競争の象徴的な転換点
+  - **「アーキテクチャは変えず、訓練・データ・テスト時で勝つ」哲学**: InternVL 2.5 は [[entities/internvl-1-5|InternVL 1.5]] と完全に同じ ViT-MLP-LLM 構造を保持。**「モデル構造の革新ではなく、データ品質 + 段階的訓練 + テスト時推論で性能境界を拡張」** という哲学。これは [[sources/internvl-1-5|InternVL 1.5]] が「QLLaMA 廃止 → MLP に統一」と構造を簡素化した方向性の延長
+  - **Progressive Scaling Strategy の公式化**: 小型 LLM（20B）で InternViT を訓練し、その後大型 LLM（72B）に転送する戦略。**ViT と LLM の共同訓練が「他の LLM が容易理解できる汎用視覚特徴」を生む** という観察に基づく。**Qwen2-VL の 1/12 の訓練トークン**（120B vs 1.4T）で同等以上の性能。これは [[sources/internvl-1-5|InternVL 1.5]] と Mini-InternVL の経験を一般化した方法論
+  - **Test-Time Scaling の MLLM 適用**: 2024 年 9 月の OpenAI o1 以来、LLM の test-time scaling は中心話題だった。本論文は MLLM への適用を本格的に検証した初期論文の 1 つ。**CoT で MMMU +3.7、Majority Voting でさらに改善**。「OS MLLM も test-time scaling の恩恵を受けられる」ことの実証
+  - **データフィルタリングの教訓**: **「LLM は視覚エンコーダよりノイズに敏感、数千の繰り返しパターンサンプルでも CoT 推論が無限ループに陥る」** という発見が衝撃的。InternVL 2.0 は CoT 不安定だったが、2.5 は厳格フィルタリング（LLM スコアリング + 繰り返し検出 + ヒューリスティック規則）で解消。**「データ品質 > データ量」** の MLLM 文脈での確認
+  - **InternViT の「中間層特徴」発見の独立性**: 表 14 / 15 で **InternViT のバージョン更新（V1.0 → V2.5）で linear probing が継続的に低下、attention pooling / head tuning は維持または改善、Δ（差）が拡大** という現象を明確に観察。これは [[sources/perception-encoder|PE]]（NeurIPS 2025）の「対比学習をスケールすると中間層に多目的特徴が育つ」発見と本質的に同じ。**2024 年中盤に複数の独立チームが同じ現象を観察した** ということ。**[[concepts/alignment-tuning]] への追記で両者の同期発見を明示化**
+  - **「6B 視覚エンコーダの威力」の再主張**: Qwen2-VL-72B（600M 視覚）vs InternVL2.5-78B（5.5B 視覚）の **訓練トークン 10×、性能同等以上** の結果は、[[entities/internvl|InternVL 1.0]] からの一貫主張「**Larger LLMs need Larger VFMs**」の最終的な実証。ただし 2B 級では Qwen2-VL-2B（600M 視覚 + 1.5B LLM）が OCR で優位、と例外も認める
+  - **データセット規模の段階的増加**: InternVL 1.5（5.1M） → 2.0（7.3M） → **2.5（16.3M）**。**動画 +30% / 複数画像 +5%** が動画理解と複数画像理解の劇的改善に直結
+  - **モデルファミリーの完全性**: 1B/2B/4B/8B/26B/38B/78B の **7 サイズスイート** で、消費者 GPU（1B-4B）からエンタープライズ（78B）までカバー。[[entities/mini-internvl|Mini-InternVL]] の軽量化路線を InternVL 2.5 が**正式に吸収**（Mini-InternVL は InternVL 2.0 と同期生成だった）
+  - **VCR タスクの「22K サンプルで +60 ポイント」**: InternVL2-2B (32.9) → InternVL2.5-2B (93.2) という大幅改善は **「VCR の本質的能力欠如ではなく、指示追従能力不足」** だったという発見。Visual Caption Restoration（画像内の隠されたテキストを復元）は MLLM の OCR + 指示理解能力の精密診断ツール
+  - **InternViT-300M-V2.5 の意義**: [[entities/mini-internvl|Mini-InternVL]] (2024 Oct) で蒸留された InternViT-300M を、InternVL 2.5 (2024 Dec) でさらに多様データで段階訓練して V2.5 へ。**「蒸留 + 継続事前学習」** の方法論が確立。これは Mini-InternVL と InternVL 2.5 が **同じ視覚エンコーダ系統で共生** する状態を作った
+  - **言語能力の保持・強化**: InternVL 2.0 では基盤 LLM より純粋言語性能が -2.1〜-2.3 低下していたが、2.5 では **+0.5〜+1.4 改善**。MLLM 訓練で言語性能を保持できることを実証、これは「マルチモーダル化のコスト」議論への重要な反論
+  - **限界の自覚**: 著者は **WildVision で GPT-4o に -9.2、MMVet v2 で -5.5** という長応答品質・統合能力の差を明記、Stage 3（DPO/RLHF/preference optimization）が未実施であることを認める。「**簡潔・正確な応答は OS が追いついた、長応答とユーザ嗜好整合は次の課題**」という現状把握
+  - **既存 wiki ハブとの自然な統合**: [[entities/internvl]]（CVPR 2024）→ [[entities/internvl-1-5]]（2024-04）→ [[entities/mini-internvl]]（2024-10）→ [[entities/internvl-2-5]]（2024-12）と、InternVL シリーズの wiki が時系列に統合された。**6 世代の系譜 + 7 サイズ × 8 モデルカタログ** が wiki 内で追跡可能。次の InternVL 3（2025-04）への準備完了
+  - 後続候補: InternVL 3 (Native multimodal pretraining、2025-04、InternVL シリーズ続き) / Qwen2-VL / Qwen2.5-VL / DeepSeek-VL2 / NVLM 原典 / Phi-3.5-Vision 原典 / MiniCPM-V 2.6 / LLaVA-OneVision 原典 / Cambrian-1 原典 / Aquila-VL / Molmo 原典 / OpenAI o1 関連（test-time scaling 系列）など
+
+## [2026-05-29] ingest | InternVL 3: Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models
+
+- 取り込み: `raw/papers/InternVL3_ Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2504.10479/assets/x1-x3.png>）から 3 枚を curl でダウンロードし `raw/assets/internvl-3/fig{1-3}.png` に保存
+- 作成:
+  - [[translations/internvl-3]] — Abstract + §1-4 + Conclusion の全文和訳（References のみ除外）。図 1-3 を `<figure>` で埋め込み、表 1-13 を含む（7 サイズモデルカタログ、Multimodal Reasoning + Math + VisualPRM-Bo8、OCR/Chart/Document、Multi-Image + Real-World、Comprehensive + Hallucination、Grounding、Multilingual、Video、GUI Grounding、VSI-Bench 空間推論、LLM 17 ベンチ、V2PE δ アブレーション、MPO アブレーション）
+  - [[sources/internvl-3]] — 初学者向け要約。「**Native Multimodal Pre-Training パラダイムを確立、MMMU 72.2 で SOTA 更新**」の位置づけ、InternVL シリーズの哲学転換（事後的 MLLM 適応 → Native）、V2PE / MPO / VisualPRM の詳細、Qwen2.5-Chat より強い言語能力の発見、用語集（80+ 項目）
+  - [[entities/internvl-3]] — InternVL 3 の 7 サイズ仕様、3 段階訓練（Native Pre-Training + SFT + MPO）、V2PE 数式、VisualPRM-8B + Best-of-N、全 12 ベンチマーク結果、vs InternVL 2.5 / Qwen2.5-VL-72B / 商用フロンティア（GPT-4o/Claude-3.7-Sonnet/Gemini-2.0-Pro）の 3 比較、InternVL シリーズ系譜全体
+- 更新:
+  - [[entities/internvl]] — InternVL シリーズ表に InternVL 3 を追加、**「InternVL の二分岐 → 再統合 → パラダイム転換」** を明示（「InternVL 2.5 で軽量と大規模を再統合、InternVL 3 で事後的 → Native 哲学転換」）
+  - [[entities/internvl-1-5]] — シリーズ系譜表に InternVL 3 を追加（Native Multimodal Pre-Training）
+  - [[entities/mini-internvl]] — シリーズ系譜に InternVL 3 を追加
+  - [[entities/internvl-2-5]] — シリーズ系譜に InternVL 3 を追加、「InternVL 2.5 は商用追従ラインの最終到達点、次の 3 で哲学転換」を明示
+  - [[entities/internvit-300m]] — InternVL 3 でも V2.5 を継承を追加、「2 世代にわたって使われる成熟版」を明示
+  - [[concepts/foundation-model]] — §A WSL 系セクションに InternVL 3 を追加（Native Multimodal Pre-Training、V2PE、MPO、VisualPRM、「マルチモーダル化で言語が強くなる」初実証）
+  - [[concepts/weakly-supervised-pretraining]] — §A CLIP 系に InternVL 3 を追加（WSL 文脈での「言語能力強化」初実証を強調）
+  - [[concepts/zero-shot-transfer]] — InternVL 3 エントリ追加（VisualPRM + Best-of-N、OpenAI o1 / DeepSeek R1 系の test-time scaling を MLLM へ本格適用）+ 関連ページに entities/internvl-3 追加
+  - [[index]] — 3 つの新規ページ（sources/internvl-3、translations/internvl-3、entities/internvl-3）+ 略称表に **45+ 項目**（InternVL 3 / 7 サイズ / InternLM3-8B / Qwen2.5 base / Native Multimodal Pre-Training / V2PE / δ / MPO / DPO / BCO / VisualPRM / VisualPRM-8B/400K / MMPR v1.2 / Best-of-N / InternEVO / Head-Parallel / InternVL-Data / GUI Grounding / ScreenSpot / UI-TARS-72B / Aguvis-72B / VSI-Bench / MathVision / DynaMath / WeMath / LogicVista / Claude-3.7-Sonnet / Gemini-2.0-Pro / Gemini-2.5-Pro / Qwen2.5-VL 系 / QvQ-72B / Ovis2 / MiniCPM-o2.6 / Oryx-1.5 / VideoLLaMA2 / OmniCorpus / Tongyi Qianwen LICENSE / GLM-4v-Plus / Step-1o / ChatGPT-4o-latest）を新規登録
+  - [[overview]] — VLM/MLLM セクションに InternVL 3 を追加、Foundation Model 3 大系統に追加、ingest 済みリスト更新
+  - [[log]]
+- メモ:
+  - **「InternVL シリーズの哲学転換」**: InternVL 1.0 (CVPR 2024) から 2.5 (2024 Dec) まで、すべて **「LLM Chat 版から MLLM を事後改造」** という伝統的パラダイムだった。InternVL 3 は **「Qwen2.5 base + テキスト + マルチモーダル共同事前学習」** に転換、**「アーキテクチャは [[entities/internvl-1-5|InternVL 1.5]] と同じだが、訓練哲学は全く違う」** という極端な変化。CV 系列の論文として希少な「自分のシリーズの伝統を否定する」事例
+  - **「マルチモーダル化で言語が強くなる」初実証**: 表 11 の結果が衝撃的。**Qwen2.5-Chat（言語特化）を、同じ Qwen2.5 base から派生した InternVL 3（マルチモーダル統合）が 17 ベンチの平均で +1.6 〜 +8.9 上回る**（小型ほど顕著）。これは **「マルチモーダル化は言語能力にとってコスト」という 5 年間の常識への重要な反論**。要因: 25% 純粋言語データの統合 + 共同パラメータ最適化 + 高品質テキスト後訓練データ
+  - **V2PE の発明的価値**: 視覚トークンに **δ < 1 の位置インクリメント** を使うアイデア。**「視覚トークンは画像の隣接パッチ間に強い局所的相関があり、テキストトークンほど位置の独立性がない」** という洞察に基づく。$\delta = 1/4$ で最良、**短文脈タスクでも +0.7 改善**（表 12）。後続研究への重要な参照点
+  - **MPO（Mixed Preference Optimization）の意義**: 単純な DPO（preference）+ BCO（quality）+ LM（generation）の組み合わせで **+4.5 ポイント改善**（38B モデル）。**MPO データは SFT データのサブセット** → 改善はアルゴリズムによる（データではない）ことを実証。OpenAI o1 / DeepSeek R1 系の reasoning 強化を MLLM へ本格的に適用
+  - **VisualPRM-8B の独自貢献**: **Process Reward Model（PRM）を MLLM 向けに導入した初の本格事例**。各推論ステップに +/- スコアを付与し平均してソリューション全体スコアを算出。**Best-of-N で InternVL3-1B が +9.9 ポイント** という、**「計算リソースをモデルサイズで使うか、推論回数で使うか」** という新しいトレードオフ。OpenAI o1 / DeepSeek R1 系の test-time scaling を視覚に拡張
+  - **MMMU 72.2 で SOTA 更新**: InternVL2.5-78B 70.0 → 72.2 (+2.2)、Qwen2.5-VL-72B 68.2 / GPT-4o 70.7 / Gemini-2.0-Pro 69.9 を超え、**Claude-3.7-Sonnet 75.0 のみ上**。MMMU は依然として「最後の砦」だが、オープン MLLM がさらに突破を続けている
+  - **MathVista で GPT-4o を +19.0 圧倒**: MathVista 79.0（GPT-4o 60.0、Claude-3.7-Sonnet 66.8、Gemini-2.0-Pro 71.3 全部超え）。数学領域では完全に商用を超えた水準
+  - **OCRBench 906 で史上初の 900 超え**: Qwen2.5-VL-72B 885、InternVL2.5-78B 854 を超え、史上初の 900 超え。OCR 領域の到達点
+  - **VSI-Bench 空間推論で GPT-4o を +8.1 圧倒**: InternVL3-8B (42.1) > GPT-4o (34.0)、InternVL3-38B (48.9) > Gemini-1.5 Pro (45.4)。**3D シーン理解の新水準**、自律走行・ロボティクス応用への大きな前進
+  - **訓練データ完全公開**: `OpenGVLab/InternVL-Data` で **InternVL3 の訓練データを完全公開**。"open-science" 原則を強調。これは Mini-InternVL / InternVL 2.5 でも完全には公開していなかった点を改善
+  - **Visual Grounding でシリーズ初の退行**: InternVL2.5-78B 92.3 → InternVL3-78B 91.4 (-0.9)。著者自身が「**訓練データ拡張で grounding 特化データが含まれず、相対的に grounding データ比率が低下したため**」と分析。シリーズ初の「先代に劣る」ケース、将来課題
+  - **LLM ベンダー戦略**: InternVL 2.5 では InternLM 2.5 系を主軸にしていたが、**InternVL 3 では Qwen2.5 base を主軸に切り替え**（7 モデル中 6 つが Qwen2.5、1 つのみ InternLM3-8B）。**Shanghai AI Lab が自社 LLM への過度な依存を緩和** する戦略的判断。これは Qwen2.5 が 2024 末で最強の OS LLM だったことを反映
+  - **「base モデル + 共同事前学習」の意義**: Chat 版 LLM は既に「人間の好み」に調整されており、視覚情報を組み込む際に **「言語の硬直性」が干渉** する。Base モデルは「素の言語能力」のみで、視覚モダリティ統合の余地が大きい。これは画家が **真っ白なキャンバスから絵を描き始める** か、**既存の絵に追加描画する** かの違いに似ている
+  - **既存 wiki ハブとの自然な統合**: InternVL シリーズの wiki が時系列に統合（[[entities/internvl]] → [[entities/internvl-1-5]] → [[entities/mini-internvl]] → [[entities/internvl-2-5]] → **[[entities/internvl-3]]**）。**7 世代の系譜 + 各世代でのモデルカタログ** が wiki 内で追跡可能。InternVL シリーズ ingest 完了
+  - 後続候補: Qwen2.5-VL 原典（InternVL 3 の直接競合）/ Qwen2-VL 原典 / DeepSeek-VL2 / NVLM 原典 / Phi-3.5-Vision 原典 / MiniCPM-V 2.6 原典 / LLaVA-OneVision 原典 / Cambrian-1 原典 / Aquila-VL 原典 / Molmo 原典 / UI-TARS / Aguvis 原典（GUI agent 特化）/ OpenAI o1 原典 / DeepSeek R1 原典（test-time scaling 系列）/ VisualPRM 原典 / MMPR 原典 / MPO 関連論文 / V2PE 原典など
+
+## [2026-05-29] ingest | MPO: Enhancing the Reasoning Ability of MLLMs via Mixed Preference Optimization
+
+- 取り込み: `raw/papers/Enhancing the Reasoning Ability of Multimodal Large Language Models via Mixed Preference Optimization.md`（ar5iv 由来 markdown、本文 §1-6 + 実装詳細 §7 + 追加アブレーション §8 概要を ingest、References と §9 Appendix データ例図は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2411.10442/assets/x{1,2,3,4}.png>）から 4 枚を curl でダウンロードし `raw/assets/mpo/fig{1-4}.png` に保存（§9 のデータ例 fig 5-17 は除外）
+- 作成:
+  - [[translations/mpo]] — Abstract + §1-6 + Implementation Details + More Ablation Studies 概要の全文和訳（References と §9 Appendix データ例図は除外）。図 1-3 を `<figure>` で埋め込み、表 1-9 を含む（PO アルゴリズム比較、SFT vs MPO、RLAIF-V vs DropoutNTP、データソース、テキスト専用ベンチ、X+ 拡張、DPO 変種比較、Dropout Ratio アブレーション、データスケール、ハイパラ）
+  - [[sources/mpo]] — 初学者向け要約。「**MLLM の CoT 推論で性能が悪化する現象を初めて本格的に解決した論文**」の位置づけ、MPO アルゴリズム + MMPR + DropoutNTP の 3 点セット、SFT loss が CoT 強化の鍵、InternVL シリーズでの位置づけ、用語集（80+ 項目）
+  - [[entities/mpo]] — MPO アルゴリズム単独ページ。3 損失の数式と役割、訓練設定、10 PO 手法のアブレーション比較、InternVL2-8B-MPO の全結果、InternVL シリーズでの位置（InternVL 3 Stage 3 で正式採用）
+  - [[entities/mmpr]] — MMPR データセット単独ページ。3M サンプルの内訳、2 つの構築パイプライン（正誤判定 + DropoutNTP）、18 データソース × 6 ドメイン、Dropout Ratio アブレーション、RLAIF-V 比較、3 種マルチモーダル CoT、データスケーリング効果
+- 更新:
+  - [[entities/internvl-3]] — Stage 3 MPO 説明に **MPO 起源（本論文 = Wang et al., 2024 Nov）** を明示、[[entities/mpo]] と [[entities/mmpr]] へのリンク追加
+  - [[concepts/foundation-model]] — §A WSL 系セクションに MPO 論文を追加（CoT 推論問題の解決、InternVL 3 への波及）
+  - [[concepts/zero-shot-transfer]] — MPO エントリ追加（マルチモーダル推論能力強化の PO、InternVL 3 Stage 3 採用）
+  - [[index]] — 3 つの新規ページ（sources/mpo、translations/mpo、entities/mpo、entities/mmpr）+ Datasets セクションに MMPR を追加 + 略称表に **40+ 項目**（MPO 論文 / MMPR v1 / v1.2 / DropoutNTP / InternVL2-8B-MPO / BCO / RLAIF-V / Teacher Forcing / Distribution Shift / Bradley-Terry / Reference Model / Policy Model / KL Penalty β / Reward Shift δ / RSO / IPO / cDPO / RobustDPO / SPPO / AOT / TR-DPO / ORPO / Smaug / Object HalBench / InstructGPT / PPO-Max / M3CoT / Geo170K / GeoQA+ / GEOS / GeomVerse / Geometry3K / CLEVR-Math / DVQA / MapQA / OCRVQA / STVQA / SROIE / TheoremQA / IFEval / GAOKAO / 3H / Background Knowledge-based CoT / Visual Content-based CoT / Grounded CoT / Dropout Ratio / token cost per pair）を新規登録
+  - [[overview]] — VLM/MLLM セクションに MPO 論文を追加（InternVL 2 系列の CoT 弱点を解決、InternVL 3 で正式採用）、ingest 済みリスト更新
+  - [[log]]
+- メモ:
+  - **「MLLM の CoT 推論が悪化する」謎の解決**: 図 1 が示すように、多くのオープン MLLM（LLaVA-1.5-13B / Qwen2-VL-7B / MiniCPM-V-2.6-8B / InternVL2-8B）が **CoT で性能低下**。LLM の世界では「CoT は推論を改善する」が常識だったため、MLLM の例外性が問題だった。著者らは **「SFT が teacher forcing による分布シフトを生み、長い CoT rationale で誤差蓄積する」** と分析。これは MLLM 訓練パイプラインの根本的な制約を初めて言語化した重要な観察
+  - **MPO の中心的洞察**: 「効果的な PO は 3 つを学習すべき」 → **相対選好 + 絶対品質 + 生成過程**。これを **DPO + BCO + SFT loss** の混合で実現。**$w_p=0.8, w_q=0.2, w_g=1.0$** という重み配分は、preference を重視しつつ quality と generation で補完するバランス
+  - **10 PO アルゴリズム比較の意義**: DPO / RSO / IPO / cDPO / RobustDPO / BCO / SPPO / AOT / TR-DPO / ORPO の **全 10 種を体系的に比較** したのは本論文が初。これは MLLM コミュニティへの重要な貢献。「DPO 単体は CoT 改善せず」「SFT loss が CoT 強化の鍵」「参照モデル凍結が必須」という 3 つの法則を発見
+  - **DropoutNTP の天才的なアイデア**: 「画像入力なしで応答を補完すると、モデルは画像の中身を **推測（hallucination）** で補完する。その推測は元応答より**必ず悪い**」という構造的性質を利用。**人手アノテーション不要で大規模に rejected を生成** できる。**Dropout Ratio 0.5 が最適**（0.25 は品質差大きすぎ、0.75 は共通プレフィックスが多すぎ）
+  - **RLAIF-V の 57.5% コスト**: 選好ペアあたり 571.2 トークン vs RLAIF-V 992.7 トークン、性能ほぼ同等（Object HalBench 7.6 vs 7.3、MMHal-Bench 3.6 vs 3.5）。**マルチモーダル選好データ構築の標準コストを大幅削減**
+  - **MathVista +8.7 で 76B 同等の衝撃**: InternVL2-8B-MPO が MathVista **67.0**、InternVL2-76B の **67.2 とほぼ同等**。**10× のパラメータ差を MPO で埋めた** という、当時のオープン MLLM コミュニティに大きな衝撃を与えた結果
+  - **M3CoT +19.9 という驚異**: 59.3 → 79.2。**マルチモーダル CoT ベンチで 20 ポイント近い改善**は前例がない
+  - **テキスト専用ベンチでも改善**: MMPR にテキスト専用データなしにもかかわらず、**TheoremQA +5.2、IFEval +4.1、平均 +0.9**。これは [[entities/internvl-3|InternVL 3]] の「Native Multimodal Pre-Training で言語が強くなる」発見の **重要な先例**。「マルチモーダル選好最適化は言語能力にも波及する」というメカニズムを初観察
+  - **InternVL 3 での MPO 正式採用**: 本論文の発表（2024 Nov）から 5 ヶ月後の InternVL 3（2025 Apr）で、**MPO が Stage 3 として正式採用**。InternVL3-78B で **+4.1 ポイント推論改善**、38B で +4.5。**MMPR v1.2（拡張版）+ 300K 選好ペア + VisualPRM400K** という形で発展。InternVL シリーズの永続的技術となった
+  - **「事後的解決」vs「根本的解決」**: MPO は SFT 後の追加段階として実施 = 事後的解決。InternVL 3 の Native Multimodal Pre-Training は **「事前学習段階から共同最適化」** という根本的解決。両者は補完的（InternVL 3 でも Stage 3 として MPO を併用）
+  - **MLLM 訓練パイプラインの第 3 段階確立**: LLaVA 系の MLLM は事前学習 + SFT の 2 段階で完結していたが、**LLM 界では DPO/RLHF が既に標準**。本論文は **その方法論を MLLM へ持ち込み、CoT 推論の問題を解決した先駆け**。後の MLLM 論文の多くが MPO 系統の post-training を組み込むようになる
+  - **VisualPRM への進化**: 本論文の MMPR が **VisualPRM-8B**（[[entities/internvl-3|InternVL 3]] の Process Reward Model）の訓練データの基盤となる。VisualPRM400K は MMPR v1.2 から構築されており、**「選好データを critic モデル訓練にも活用」** という展開
+  - **既存 wiki ハブとの自然な統合**: [[entities/internvl-3]] の Stage 3 MPO 説明と、[[entities/mpo]] / [[entities/mmpr]] の独立ページが相互リンク。**「MPO は InternVL 3 の一部分ではなく、独立した研究貢献」** という構造を wiki で表現
+  - 後続候補: VisualPRM 原典 / DeepSeek R1 原典（PRM 系の MLLM 拡張）/ Process Reward Model 一般論 / RLAIF-V 原典 / Silkie / POVID / RLHF-V（マルチモーダル選好データ手法比較）/ DPO 原典（Rafailov et al., 2023）/ BCO 原典（Jung et al., 2024）/ PPO / InstructGPT 原典など RL/PO 関連の基礎論文
+
+## [2026-05-29] ingest | InternVL 3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency
+
+- 取り込み: `raw/papers/InternVL3.5_ Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency.md`（ar5iv 由来 markdown、本文のみ、ユーザー指示で References は除外）
+- 画像対応: ar5iv URL（<https://ar5iv.labs.arxiv.org/html/2508.18265/assets/x{1-5}.png>）から 5 枚を curl でダウンロードし `raw/assets/internvl-3-5/fig{1-5}.png` に保存
+- 作成:
+  - [[translations/internvl-3-5]] — Abstract + §1-4 の全文和訳（References は除外）。図 1-5 を `<figure>` で埋め込み、表 1-18 を含む（9 サイズモデルカタログ、全 35 ベンチマーク比較、Multimodal Reasoning + Math、OCR/Chart/Document、Multi-Image + Real-World、Comprehensive + Hallucination、Grounding、Multilingual、Video、GUI、Embodied、SVG、LLM 16 ベンチ、Cascade RL アブレーション、Cascade RL vs MPO vs GSPO 効率、ViR Flash 性能維持、DvD + ViR 加速）
+  - [[sources/internvl-3-5]] — 初学者向け要約。「**Cascade RL + ViR + DvD + MoE で 4.05× 加速、GPT-5 との差 3.9%**」の位置づけ、InternVL シリーズ第 8 世代、Cascade RL（MPO + GSPO）の coarse-to-fine 戦略、ViR/ViCO の数式、DvD のシステム最適化、MoE スケーリング、Qwen3 base 統一、用語集（100+ 項目）
+  - [[entities/internvl-3-5]] — InternVL 3.5 の 9 サイズスイート + Flash 詳細仕様、Dense 6 + MoE 3 + Flash 効率版の全仕様、4 段階訓練（Native Pre-Training + SFT + Cascade RL + 任意で ViCO）、Cascade RL の MPO + GSPO 詳細、全 13 ベンチマーク結果、vs InternVL 3 / vs GPT-5 の 2 比較、InternVL シリーズ全 8 世代系譜
+- 更新:
+  - [[entities/internvl]] — InternVL シリーズ表に InternVL 3.5 を追加、**第 8 世代の位置づけ明示**
+  - [[entities/internvl-3]] — シリーズ系譜表に InternVL 3.5（Cascade RL、MoE、ViR/DvD）を追加
+  - [[entities/mpo]] — シリーズでの位置に InternVL 3.5 を追加（MPO が Cascade RL の Stage 1 として進化）
+  - [[concepts/foundation-model]] — §A WSL 系セクションに InternVL 3.5 を追加（Cascade RL、MoE、ViR/DvD、4.05× 加速、GPT-5 との差 3.9%）
+  - [[concepts/zero-shot-transfer]] — InternVL 3.5 エントリ追加（Deep Thinking + Parallel Thinking + Cascade RL）+ 関連ページに entities/internvl-3-5 追加
+  - [[index]] — 3 つの新規ページ（sources/internvl-3-5、translations/internvl-3-5、entities/internvl-3-5）+ 略称表に **60+ 項目**（InternVL 3.5 / 9 サイズ / Flash / Cascade RL / GSPO / GRPO / Importance Ratio / ViR / ViCO / patch router / loss ratio / Pixel Shuffle 1/16 / DvD / Vision Server / Language Server / 非同期 3 段階パイプライン / RDMA / Qwen3 / GPT-OSS / MoE Activated Params / Thinking Mode / Deep Thinking / Parallel Thinking / VisualPRM-v1.1 / MMPR-Tiny / InternEVO / XTuner / FSDP / DeepGEMM / liger-kernel / FlashAttention-3 / TMA-Adaptive FP8 / verl / window attention with sink / GPT-5 / GLM-4.1V/4.5V / Step-3 / Kimi-VL / MiMo-VL-RL / Keye-VL / Ovis 系 / MiniCPM 系 / Skywork-R1V3 / QvQ / Doubao / Seed1.5-VL / WindowsAgentArena / WebArena-Lite-v2 / OSWorld / SGP-Bench / SArena-Icon / ERQA / SpaCE-10 / OmniSpatial / Llama-4 / DeepSeek-V3 / Reward Hacking / Request Throughput）を新規登録
+  - [[overview]] — VLM/MLLM セクションに InternVL 3.5 を追加（InternVL シリーズ第 8 世代として明示）、Foundation Model 3 大系統に追加、ingest 済みリストを更新
+  - [[log]]
+- メモ:
+  - **「商用 GPT-5 との差をオープンソース最小に縮める」**: GPT-5 (2025 Aug 7) の直後の発表（同月 26 日）で、**Aggregate 差 3.9%** という当時オープンソース最小を達成。InternVL3.5-241B-A28B が一般マルチモーダルで GPT-5 と互角（74.1 vs 74.0）、MathVista で +0.8 上回り、VSI-Bench で **+32 ポイント圧倒**。商用フロンティアとの最終決戦の様相
+  - **Cascade RL の天才的なアイデア**: 「MPO は性能上限低いが安定・高速、GSPO は性能上限高いが不安定・遅い → 順番に適用」。MPO で warm-up したモデルは **高品質 rollouts を生成** → GSPO の online RL を **少ない episode で収束** させられる。これは **「コスト × 性能」の Pareto 改善**。GSPO 単独の半分の GPU 時間で +2.1 ポイント上回るという結果は印象的
+  - **MoE スケーリングの本格採用**: InternVL シリーズで初の **MoE モデル 3 サイズ**（20B-A4B / 30B-A3B / **241B-A28B**）。activated parameter で実用効率を保ちつつ、合計 241B という巨大スケールを実現。**OpenAI の GPT-OSS-20B を InternVL3.5-20B-A4B に統合** したのも注目（OpenGVLab 系列で初の OpenAI 公開モデル統合）
+  - **ViR + ViCO の意味的革新**: 従来の Dynamic High Resolution が **画像の幅と高さ（spatial）** で patch を分割していたのに対し、**ViR は意味的内容（semantic）** で動的に圧縮率を選択。「semantic-rich patch は 256 token、semantic-poor patch は 64 token」という直感的な発想を **loss ratio による learnable thresholding** で実装。**視覚トークン 50% 削減で性能 99% 維持** は実用展開に大きい
+  - **DvD のシステムレベル最適化**: これは **MLLM のシステムレベル最適化** の本格的試みであり、**「アルゴリズムではなくインフラで性能を上げる」** という新方向。MoE 時代の大規模 MLLM 展開で必須技術になる可能性。Vision Server と Language Server を **BF16 視覚特徴を TCP/RDMA で転送** という設計は、production レベルでのデプロイを意識した精緻な実装
+  - **「マルチモーダル化で言語能力が強くなる」の継続実証**: InternVL 3 で発見された現象が InternVL 3.5 でも継続。**Qwen3-base 比で 1B が +6.7、241B が +2.3、16 ベンチ中 15 で Qwen3 超え**。これは [[entities/internvl-3|InternVL 3]] の「Native Pre-Training で言語が強くなる」発見が **大型モデルでも成立** することを示す重要な反復実証
+  - **LLM ベンダー戦略の継続**: InternVL 3 で Qwen2.5 base に切り替えた戦略を継続、**Qwen3 base に統一**（InternLM3-8B は今回採用されず）。これは Shanghai AI Lab が **「OpenGVLab の役割は視覚側、LLM は最良のもの（Qwen3）を採用」** という分業を確立したことを示す。**OpenAI GPT-OSS の統合** は、自社・Alibaba・OpenAI という 3 系列の LLM を併用する柔軟性を示す
+  - **9 サイズ × dense + MoE × Flash の組み合わせ**: 18+ モデルのスイートで、**消費者 GPU（1B/2B）からエンタープライズ MoE（241B）まで** カバー。Flash 効率版を全サイズで提供することで、実用シナリオごとの選択肢を最大化。これは **「研究より実用」** という OpenGVLab の戦略
+  - **VSI-Bench で GPT-5 を +32 圧倒の意義**: 空間推論（3D シーン理解）は **物理ロボティクス・自律走行・AR/VR** の基盤能力。InternVL3.5-8B (8B 活性) でも GPT-5 を +18.8 上回るという結果は、**「3D 空間理解はオープンソースが商用を超えた領域」** を示す。embodied AI への大きな前進
+  - **既存 wiki ハブとの自然な統合**: [[entities/internvl-3|InternVL 3]] の Native Pre-Training + MPO + VisualPRM の哲学を継承しつつ、Cascade RL（MPO + GSPO）+ MoE + 効率化の 3 軸で前進。**[[entities/mpo|MPO]] が Cascade RL の Stage 1 として進化** という関係性が wiki 内で明示化
+  - **InternVL シリーズ全 8 世代の追跡完了**: 1.0 → 1.5 → 2.0 → Mini → 2.5 → 3 → 3.5 が全て wiki 内で追跡可能。MPO（後訓練）+ MMPR（データ）も独立 entity ページがあり、**InternVL エコシステム全体** が wiki で表現される
+  - 後続候補: Qwen3 原典 / Qwen2.5-VL / Qwen3-VL（Alibaba の最新 MLLM）/ GLM-4.5V 原典（Zhipu の MLLM）/ Step-3 原典（StepFun）/ Kimi-VL 原典（Moonshot）/ MiMo-VL-RL 原典（Xiaomi）/ GPT-5 関連情報 / GPT-OSS 原典 / GSPO 原典（DeepSeek 関連）/ VisualPRM-v1.1 原典 / Seed1.5-VL（ByteDance）/ UI-TARS（GUI agent）/ DeepSeek-V3 関連 など最新 MLLM 系

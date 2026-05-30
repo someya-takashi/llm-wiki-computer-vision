@@ -168,6 +168,7 @@ MIM 由来の「マスクから推論」訓練が robustness につながる。
 - **[[entities/dinov3]]**（2025, Siméoni et al.）: DINOv2 をさらに ViT-7B × LVD-1689M に scale、**Gram anchoring**（[[concepts/gram-anchoring]]）で long-training dense feature 劣化を解決、RoPE 採用
 - **MaskFeat**（Wei et al., 2022）: 似た発想で HOG 特徴量を予測
 - **iBOT 自体は ICLR 2022 で発表**（arXiv は 2021 年 11 月）
+- **[[entities/eva-x]]**（npj Digital Medicine 2025, Yao et al.）: iBOT の online tokenizer を**凍結された外部 CLIP モデル（EVA-CLIP / MGCA-CLIP）に置き換える**設計で、胸部 X 線基盤モデルを構築。「online vs frozen-external tokenizer」という設計対比を生む。詳細: [[sources/eva-x]]
 
 ---
 
