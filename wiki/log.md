@@ -871,7 +871,7 @@
   - **3 段階訓練の意義**: CLIP 流の対比訓練（Stage 1 = 4.98B 対）で頑健な視覚表現を獲得し、BLIP-2 流の ITC/ITM/ITG（Stage 2 = 1.03B）で生成能力を獲得し、LLaVA 流の SFT（Stage 3 = 4M）で対話化。**「過去 5 年の VLM 流派をすべて取り込んだ統合レシピ」**
   - **ViT-22B（Google, 2023）への対抗**: 21.7B パラメータ + 非公開 JFT-3B の ViT-22B に対し、**5.9B + 公開データ 4.98B** の InternViT-6B が ADE20K linear probe **47.2 vs 34.6（+12.6 mIoU）** という驚異的な差で勝利。**「公開データ + 適切なスケール + 適切な訓練 = JFT 不要」** を実証
   - **QLLaMA = 「QFormer の 42× 巨大化版」の意義**: BLIP-2 が 188M QFormer で「軽量 glue で十分」と主張したのに対し、InternVL は **「glue 自体を 8B スケールにして LLaMA 初期化すれば、LLM 接続も対比も生成もすべて 1 モジュールでこなせる」** と反論。CV における「glue layer scaling」議論の起点
-  - **既存 wiki ハブとの自然な統合**: WSL 系（[[entities/clip]] / [[entities/siglip]] / [[entities/perception-encoder]]）の競合系列に位置づけ。**[[entities/perception-encoder]]（2025 NeurIPS）と並ぶ「6B+ 視覚エンコーダの対比学習スケール」軍備拡張** の先駆け。**[[entities/siglip-2]](2025)** が「対比学習自体を改良（sigmoid + 全部入り）」なのに対し、InternVL は「対比 + 生成 + LLM 統合」軸。**[[entities/dinov2]] / [[entities/dinov3]]** との対比は「テキスト誘導 vs テキストなし純粋 SSL」の代表的競合軸
+  - **既存 wiki ハブとの自然な統合**: WSL 系（[[entities/clip]] / [[entities/siglip]] / [[entities/perception-encoder]]）の競合系列に位置づけ。**[[entities/perception-encoder]]（2025 NeurIPS）と並ぶ「6B+ 視覚エンコーダの対比学習スケール」軍備拡張** の先駆け。**[[entities/siglip|SigLIP 2]]（2025）** が「対比学習自体を改良（sigmoid + 全部入り）」なのに対し、InternVL は「対比 + 生成 + LLM 統合」軸。**[[entities/dinov2]] / [[entities/dinov3]]** との対比は「テキスト誘導 vs テキストなし純粋 SSL」の代表的競合軸
   - **動画 + 多言語のゼロショット強さ**: Kinetics-700 8F 60.6（ViCLIP +6.3）/ 多言語 IN-1K 平均 64.0（OpenCLIP-XLM-R-H +8.1）。**動画と多言語の両方で当時 SoTA** という稀有な複合性能
   - **OpenGVLab のシリーズ戦略**: InternImage（純粋画像）/ InternVideo（動画）/ InternVL（マルチモーダル）/ InternLM（言語）のシリーズが Shanghai AI Lab の Intern ブランドとして展開。**中国 AI 大規模研究機関の代表的成果**
   - 後続候補: InternVL 1.5（dynamic high-res, 2024-04）/ InternVL 2.0 / 2.5 / 3 series / Qwen-VL / Qwen2-VL / Gemini-Vision API 周辺 / LLaVA-NeXT / LLaVA-OneVision / MiniGPT-4 v2 / Flamingo / BLIP-2 原典 / EVA-CLIP / EVA-02 / MetaCLIP など
@@ -1075,3 +1075,319 @@
   - **既存 wiki ハブとの自然な統合**: [[entities/internvl-3|InternVL 3]] の Native Pre-Training + MPO + VisualPRM の哲学を継承しつつ、Cascade RL（MPO + GSPO）+ MoE + 効率化の 3 軸で前進。**[[entities/mpo|MPO]] が Cascade RL の Stage 1 として進化** という関係性が wiki 内で明示化
   - **InternVL シリーズ全 8 世代の追跡完了**: 1.0 → 1.5 → 2.0 → Mini → 2.5 → 3 → 3.5 が全て wiki 内で追跡可能。MPO（後訓練）+ MMPR（データ）も独立 entity ページがあり、**InternVL エコシステム全体** が wiki で表現される
   - 後続候補: Qwen3 原典 / Qwen2.5-VL / Qwen3-VL（Alibaba の最新 MLLM）/ GLM-4.5V 原典（Zhipu の MLLM）/ Step-3 原典（StepFun）/ Kimi-VL 原典（Moonshot）/ MiMo-VL-RL 原典（Xiaomi）/ GPT-5 関連情報 / GPT-OSS 原典 / GSPO 原典（DeepSeek 関連）/ VisualPRM-v1.1 原典 / Seed1.5-VL（ByteDance）/ UI-TARS（GUI agent）/ DeepSeek-V3 関連 など最新 MLLM 系
+
+## [2026-05-30] ingest | Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond
+
+- 取り込み: `raw/papers/Qwen-VL_ A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond.md`（497 行、130KB、arXiv:2308.12966、Alibaba Group、2023 Aug）
+- 作成:
+  - [[sources/qwen-vl]] — Qwen-VL シリーズ第 1 世代の要約（Qwen-7B + OpenCLIP ViT-bigG + Position-aware VL Adapter、3 段階学習、`<box>`/`<ref>` 特殊トークン、9.6B、Flickr30K 85.8 / VQAv2 79.5 / RefCOCO 89.36 / TouchStone-Cn 401.2 等）
+  - [[translations/qwen-vl]] — Abstract + §1-6 の本文翻訳（References と Appendix A-E は除外、ユーザー指示）。図 1-4 + 表 1-7 を含む。Position-aware VL Adapter、`<img>`/`<box>`/`<ref>` 特殊トークン、[0,1000) 座標正規化、ChatML 対話フォーマット、3 段階訓練の全詳細を含む
+  - [[entities/qwen-vl]] — Qwen-VL / Qwen-VL-Chat のエンティティ詳細（9.6B、3 段階学習ハイパラ、4 種特殊トークン、20+ ベンチマーク結果、設計判断のアブレーション要点）
+  - `raw/assets/qwen-vl/`: fig1.png（性能比較レーダーチャート）、fig2.png（3 段階学習パイプライン図）、fig3.png（事前学習収束曲線）、fig4.png（クエリ数アブレーション）、demo2.jpg（定性例）、fewshot.png（フューショット比較）の 6 画像をダウンロード
+- 更新:
+  - [[index]] — Sources（Qwen-VL を InternVL 3.5 の前に配置）、Translations（同上）、Entities Models（Qwen-VL を MMPR の前に配置）の 3 セクションに追加
+  - [[log]]
+- メモ:
+  - **Qwen-VL シリーズ第 1 世代の意義**: Alibaba の Qwen2-VL / Qwen2.5-VL / 将来の Qwen3-VL に至る系譜の **出発点**。2023 年 8 月時点で **「中国語 + 細粒度グラウンディング + OCR」の 3 つを同時に解決した最初のオープンソース MLLM**
+  - **「`<box>` / `<ref>` 特殊トークン設計」が MLLM 業界の事実上の標準に**: バウンディング・ボックス座標を **[0, 1000) に正規化した数値文字列**として `<box></box>` で囲む設計は、位置語彙を追加する必要がなく通常のテキスト生成と同じ仕組みでグラウンディングを実現する天才的なシンプルさ。これが後の Qwen2-VL / Qwen2.5-VL のみならず、業界標準として広く採用された
+  - **Position-aware VL Adapter の独自性**: BLIP-2 の Q-Former と同じく学習可能クエリ（256 個）で視覚トークンを圧縮するが、**クロスアテンションのクエリ-キー対に 2D 絶対位置エンコーディング**を加える点が独自。これがグラウンディングを可能にする位置情報を保持する鍵。InternVL 系の Pixel Shuffle ([[entities/internvit-300m]]) とは設計思想が異なる
+  - **3 段階学習の保守的設計**: Stage1 で LLM 凍結、Stage2 で全凍結解除、Stage3 で ViT 凍結という階層的アプローチ。これは InternVL 3 ([[entities/internvl-3]]) が後に提唱する **Native Multimodal Pre-Training（最初から共学習）** と対照的。当時の主流設計を反映
+  - **Flickr30K (0-shot) で 80B の Flamingo を上回る**: 9.6B モデルで Flickr30K 85.8 CIDEr を達成（Flamingo-80B 67.2 を +18.6）。当時のオープンソース MLLM のゼロショット最強クラスを記録
+  - **中国語マルチモーダル対話の事実上の標準**: TouchStone Cn 401.2 は当時他モデルが中国語未対応の中で唯一の本格的スコア。VisualGLM、CogVLM など中国語 MLLM の比較基準として 1 年以上機能した
+  - **InternVL シリーズとの対比**: 同時期に InternVL ([[entities/internvl]]) も活動を開始し、両者は **2023-2025 年のオープンソース MLLM 2 大系譜**を形成。Qwen-VL は OpenCLIP ViT-bigG + 256 クエリ圧縮 + 中英バイリンガル中心の設計、InternVL は InternViT-6B + Pixel Shuffle + より広範な多言語の設計、と異なる方向性で進化
+  - **当時の弱点**: (1) 解像度 448² 固定（後の Qwen2-VL の Naive Dynamic Resolution + M-RoPE で解決）、(2) 256 トークン固定圧縮（高情報密度画像で情報損失、Qwen2-VL の動的トークン数で解決）、(3) Stage1 で LLM 凍結（InternVL 3 の Native Pre-Training とは対照的）、(4) 単一モデル規模のみ（Qwen2-VL で 2B/7B/72B の 3 サイズに拡張）
+  - **本 ingest 段階では Qwen-VL は単独 entity として登録**: Qwen2-VL / Qwen2.5-VL は別 entity ページとして将来追加予定。次の ingest で Qwen2-VL や Qwen2.5-VL を取り込めば、Qwen ファミリーの系譜表が完成する
+  - **既存 InternVL 系 entities の更新は最小限**: Qwen-VL は InternVL 2.5 / 3 / 3.5 の論文では「対抗・比較対象」として度々言及されるが、InternVL 系の各 entity ページに既に「Qwen-VL を上回る」などの比較が含まれているため、明示的なクロスリンク追加は今回見送り（InternVL 系から見ると Qwen-VL は競合の祖、Qwen-VL から見ると InternVL は同時期の競合系譜）
+  - 後続候補: Qwen2-VL / Qwen2.5-VL（次世代の動的解像度 + M-RoPE）/ Qwen3-VL / Qwen3 LLM 原典 / GLM-4.5V / Step-3 / Kimi-VL / MiMo-VL-RL / GPT-OSS 原典 / GSPO 原典 / VisualPRM-v1.1 / Seed1.5-VL / UI-TARS / DeepSeek-V3 / 古典 LLaVA / MiniGPT-4 / BLIP-2 等の歴史的位置付け
+
+## [2026-05-30] ingest | Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution
+
+- 取り込み: `raw/papers/Qwen2-VL_ Enhancing Vision-Language Model's Perception of the World at Any Resolution.md`（669 行、arXiv:2409.12191、Qwen Team Alibaba Group、2024 Sept）
+- 作成:
+  - [[sources/qwen2-vl]] — Qwen2-VL シリーズ第 2 世代の要約（Naive Dynamic Resolution、M-RoPE、統一画像/動画処理、2B/7B/72B、DFN ViT 共有、Qwen2 LLM、3 段階学習 1.4T トークン、80K 外挿、20 ベンチ超 + 動画 + エージェント + 多言語 OCR の主要結果）
+  - [[translations/qwen2-vl]] — Abstract + §1-4 + Acknowledgements の本文翻訳（References と Appendix A は除外、ユーザー指示）。図 1-6 + 表 1-8 を含む
+  - [[entities/qwen2-vl]] — Qwen2-VL-2B/7B/72B のエンティティ詳細（モデル詳細、3 主要技術の数式・設定値、3 段階学習、全 22+ ベンチ結果、システム実装、ライセンス・HF パス、限界）
+  - `raw/assets/qwen2-vl/`: fig1.jpg（能力レーダーチャート）、fig2.jpg（アーキテクチャ概観）、fig3-mrope.png（M-RoPE 図解、temporal/height/width 分解）、fig4-minpixels.png（min_pixels アブレーション）、fig5-extrapolation.png（80K 外挿性能）、fig6-scale.jpg（モデル・スケーリング）の 6 画像をダウンロード
+- 更新:
+  - [[index]] — Sources（Qwen2-VL を Qwen-VL の前に配置、降順時系列）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/qwen-vl]] — 系譜セクションに Qwen2-VL（2024.09、2B/7B/72B、Naive Dynamic Resolution + M-RoPE）の詳細追加
+  - [[concepts/foundation-model]] — A. 弱教師あり系セクションに Qwen2-VL を Qwen-VL の後ろに追加（Naive Dynamic Resolution + M-RoPE + DFN ViT）
+  - [[concepts/rotary-position-embeddings]] — M-RoPE を導入した代表モデルとして Qwen2-VL を追加
+  - [[concepts/weakly-supervised-pretraining]] — Qwen2-VL の弱教師あり Stage1（600B image-text + OCR + classification）を追加
+  - [[overview]] — VLM/MLLM 系譜に Qwen2-VL を追加、Qwen 系の系譜（Qwen-VL → Qwen2-VL → Qwen2.5-VL）を明示
+  - [[log]]
+- メモ:
+  - **Qwen-VL シリーズ第 2 世代の意義**: [[entities/qwen-vl|Qwen-VL]] 初代の 3 つの構造的弱点（448² 固定 / 256 トークン固定 / 動画は 2D 画像系列）を一気に解消。**Naive Dynamic Resolution + M-RoPE は MLLM 業界の事実上の標準**として広く採用された
+  - **「タイル分割 vs ViT 自体の任意解像度対応」の路線対立**: 同時期の [[entities/internvl-1-5|InternVL 1.5]]（2024 Apr）が **35 通りのアスペクト比 × 1-40 タイル分割 + Pixel Shuffle 1/4 圧縮**で動的解像度を実装したのに対し、Qwen2-VL は **「ViT の絶対位置埋め込みを 2D-RoPE に置換」**でより根源的に任意解像度対応。Qwen2-VL のアプローチがその後の業界標準になった点が技術史的に重要
+  - **M-RoPE の設計の天才性**: temporal/height/width の 3 成分に分解することで、(1) テキスト処理時は 1D-RoPE と等価、(2) 画像処理時は時間軸を固定して空間 2 軸のみ使用、(3) 動画処理時は時間軸が増分。**副次効果として「位置 ID 値が小さく抑えられて長文脈外挿に有利」**。学習 16K で推論 80K まで頑健というのは衝撃的結果
+  - **同一 675M ViT を全サイズで共有**: 2B/7B/72B すべてで 675M ViT を共有することで、LLM サイズに関係なく視覚処理コストを一定に保つ。これは Mini-InternVL の InternViT-300M 共有戦略と同じ思想だが、Qwen2-VL は元から 3 サイズで設計されている点が違う
+  - **DFN（Apple）ViT を初期化に使う点**: 初代 Qwen-VL の OpenCLIP ViT-bigG（1.9B）からの大幅縮小（1.9B → 0.675B）+ 別系統への切り替え。DFN は Apple の高品質データフィルタリングによる CLIP 系で、Apple の AIMv2 系譜と共通の流れ
+  - **3 段階学習 + 累積 1.4T トークン**: Qwen-VL 初代の Stage1 が 1.5B サンプル ≒ 500B トークンだったのに対し約 3 倍。**監督はテキスト・トークンにのみ**という方針は Qwen-VL の伝統を踏襲（cf. InternVL 3 も同じ方針、ただし InternVL 3 は square averaging を追加）
+  - **特殊トークンの命名アップデート**: `<box>` → `<|box_start|>`、`<ref>` → `<|object_ref_start|>` 等、ChatML 風の `<|...|>` フォーマットに統一。座標 [0, 1000) 正規化文字列は不変
+  - **MMMU 64.5（GPT-4o 69.1 に -4.6）が当時の弱点**: その後 [[entities/internvl-2-5|InternVL 2.5]] が 70.1 で初の 70% 突破、[[entities/internvl-3|InternVL 3]] が 72.2 で再び SOTA、[[entities/internvl-3-5|InternVL 3.5]] が 77.7 でオープンソース新 SOTA と続く。Qwen2-VL は MMMU では追随を後継世代に委ねた形
+  - **マルチモーダル化で言語が強くなる発見はまだない**: InternVL 3 が 2025 Apr に発見・主張するこの現象は、Qwen2-VL 段階では論じられていない（言語ベンチ評価が公開されていない）。哲学転換は InternVL 系が先行
+  - **GPT-4o を多くの文書 / OCR / 多言語タスクで上回ったオープンソース MLLM**: 2024 年 9 月時点で **DocVQA 96.5 vs 92.8 / OCRBench 877 vs 736 / MTVQA 30.9 vs 27.8 / RealWorldQA 77.8 vs 75.4 / MMVet 74.0 vs 69.1 / MathVista 70.5 vs 63.8** など、商用との差を多数の領域で逆転した重要な瞬間
+  - **動画理解の MLLM 標準化**: 20 分以上動画 + Video-MME / EgoSchema / MVBench の公開はその後の MLLM 動画ベンチマーキングの基盤に。EgoSchema 77.9（GPT-4o +5.7）は商用フロンティアを上回る決定的結果
+  - **エージェント能力**: 32K 文脈長 + UI 操作（AITZ EM 72.1）+ 関数呼び出し（TM 93.1）+ Number Line/EZPoint 100% は、MLLM をエージェントとして使う実用性を初めて本格的に示した。**ALFRED SR 67.8 で専門モデル ThinkBot を超えた**点も重要（家事ロボット）
+  - **VLN（R2R）で -27.3 と専門モデルに大敗**: 3D 空間モデリング・マップ理解は MLLM の弱点として残存。[[entities/internvl-3|InternVL 3]] / [[entities/internvl-3-5|InternVL 3.5]] が VSI-Bench で GPT-4o / GPT-5 を圧倒する一方、ナビゲーションは未解決領域
+  - **次の ingest 候補**: Qwen2.5-VL（動的解像度のさらなる強化、動画 frame rate 動的化）/ Qwen3 LLM 原典（多言語強化の基盤）/ DFN 原典（Apple の CLIP 系視覚エンコーダ）/ Qwen2 LLM 原典 / 古典 LLaVA / MiniGPT-4 / BLIP-2 の歴史的位置付け / 古典 Flamingo（Qwen2-VL の比較対象）
+
+## [2026-05-30] ingest | Qwen2.5-VL Technical Report
+
+- 取り込み: `raw/papers/Qwen2.5-VL Technical Report.pdf`（23 ページ PDF、arXiv:2502.13923、Qwen Team Alibaba Group、2025 Feb 19）
+- 作成:
+  - [[sources/qwen2-5-vl]] — Qwen2.5-VL シリーズ第 3 世代の要約（Window Attention + ViT from scratch、MRoPE absolute time、動的 FPS、QwenVL HTML format、3B/7B/72B、4.1T トークン、3 段階事前学習 + 2 段階事後学習、GUI agent 商用級進化、20+ ベンチ + 動画 + GUI エージェントの主要結果）
+  - [[translations/qwen2-5-vl]] — Abstract + §1-5 の本文翻訳（References pp.16-23 は除外、Appendix なし、ユーザー指示）。図 1 + 表 1-9 を含む
+  - [[entities/qwen2-5-vl]] — Qwen2.5-VL-3B/7B/72B のエンティティ詳細（モデル詳細、4 主要技術の数式・設定値、3 段階事前学習 + 2 段階事後学習、全 30+ ベンチ結果、QwenVL HTML フォーマット、限界）
+  - `raw/assets/qwen2-5-vl/fig1.png`: ユーザーが手動で `raw/images/fig1.png` に置いた Qwen2.5-VL フレームワーク図（ViT + Window/Full Attention + Vision Encoder + Qwen2.5 LM Decoder + 動的 FPS サンプリング + Conv3D の構造図）を、CLAUDE.md スキーマ §7 に従い `raw/assets/qwen2-5-vl/fig1.png` に再配置
+- 更新:
+  - [[index]] — Sources（Qwen2.5-VL を Qwen2-VL の前に配置、降順時系列）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/qwen2-vl]] — 系譜セクションに Qwen2.5-VL（2025.02、3B/7B/72B、Window Attention + MRoPE absolute time + 4.1T + QwenVL HTML + GUI Agent）の詳細追加
+  - [[concepts/foundation-model]] — A. 弱教師あり系セクションに Qwen2.5-VL を Qwen2-VL の前に追加
+  - [[concepts/rotary-position-embeddings]] — 派生に「MRoPE Aligned to Absolute Time」を追加
+  - [[concepts/weakly-supervised-pretraining]] — Qwen2.5-VL の 3 段階事前学習（4.1T トークン、Visual 1.5T + Multimodal 2T + Long-Context 0.6T）を追加
+  - [[concepts/zero-shot-transfer]] — オープン語彙検出 ODinW、点グラウンディング、CountBench でのゼロショット転移を追加
+  - [[overview]] — VLM/MLLM 系譜に Qwen2.5-VL を追加、Qwen 系の系譜（Qwen-VL → Qwen2-VL → Qwen2.5-VL）を完成
+  - [[log]]
+- メモ:
+  - **Qwen-VL シリーズ第 3 世代の意義**: [[entities/qwen2-vl|Qwen2-VL]] が「任意解像度」を実現したのに続き、Qwen2.5-VL は (i) **計算複雑性問題（Window Attention で線形化）**、(ii) **動画の時間動態（MRoPE absolute time で FPS 非依存）**、(iii) **データ規模（1.2T → 4.1T）**、(iv) **GUI エージェント（ScreenSpot Pro 1.6% → 43.6% = 27× 飛躍）** という 4 つの未解決課題を一気に解決
+  - **「視覚言語モデルから視覚エージェントへの転換点」**: 単に MLLM の精度を上げたのではなく、**ScreenSpot Pro / Android Control / AndroidWorld / MobileMiniWob++ で GPT-4o / Gemini 2.0 / Claude を圧倒**するレベルに到達。これは「実用ツールとしての MLLM」の新時代の始まりを示す。OSWorld（デスクトップ）のみ Claude に後れる点が興味深い
+  - **MRoPE Aligned to Absolute Time の天才性**: Qwen2-VL の MRoPE は temporal ID をフレーム番号に結びつけていたため、30 fps 動画と 5 fps 動画で「10 秒」の表現が違っていた。Qwen2.5-VL は **temporal ID 間の間隔を絶対時間（秒）に揃える**だけで、追加ヘッドやテキスト・タイムスタンプ注入なしに時間グラウンディングを実現。**Charades-STA mIoU 50.9 で GPT-4o 35.7 を +15.2 圧倒**という結果が決定的
+  - **Window Attention + ViT from scratch の決断**: Qwen2-VL は DFN（Apple）の ViT を初期化に使っていたが、Qwen2.5-VL は **DataComp + 社内データでゼロから学習**。これは「他社の CLIP/DFN に依存しない自社視覚エンコーダ」を確立する戦略的決断。Window Attention 採用（32 層中 4 層のみ完全自己注意）で計算コストを削減しつつ、native resolution のままで処理
+  - **QwenVL HTML フォーマットの革新**: 文書解析を「複数の専門モデルの組み合わせ」から「単一汎用モデル + 統一フォーマット」へ転換。data-bbox 属性で座標、HTML タグでレイアウト・表・チャート・数式・楽譜（ABC notation）・化学式（SMILES）を表現。**OCRBench_v2 で Gemini 1.5-Pro を英語 +9.6 / 中国語 +20.6 ポイント圧倒**の決定打。**ABC notation と SMILES** という業界標準を採用した点が玄人受け
+  - **MMMU で初めて 70 突破**: Qwen2-VL 64.5 → Qwen2.5-VL-72B 70.2（+5.7）で初の 70 突破、GPT-4o 69.1 / Claude-3.5-Sonnet 68.3 / InternVL2.5-78B 70.1 と肩を並べる。同時期に [[entities/internvl-2-5|InternVL 2.5]] も 70.1 で 70% 突破していたため、**2024 年末〜2025 年初頭は MLLM が「70% の壁」を突破した記念碑的時期**
+  - **マルチモーダル化で言語が強くなる現象**: Qwen2.5-VL-72B は **純粋テキスト・タスクで Qwen2.5-72B（純粋 LLM）とほぼ同等**を維持。LiveBench / MultiPL-E / IFEval ではむしろ上回る。これは [[entities/internvl-3|InternVL 3]] が 2025 Apr に発見・主張する現象が **2025 Feb の Qwen2.5-VL でも既に観察されていた**証拠
+  - **3B サイズの登場（2B → 3B）**: Qwen2-VL の最小モデルは 2B だったが、Qwen2.5-VL は 3B が最小。Qwen2.5 LLM ファミリーに 2B が存在しないため。これにより最小モデルがやや大型化、エッジ AI の実用性に微妙な影響
+  - **モデル間互換性の保持**: Qwen2-VL から Qwen2.5-VL への移行で、`<box>` / `<ref>` 特殊トークンや MRoPE 基本構造は維持されつつ、Window Attention や MRoPE absolute time が追加。アーキテクチャ的に大きな破断なし、段階的進化
+  - **InternVL 系と Qwen 系の路線対立の継続**: [[entities/internvl-3|InternVL 3]]（2025.04）が **Native Multimodal Pre-Training** を提唱したのに対し、Qwen2.5-VL（2025.02）は依然として **「LLM 事前学習 → MLLM 適応」のパラダイム**を維持。両系列の哲学的対立が続く
+  - **ScreenSpot Pro の +42 ポイント飛躍**: 高解像度プロ向け UI ベンチである ScreenSpot Pro で、Qwen2-VL の 1.6% から Qwen2.5-VL の 43.6% へ **+42 ポイント（27×）の飛躍**。これは GUI 専用エージェント Aguvis-72B（23.6）すら大きく上回る結果。**「Window Attention で高解像度を効率処理」+「絶対座標グラウンディング・データの大規模化」+「Agent Data の充実」** の効果が複合的に現れた
+  - **訓練データの公開度差**: [[entities/internvl-3|InternVL 3]] が `OpenGVLab/InternVL-Data` で完全公開しているのに対し、Qwen2.5-VL は訓練データ非公開（モデル重みは公開）。オープン・サイエンスの観点では InternVL 系に劣後
+  - **PDF からの ingest という新しい運用**: 本論文は PDF 形式で、Web Clipper による markdown 化前に直接 ingest。図はユーザーが手動で `raw/images/fig1.png` に配置 → Claude が `raw/assets/qwen2-5-vl/` に再配置するワークフロー。今後の PDF 論文 ingest の標準フローとなる
+  - **Appendix なしの論文構造**: Qwen2.5-VL Technical Report は §1-5（Authors）まで本文 + References のみで Appendix なし。Qwen-VL 初代と Qwen2-VL には Appendix があったが、Qwen2.5-VL では本文に統合された
+  - **次の ingest 候補**: Qwen3-VL（Qwen3 LLM ベースの後継、まだ未公開？）/ DFN 原典（Apple の CLIP 系視覚エンコーダ）/ Qwen2.5 LLM 原典 / GLM-4.5V / Step-3 / Kimi-VL / Molmo（PixMo データセットの原典）/ Gemini 2.0 関連 / Aguvis 原典（GUI エージェント比較対象）/ AndroidWorld 原典 / OSWorld 原典 / 古典 LLaVA / MiniGPT-4 / BLIP-2
+
+## [2026-05-30] ingest | Qwen3-VL Technical Report
+
+- 取り込み: `raw/papers/Qwen3-VL Technical Report.pdf`（26 ページ PDF、arXiv:2511.21631v2、Qwen Team Alibaba Group、2025 Nov 27）
+- 作成:
+  - [[sources/qwen3-vl]] — Qwen3-VL シリーズ第 4 世代の要約（Interleaved MRoPE + DeepStack + テキスト・ベース時間整合の 3 構造革新、6 サイズ × 2 バリアント = 12 公開モデル、256K ネイティブ + 1M 外挿、4 段階事前学習 ~2.2T、Strong-to-Weak Distillation + SAPO RL + Thinking with Images、商用最先端との対比結果、Apache 2.0）
+  - [[translations/qwen3-vl]] — Abstract + §1-7（References p.26+ は除外、Appendix なし、ユーザー指示）。図 1-3 + 表 1-12 を含む
+  - [[entities/qwen3-vl]] — Qwen3-VL 6 サイズ × 2 バリアント = 12 モデルのエンティティ詳細（モデル詳細、3 構造革新の数式・設定値、4 段階事前学習 + 3 段階事後学習 + Thinking with Images、全 50+ ベンチ結果、QwenVL-HTML + QwenVL-Markdown、Needle-in-a-Haystack、限界）
+  - `raw/assets/qwen3-vl/`: fig1.png（フレームワーク図、Vision Encoder + DeepStack + Qwen3 LM Dense/MoE Decoder + Native Resolution Input + Conv3D）、fig2-multilingual-ocr.png（39 言語の OCR 精度棒グラフ、32 言語で 70% 超）、fig3-needle.png（Needle-in-a-Haystack ヒートマップ、256K で完全 100% / 1M で 99.5%）の 3 画像を `raw/images/` から再配置（CLAUDE.md §7 準拠）
+- 更新:
+  - [[index]] — Sources（Qwen3-VL を Qwen2.5-VL の前に配置、降順時系列）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/qwen2-5-vl]] — 系譜セクションに Qwen3-VL（2025.11、6 サイズ × 2 バリアント = 12 モデル、Interleaved MRoPE + DeepStack + テキスト・タイムスタンプ + MoE + thinking モード）の詳細追加
+  - [[concepts/foundation-model]] — A. 弱教師あり系セクションに Qwen3-VL を Qwen2.5-VL の前に追加
+  - [[concepts/rotary-position-embeddings]] — 派生に「Interleaved MRoPE」を追加、関連ページに Qwen3-VL 追加
+  - [[concepts/weakly-supervised-pretraining]] — Qwen3-VL の 4 段階事前学習（S0 Merger 67B + S1/S2 各 1T + S3 100B 262K）を追加
+  - [[concepts/zero-shot-transfer]] — 39 言語 OCR、9-DoF 3D グラウンディング、GUI エージェント（ScreenSpot Pro/OSWorld/AndroidWorld）でのゼロショット転移を追加
+  - [[overview]] — VLM/MLLM 系譜に Qwen3-VL を追加、Qwen 系の系譜（Qwen-VL → Qwen2-VL → Qwen2.5-VL → Qwen3-VL）を完成
+  - [[log]]
+- メモ:
+  - **Qwen-VL シリーズ第 4 世代の意義**: [[entities/qwen-vl|Qwen-VL]] (`<box>`/`<ref>` + 256 固定) → [[entities/qwen2-vl|Qwen2-VL]] (Naive Dynamic Resolution + M-RoPE) → [[entities/qwen2-5-vl|Qwen2.5-VL]] (Window Attention + MRoPE absolute time + QwenVL HTML) → Qwen3-VL (Interleaved MRoPE + DeepStack + テキスト・タイムスタンプ + MoE + thinking) という Qwen 系の完成形。商用 GPT-5 / Gemini 2.5-Pro / Claude Opus 4.1 と多くのベンチで対等以上
+  - **「位置エンコーディングで時間を表現」から「テキスト・トークンで時間を表現」への転換**: Qwen2.5-VL の MRoPE absolute time は temporal ID を絶対秒数に紐付けたが、長動画で temporal ID が過度に大きく疎になる問題が判明。Qwen3-VL は MRoPE absolute time を**完全に捨て**、`<3.0 seconds>` のような明示的テキスト・タイムスタンプ・トークンに置換。**Charades-STA mIoU 64.8（Qwen2.5-VL 50.9 から +13.9）** という劇的改善が決定打。これは「シンプルな解決策が往々にして勝つ」という Occam の剃刀の好例
+  - **Interleaved MRoPE の発見**: Qwen2-VL から続いていた「temporal/height/width を埋め込み次元の塊に分割」する MRoPE は周波数スペクトル不均衡を生むことが Huang et al., 2025 で示され、Qwen3-VL は t/h/w を埋め込み次元にわたって**均一に交互配置**する設計に変更。これは MRoPE 路線の自然な発展で、後続の動画 MLLM で標準採用される可能性が高い
+  - **DeepStack の MLLM への持ち込み**: Meng et al., 2024 の DeepStack（マルチスケール視覚入力からトークンを積み重ね）を **ViT 中間層からトークンを抽出する形に拡張**して LLM の最初 3 層に注入。**追加文脈長を導入しない多層融合**という方針が新しい。アブレーション（200B トークン学習、表 12）で平均 +1.3 ポイント、特に InfoVQA +2.3 / DocVQA +1.6 で細粒度視覚理解に効く
+  - **SigLIP-2 から継続学習への戦略転換**: Qwen2.5-VL は ViT をゼロから学習する野心的方針だったが、Qwen3-VL は **SigLIP-2 の事前学習済みチェックポイントから初期化して継続学習**に戻った。これは「自前 ViT vs 既存 VFM」の戦略の揺れ動きで、Qwen3-ViT が SigLIP-2 を OmniBench で +8.6 ポイント上回る（CLIP 段階）という結果でこの戦略を正当化
+  - **MoE スケーリング 235B-A22B の到達**: [[entities/internvl-3-5|InternVL 3.5]] の 241B-A28B（2025 Aug）に続き、Qwen3-VL も **235B-A22B フラッグシップ MoE** を投入。両方とも 2025 年後半に MLLM が「200B 級 MoE」時代に突入したことを示す。**MoE 30B-A3B** という中規模 MoE が Gemini 2.5 Flash / GPT-5 mini を凌駕することで、MoE 効率モデルが商用フロンティアと完全に互角になった
+  - **Thinking モードの本格採用**: OpenAI o1（2024.09）以降 LLM 業界の標準となった「長 CoT 推論モデル」が、Qwen3-VL で正式に MLLM にも導入。各サイズに **Instruct（non-thinking）と Thinking** の 2 バリアントを公開する設計は実用性の高い選択。特に thinking モデルが MathVista 85.8 / MathVision 74.6 で SOTA を達成
+  - **256K ネイティブ + 1M 外挿**: Qwen2.5-VL の 32K（256K は post-training で拡張）から、Qwen3-VL は **256K がネイティブ**になり、YaRN で 1M トークン = **2 時間動画**まで外挿可能。Needle-in-a-Haystack で 256K 完全 100% / 1M で 99.5% は、長文脈耐性の新ベンチマーク
+  - **GUI エージェントの劇的進化**: ScreenSpot Pro 43.6 → **62.0** (+18.4)、OSWorld 8.83 → **38.1** (4.3× 飛躍)、AndroidWorld 35% → **63.7%** (+28.7) と、わずか 9 ヶ月で GUI エージェント能力が劇的に伸びた。**OSWorld で Claude Opus 4 (44.4) に -6.3** にまで肉薄、デスクトップ・エージェント領域でも商用と互角に近づく
+  - **マルチモーダル化で言語が強くなる現象の継続実証**: Qwen3-VL-235B-A22B-Instruct は Qwen3-235B-A22B-Instruct-2507（純粋 LLM）に対して AIME-25 +4.4 / HMMT-25 +2.0 / LiveCodeBench v6 +2.5 と推論ベンチで上回る。[[entities/internvl-3|InternVL 3]] / [[entities/qwen2-5-vl|Qwen2.5-VL]] で観察された現象が大型 MoE モデルでも継続。**「マルチモーダル学習は言語能力を強化する」が業界共通認識に**
+  - **多言語 OCR 10 → 39 言語**: Qwen2.5-VL の 10 言語（中英 + 仏・独・伊・西・葡・露・日・韓・越・アラ）から **29 言語追加で 39 言語**に拡張。スワヒリ語・ヘブライ語・チェコ語・ウルドゥー語・タイ語・スウェーデン語・セルビア語・デンマーク語など。32/39 言語で 70% 超の OCR 精度
+  - **座標系の [0, 1000] 正規化への復帰**: Qwen2.5-VL は **絶対座標**に切り替えたが、Qwen3-VL は **[0, 1000] 正規化座標系**に戻った。これは「解像度とアスペクト比の変動への頑健性」と「後処理の単純化」を優先した設計判断。Qwen-VL 初代の方針への回帰
+  - **InternVL 系と Qwen 系の路線対立**: [[entities/internvl-3|InternVL 3]] / [[entities/internvl-3-5|InternVL 3.5]] が **Native Multimodal Pre-Training + Cascade RL + ViR + DvD** という独自路線を歩む一方、Qwen3-VL は **「LLM 事前学習 → MLLM 適応」のパラダイム**を維持しつつ Interleaved MRoPE + DeepStack + テキスト・タイムスタンプで応酬。**両系列が完全に異なる技術選択で同等の性能に到達**している点が技術史的に興味深い
+  - **訓練データ非公開**: [[entities/internvl-3|InternVL 3]] が `OpenGVLab/InternVL-Data` で完全公開しているのに対し、Qwen3-VL は訓練データ非公開（モデル重みは Apache 2.0）。オープン・サイエンスの観点では InternVL 系に劣後するが、商用利用性の点で Apache 2.0 は強力
+  - **Qwen3 LLM ベースへの完全移行**: Qwen2-VL は Qwen2、Qwen2.5-VL は Qwen2.5、Qwen3-VL は Qwen3 と、Qwen LLM 世代と完全に同期。**LLM 自体の進化が MLLM の進化を牽引**するという Qwen ファミリーの戦略が一貫
+  - **「視覚エージェント + 思考モデル + MoE」の 3 軸統合**: 単一論文で (i) 推論モデル（thinking）、(ii) MoE スケーリング、(iii) GUI エージェントの 3 つの 2025 年の主要トレンドすべてを統合。**業界最先端の集大成**としての位置付けが強い
+  - **PDF からの ingest 運用 2 回目**: Qwen2.5-VL に続き Qwen3-VL も PDF 形式で直接 ingest。図 3 枚（fig1 / fig2-multilingual-ocr / fig3-needle）を `raw/images/` から `raw/assets/qwen3-vl/` に再配置するワークフローが確立
+  - **次の ingest 候補**: Qwen3 LLM 原典 / DeepStack 原典（Meng et al., 2024）/ SAPO 原典（Gao et al., 2025）/ CoMP 原典（Chen et al., 2025）/ SigLIP-2 原典（[[entities/siglip]] と関連、Tschannen et al., 2025）/ Omni3D 原典（Brazil et al., 2023）/ Molmo + PixMo（Allen AI）/ Gemini 2.5 関連 / GPT-5 関連 / Claude Opus 4.1 / GLM-4.5V / Step-3 / Kimi-VL / Aguvis / AndroidWorld / OSWorld 原典 / 古典 LLaVA / MiniGPT-4 / BLIP-2
+
+## [2026-05-30] ingest | Qwen3.5-Omni Technical Report
+
+- 取り込み: `raw/papers/Qwen3.5-Omni Technical Report.md`（579 行、Web Clipper 形式 markdown、Qwen Team Alibaba Group、2026、arXiv:2604.15804）
+- 作成:
+  - [[sources/qwen3-5-omni]] — Qwen-Omni シリーズ最新版の要約（Thinker-Talker 構造 + Hybrid MoE Thinker/Talker + AuT + ARIA + 256K + Audio-Visual Vibe Coding、Plus/Flash 2 バリアント、215 音声・AV サブタスク SOTA、Gemini-3.1 Pro 凌駕、Qwen ファミリーの Omni 統合路線）
+  - [[translations/qwen3-5-omni]] — Abstract + §1-8（References 除外）の本文 + 付録翻訳。図 1-3 + 表 1-15 を含む（付録の多言語 ASR/翻訳全 60 言語テーブルも含む）
+  - [[entities/qwen3-5-omni]] — Qwen3.5-Omni-Plus / Qwen3.5-Omni-Flash のエンティティ詳細（モジュール構成、7 主要進化、3 段階事前学習 + Thinker 3 段階 + Talker 4 段階の事後学習、First-Packet 遅延、全ベンチ結果、限界、Qwen ファミリーの 2 主軸）
+  - `raw/assets/qwen3-5-omni/`: fig1-overview.png（unified end-to-end model 概観）、fig2-architecture.jpg（Thinker-Talker + MoE + AuT + Vision Encoder + MTP + Streaming Codec Decoder の全体構造）、fig3-aut.png（AuT 概観、4000 万時間学習、6.25Hz）の 3 画像を ar5iv（arxiv:2604.15804）からダウンロード
+- 更新:
+  - [[index]] — Sources（Qwen3.5-Omni を Qwen3-VL の前に配置）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/qwen3-vl]] — Qwen ファミリーの 2 主軸を明示するため、関連ページに Qwen3.5-Omni（並列発展する Omni 統合路線）を追加
+  - [[overview]] — VLM/MLLM 系譜とは別軸の Omnimodal 系として Qwen-Omni 系譜（Qwen2.5-Omni → Qwen3-Omni → Qwen3.5-Omni）を新規セクションで追加
+  - [[log]]
+- メモ:
+  - **Qwen ファミリーの 2 つの主軸の確立**: VL 純化路線（[[entities/qwen3-vl|Qwen3-VL]]: 画像・動画・文書・GUI エージェント）と Omni 統合路線（Qwen3.5-Omni: テキスト + 画像 + 音声 + 動画 + 音声-視覚 + 音声生成）が並列発展。同じ Qwen3.5 LLM ベースを共有しつつ、異なるユースケースに最適化された 2 系列が完成
+  - **Thinker-Talker 構造の意義**: テキスト生成（Thinker）と音声生成（Talker）を **別個の MoE モデル**として分離し、Talker が Thinker の高レベル表現を直接受け取る設計。これは GPT-4o の単一モデル直接出力（仮想）や Gemini の dual-model 結合とも異なる、Qwen 独自の omnimodal アーキテクチャ
+  - **AuT のゼロから学習という決断**: SigLIP-2（視覚）の継続学習路線とは異なり、音声エンコーダ AuT は **ゼロから 4000 万時間音声で学習**。これは Whisper / SeamlessM4T のような既存音声基盤モデルを使わず、Qwen-ASR が生成した独自データセットで自社音声 ViT を構築する戦略。6.25Hz トークンレート（フレームあたり 160ms）は商用フロンティアでは非常に高い圧縮率
+  - **ARIA の天才性**: テキスト-音声トークン化レート不一致による単語スキップ・誤発音・数字レンダリング曖昧化は、Whisper / Sea Tongue / GPT-4o-audio などすべてのストリーミング音声 LLM の共通問題。ARIA の **適応的レート制約（累積音声-テキスト比率がグローバル比率を超えない）** は MFA の事前整合や固定交互配置のような硬直したアプローチを置換する優雅な解決。**Qwen3.5-Omni の核心的貢献の 1 つ**
+  - **Audio-Visual Vibe Coding の出現**: 音声-視覚命令から直接実行可能コードを生成する能力が **omnimodal モデルで自然に出現**。これは GPT-4o の画面共有 → コード生成のような単一モダリティ命令とは異なり、**音声と視覚の同時入力**から具体的コードへの跳躍。Embodied AI の重要な前駆体
+  - **共同 video-audio 学習の効果**: Qwen3.5-Omni-Plus は同サイズ純粋 VL の Qwen3.5-Plus-Instruct を **動画 6/6 ベンチで上回る**（VideoMME, MLVU, MVBench, LVBench, MMVU, MME-VideoOCR）+ **RealWorldQA で +5.0**。これは「視覚と聴覚は本質的に結合している」という人間的知覚モデルを実証
+  - **256K + 10 時間音声 + 400 秒動画**: [[entities/qwen3-vl|Qwen3-VL]] の 256K + YaRN 1M（2 時間動画）と異なり、Qwen3.5-Omni は **ネイティブで 10 時間音声 + 400 秒 720P 動画**をサポート。実世界の会議録音・講義動画・長尺コンテンツ理解に直接適用可能
+  - **first-packet 遅延 235ms (Flash)**: リアルタイム音声対話の体感上の境界（人間の応答遅延 ~200-300ms）に到達。これは **「人間と区別不能な対話速度」** を意味し、Qwen3.5-Omni が実用 omnimodal エージェントの実用域に入ったことを示す
+  - **多言語サポートの圧倒的網羅**: 音声入力 113 言語+方言（74 言語 + **39 中国方言**、客家語・閩南語・温州方言・四川語等を含む）/ 音声出力 36 / テキスト 201。これは GPT-4o（~50 言語）/ Gemini-3.1 Pro（~100 言語）を大きく上回り、特に **中国方言の網羅**は中国市場での圧倒的優位性を意味する。Kespeech 中国方言 ASR で Gemini の 6.8× 改善が決定打
+  - **API のみ公開という戦略変更**: [[entities/qwen3-vl|Qwen3-VL]] が Apache 2.0 で全モデル重みを公開したのに対し、Qwen3.5-Omni は **API のみ**。これは音声合成の悪用懸念（ディープフェイク、なりすまし）や、4000 万時間音声学習の独自データ保護を反映した可能性。**Qwen ファミリーで初の API 限定モデル**
+  - **arXiv 番号 2604.15804 と仮想性**: 番号の「2604」は 2026 年 4 月を示唆、Gemini-3.1 Pro / GPT-5 / Claude Opus 4.1 等のベースラインも仮想的。これは Web Clipper で取得した markdown が arxiv の公式番号体系を超える未来形式である可能性、または論文自体が技術ロードマップ的位置付けである可能性を示唆
+  - **次の ingest 候補**: Qwen2.5-Omni 原典（Thinker-Talker 構造の起点）/ Qwen3-Omni-30B-A3B 原典（MoE 初導入）/ Qwen3.5 LLM 原典 / DeepStack 原典 / Whisper 原典（AuT との対比）/ SeamlessM4T（多言語音声基盤の対比）/ AudioPaLM / VALL-E（音声生成系）/ Gemini 2.5 関連 / GPT-5 関連 / Claude Opus 4.1 / OmniCloze 原典 / OmniGAIA 原典 / VoiceBench 原典
+
+## [2026-05-30] query | ViT における解像度処理の進化（固定 → 任意解像度）
+
+- 質問: 「ViT などでは固定解像度のものが多いと思うが、なぜ固定解像度が多いのか。任意解像度で入力できるようになったのはなぜか。ViT の登場からの解像度の扱いの変化は？」
+- 作成:
+  - [[questions/vit-dynamic-resolution-evolution]] — wiki 初の question ページ。固定解像度の 4 原因（学習可能絶対位置埋め込み / 事前学習データ規格化 / O(n²) 計算 / 帰納バイアス弱）+ 任意解像度化の 3 圧力（MLLM タスク要求 / RoPE / ハードウェア成熟）+ 進化 4 フェーズ年表（固定 2020-2023 / タイル分割 2024 / ViT 改造 2024.09- / SSL 並行進化）+ タイル路線 vs ViT 改造路線の対立 + ViT 初期化戦略の揺れ動き（DFN → ゼロから → SigLIP-2 継続学習）+ まとめ図解
+- 更新:
+  - [[index]] — Questions セクションを「（まだありません）」から本ページのエントリに置換
+  - [[log]]
+- 参照ページ（既存）:
+  - [[concepts/vision-transformer]] — ViT の基礎、固定解像度の根本理由
+  - [[concepts/rotary-position-embeddings]] — RoPE 系の進化
+  - [[entities/qwen-vl]] / [[entities/internvl-1-5]] / [[entities/qwen2-vl]] / [[entities/qwen2-5-vl]] / [[entities/internvl-3]] / [[entities/internvl-3-5]] / [[entities/qwen3-vl]] / [[entities/dinov3]]
+- メモ:
+  - **既存 wiki ハブの自然な統合**: 質問への回答が、既に ingest 済みの Qwen-VL 系 4 世代 + InternVL 1.5 / 2.5 / 3 / 3.5 + DINOv3 + ViT 概念ページ + RoPE 概念ページを **時系列・路線対立軸で横断的に整理**する形になった。**wiki が「読み・書き・更新する側」としての LLM の能力を実証する好例**
+  - **「タイル分割路線 vs ViT 改造路線」の対立軸**: 2024 年に並走した 2 つの解像度処理アプローチを明確化。InternVL 1.5 / 2.5 / Mini-InternVL が前者、Qwen2-VL / 2.5-VL / 3-VL / DINOv3 が後者。InternVL 3.5 の ViR は「動的圧縮率」という第 3 路線とも言える
+  - **「ViT 初期化戦略の揺れ動き」の発見**: Qwen2-VL（DFN）→ Qwen2.5-VL（ゼロから）→ Qwen3-VL（SigLIP-2 継続学習）という揺り戻しが、wiki 内の既存記述から明確に浮かび上がった。これは ingest 時には個別に記録していたが、質問の回答で初めて **「揺れ動き」という上位構造**として明示化された
+  - **「学べる教訓」セクションの追加**: 単なる年表記述に留まらず、5 つの抽象的教訓（構造的可能性と実装制約の分離 / 数学的進化がパラダイム転換を可能に / タスク要求が技術進化を駆動 / 2 路線並行発展 / 初期化戦略の循環）を抽出。これは [[concepts/foundation-model]] や [[concepts/weakly-supervised-pretraining]] と並ぶ「メタ知識ページ」としての価値
+  - **質問ページが新しい接続を生む**: 単なる Q&A ではなく、wiki 内の **異なる時期にingest された複数モデルを「解像度」という軸で再編成**するメタページ。これは Karpathy 流 LLM Wiki の理念（「LLM が読み・書き・更新する」）の自然な発展形
+  - **今後の question ページ候補**: 「Qwen 系列 vs InternVL 系列の哲学的対立」「2024-2025 年の MLLM ベンチマーク水準の変化」「視覚エージェントの進化（AITZ → ScreenSpot Pro → OSWorld）」「動画理解における時間表現の歴史（TM-RoPE → MRoPE absolute time → テキスト・タイムスタンプ）」「事前学習データ規模の競争（CLIP 4億 → Qwen2-VL 1.4T → Qwen3-VL 2.2T）」など、wiki 内の横断的整理が可能な質問が多数
+
+## [2026-05-30] lint | 全 wiki 健康診断と修正
+
+- 点検結果: **148 ページ規模で dangling link 3 件、孤立ページ 0、スキーマ違反 0** という非常に健全な状態
+- 検出された 3 dangling リンクと 2 古い記述、計 5 件をすべて修正 + 2 新規ページ作成
+- 修正:
+  - **A2 修正**: [[log]] L874 の `[[entities/siglip-2]]` を `[[entities/siglip\|SigLIP 2]]` へ（[[entities/siglip]] が SigLIP 2 を内包、25 箇所言及・§SigLIP 2 セクションあり）
+  - **A3 修正**: [[sources/qwen-vl]] の `[[native-multimodal-pre-training]]` を `[[entities/internvl-3\|Native Multimodal Pre-Training]]` へ
+  - **B1 修正**: [[entities/qwen2-5-vl]] 系譜セクションの「Qwen3-VL（2025-）← Qwen3 LLM ベースの後継（将来追加予定）」を [[entities/qwen3-vl]] の既追加リンク + [[entities/qwen3-5-omni]] 並列発展への言及に置換
+  - **B2 修正**: [[entities/qwen-vl]] 系譜セクションの「Qwen2.5-VL（2025）（wiki 未追加）」「Qwen3-VL（2025-）（wiki 未追加）」を [[entities/qwen2-5-vl]] / [[entities/qwen3-vl]] / [[entities/qwen3-5-omni]] の既追加リンクに置換
+- 作成:
+  - **C1 修正**: [[entities/internvl-2]] — InternVL 2.0（2024.07）の概要エンティティ・ページ。**公式 Technical Report リリースなし世代**だが、後続 [[sources/mini-internvl]] / [[sources/internvl-2-5]] / [[sources/internvl-3]] で頻繁にベースライン引用されるため、シリーズ系譜の歯抜けを補完。1B〜76B の 7 サイズスイート初確立、InternVL2-Llama3-76B フラッグシップ、MMMU 62.7
+  - **A1 修正**: [[entities/moco]] — MoCo（FAIR, CVPR 2020）の概要エンティティ・ページ。[[entities/byol]] / [[entities/simclr]] / [[sources/byol]] から参照される **momentum encoder + queue の SSL 対比学習の起点**。v1 (2019) → v2 (2020) → v3 (2021、ViT 対応) の進化、[[entities/byol]] の target network / [[entities/dino]] の teacher の直接の源流であることを明示
+- 更新:
+  - [[index]] — Entities Models に [[entities/internvl-2]]（Mini-InternVL の前）と [[entities/moco]]（BYOL の前）を追加
+  - [[log]]
+- 残課題（許容範囲内）:
+  - **InternVL 2.0 公式 Technical Report の ingest 候補**: HuggingFace モデルカード + ブログ記事ベースの本ページから、公式論文形式の ingest へ昇格できれば完璧。ただし InternVL 2.0 は技術報告なし世代のため、現在の概要ページで十分機能
+  - **MoCo 原典の ingest 候補**: He et al., CVPR 2020 ("Momentum Contrast for Unsupervised Visual Representation Learning") の専用 source ページ作成は次の SSL 系 ingest 候補。MoCo v2 / v3 まで含めると 3 論文系列
+- メモ:
+  - **「wiki 健康度」の高さ**: 148 ページ規模で純粋な dangling リンクは 3 件のみ。うち 2 件は既存ページへの誤リンク（修正可能）、1 件は ingest 候補マーカー（[[entities/moco]] → 今回作成で解消）。CLAUDE.md §2 のリンク規約「dangling link 許容」が正しく機能している
+  - **「未追加」表記の継続更新コスト**: シリーズ系譜セクションで「将来追加予定」「wiki 未追加」と書いたページは、新規 ingest 時に**親世代ページの修正を忘れがち**。Qwen-VL → Qwen2-VL → Qwen2.5-VL → Qwen3-VL → Qwen3.5-Omni の 5 連続 ingest で、初代と 3 世代目の両方でこの問題が発生
+  - **対策**: 今後の ingest 時には「親世代の系譜・関連ページセクション」を必ず確認するチェックリスト項目を確立すべき
+  - **InternVL 2.0 の wiki 史的役割**: 公式論文がなくても、複数の後続論文から引用される世代は **「概要エンティティ・ページ」として軽量に補完**するのが正しいアプローチ。これは CLAUDE.md §2 の「sources/translations は原典 1 件につき 1 ページ、entities は概念的存在で原典不要」というスキーマと整合
+  - **MoCo の SSL 対比学習史での位置**: BYOL / DINO の momentum target / teacher の直接の源流という事実が、3 つの ingest 済みページ（[[sources/byol]] / [[entities/byol]] / [[entities/simclr]]）から参照されるたびに dangling していた。本ページ作成で **SSL 系の系譜表が完成**
+  - **次の lint 候補**: 3 ヶ月後の定期点検、または `sources/moco` / `sources/internvl-2` 原典 ingest 後（dangling 防止のためバッククォート表記）
+
+## [2026-05-31] ingest | Gemma 3 Technical Report
+
+- 取り込み: `raw/papers/Gemma 3 Technical Report.md`（903 行、Web Clipper 形式 markdown、arXiv:2503.19786、Gemma Team Google DeepMind、2025 Mar）
+- 作成:
+  - [[sources/gemma-3]] — Gemma 3 ファミリーの要約（4 サイズ 1B/4B/12B/27B、SigLIP 400M + Pan & Scan + 256 トークン固定圧縮、5:1 local:global attention + sw=1024、QK-norm + GQA、QAT 3 形式、知識蒸留 14T トークン、LMSys Arena Elo 1338、MATH 89.0、Gemini 1.5 Pro 同等、Google 系の wiki 初登録）
+  - [[translations/gemma-3]] — Abstract + §1-8 + Appendix 評価セクションの本文翻訳（References と Contributors 名前リスト除外、**ユーザー確認済み: Appendix 含む**）。図 1（zurich-receipt 視覚相互作用）、図 2（能力レーダー）、図 5（KV キャッシュ vs 構成）、図 6（KV キャッシュ vs 文脈長）、図 7（長文脈性能）を `<figure>` で埋め込み。表 1-18 + 評価詳細を含む
+  - [[entities/gemma-3]] — Gemma 3 1B/4B/12B/27B × PT/IT のエンティティ詳細（モデル仕様表、4 主要技術、QAT メモリ表、訓練インフラ TPU 数、全主要ベンチ結果、限界、系譜）
+  - `raw/assets/gemma-3/`: fig1-zurich-receipt.jpg（視覚相互作用例）、fig2-abilities.png（Gemma 2 vs 3 能力レーダー）、fig5-kv-cache-config.png（KV キャッシュ vs local:global 比設定）、fig6-kv-cache-context.png（KV キャッシュ vs 文脈長）、fig7-long-context.png（RoPE 再スケーリング前後の長文脈性能）の 5 画像を ar5iv からダウンロード
+- 更新:
+  - [[index]] — Sources（Gemma 3 を Qwen3.5-Omni の前に配置）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/siglip]] — 「SigLIP を使う応用モデル」セクションに Gemma 3（400M variant を共有 + 凍結、Pan & Scan、PaliGemma 2 凌駕）を追加
+  - [[concepts/foundation-model]] — A. 画像-テキスト WSL 系セクションに Gemma 3 を Qwen3-VL の前に追加（Google 系 MLLM 代表として）
+  - [[questions/vit-dynamic-resolution-evolution]] — Phase 2 タイル分割路線の表に Gemma 3 P&S を追加、まとめ図解に Google 系最新形として追加、関連ページに追加
+  - [[overview]] — 最新更新ライン更新、VLM 系譜に Gemma 3（2025-03、Google DeepMind）を Qwen3-VL の前に追加、WSL 系統リストと ingest 済みリストに Gemma 3 を追加
+  - [[log]]
+- メモ:
+  - **Google 系オープン MLLM の wiki 初登録の意義**: wiki にはこれまで Qwen 系（Alibaba）と InternVL 系（Shanghai AI Lab）の 2 大系譜が ingest 済みだったが、**Google 系 MLLM が欠落**していた。Gemini は商用閉源で ingest 不可、SigLIP は視覚エンコーダのみ。**Gemma 3 が Gemini 2.0 と co-design された Google のオープン MLLM 代表**として登録され、wiki の主要系譜が 3 つに拡張。これは **Qwen 系 / InternVL 系 / Google 系**の三つ巴対立を明確化する重要な追加
+  - **LMSys Chatbot Arena Elo 1338 の衝撃**: 27B Dense モデルで Elo 1338 (rank 9) は、**671B/37B MoE の DeepSeek-V3 (1318)、405B Dense の Llama-3.1-405B (1269)、72B Dense の Qwen2.5-72B (1257) を圧倒**。「**より少ないパラメータで商用クラス**」という Google の哲学を実証
+  - **タイル分割路線の最新形**: [[questions/vit-dynamic-resolution-evolution]] で整理した「固定 vs 任意解像度」の対立軸において、**LLaVA → InternVL 1.5 → Gemma 3** のタイル分割系譜を完成。**Qwen2-VL の根源的解決（2D-RoPE で ViT 改造）に対し、Google は実装的解決（推論時のみの Pan & Scan）を選択**。両者の哲学的対立が CV 史における重要な対比軸となる
+  - **5:1 local:global attention の業界的意義**: 標準 dense transformer の 60% KV キャッシュ・オーバーヘッドを **<15% に削減**。これは長文脈 MLLM の **新標準的 KV キャッシュ削減技術**となる可能性が高い。Qwen3-VL の 256K ネイティブ + 1M YaRN とは異なるアプローチで、**「文脈長を稼ぐ」ではなく「効率を稼ぐ」** 路線
+  - **QAT による軽量化の本気度**: 27B モデルを **Int4 で 14.1 GB** に圧縮し、**ハイエンド消費者 GPU（RTX 4090 等）で展開可能**。これは「**研究より実用**」という Google の戦略を象徴。Qwen / InternVL 系の MoE 路線（数十 GB の活性パラメータ）とは対照的な「**物理的軽量化**」アプローチ
+  - **SigLIP 400M を共有 + 凍結という保守的設計**: 4B/12B/27B で **同じ視覚エンコーダを共有 + 訓練中完全凍結**。**視覚埋め込みを事前計算**して言語モデル訓練コスト 0 を実現。これは「視覚エンコーダは確立した SigLIP に任せる」という Google の判断で、Qwen2.5-VL の「ViT をゼロから学習」とは正反対の哲学
+  - **PaliGemma 2 との関係**: 論文中で **同じ Google 内の PaliGemma 2 を文書理解で +4.4〜+14.4 凌駕** + **4B/12B は 10× 安価転送**と明示。Google 内の VL モデル系列は **PaliGemma（より大規模・専門特化）** と **Gemma 3（軽量・汎用）** の分業体制になっている
+  - **マルチモーダル化で言語能力の劣化を回避**: **MATH 89.0** は Gemini 1.5 Pro (86.5) を上回り、Gemini 2.0 Pro (91.8) に肉薄。**マルチモーダル化が言語能力を劣化させない**という証拠で、InternVL 3 / Qwen3-VL の「マルチモーダル化で言語が強くなる」発見と整合
+  - **Memorization の劇的低下**: 全 Gemma 3 で前世代より桁違いに低く、個人情報も観察されず。**Apache 2.0 風ライセンスでの公開を安全に行うための徹底**。データ除染と quality reweighting の効果が大きい
+  - **128K で RULER 27B 66.0 の限界**: 32K では 91.1 と SOTA だが、128K に外挿すると 66.0 に劣化。**Qwen3-VL の 1M YaRN で 99.5%** に大きく劣る。Gemma 3 の「**5:1 attention + sliding window 1024**」は KV キャッシュ削減には効くが、**真の超長文脈処理には届かない**
+  - **MoE 不採用**: InternVL 3.5 (241B-A28B) / Qwen3-VL (235B-A22B) と対照的に、Gemma 3 は **全モデル Dense**。**「consumer-grade hardware 動作**」という焦点と、**「MoE は推論メモリ要求が複雑」** という Google の判断を反映
+  - **訓練データ非公開**: InternVL 3 (OpenGVLab/InternVL-Data) のような完全公開ではない。**Apache 2.0 風ライセンス**だが訓練データは非公開で、これは Google の商用 Gemini との分業を反映
+  - **arXiv 2503.19786 と発表時期**: 2025 年 3 月公開で、Qwen2.5-VL (2025 Feb) のすぐ後、InternVL 3 (2025 Apr) の直前という重要なタイミング。MMMU 70% 突破ラッシュの一員
+  - **次の ingest 候補**: PaliGemma / PaliGemma 2 原典（Google 系の別系列、Gemma 3 と分業）/ Gemma 1 / Gemma 2 原典（Gemma 系列の前史）/ Gemini 1.5 / 2.0 Technical Report（商用 Gemini の対比、ただし公式論文形式があれば）/ BOND / WARM / WARP（事後学習 RL 手法、Google）/ Chameleon 原典（QK-norm の元祖、Meta）/ Olmo 2（QK-norm 採用）/ Phi-3 / Phi-4（Microsoft の軽量 MLLM 対比）/ TinyVLA / MobileVLM（軽量 VLM 競合）
+
+## [2026-05-31] ingest | DeepSeek-OCR: Contexts Optical Compression
+
+- 取り込み: `raw/papers/DeepSeek-OCR_ Contexts Optical Compression.md`（103 行、Web Clipper 形式 markdown、arXiv:2510.18234、Haoran Wei + Yaofeng Sun + Yukun Li、DeepSeek-AI、2025 Oct）
+- **特記事項**: 元の markdown が **Web Clipper の抽出不完全（Abstract + References のみ、本文なし）** だったため、ar5iv（https://ar5iv.labs.arxiv.org/html/2510.18234）から WebFetch ツールで本文を取得して翻訳。これは **wiki ingest プロセスの新パターン**：Web Clipper markdown が不完全な場合、ar5iv 等から補完するワークフロー
+- 作成:
+  - [[sources/deepseek-ocr]] — DeepSeek-OCR の要約（LLM 中心視点での VLM 再定義、SAM+16×ConvNet+CLIP の DeepEncoder、DeepSeek-3B-MoE-A570M デコーダ、6 解像度モード、Fox/OmniDocBench SOTA、Memory Forgetting Mechanism）
+  - [[translations/deepseek-ocr]] — Abstract + §1-10 の本文翻訳（ar5iv ベース、図 2-4 + 全主要テーブル含む）
+  - [[entities/deepseek-ocr]] — DeepSeek-OCR のエンティティ詳細（DeepEncoder 構成、デコーダ仕様、6 モード、訓練パイプライン、全ベンチ結果、限界、系譜）
+  - `raw/assets/deepseek-ocr/`: fig1.png（既存 VLM エンコーダ比較）、fig2.png（DeepEncoder アーキテクチャ）、fig3.png（5 解像度モード文書例）、fig4.png（大画像、結果比較）、fig5.png（大画像、結果比較）の 5 画像を ar5iv からダウンロード
+- 更新:
+  - [[index]] — Sources（DeepSeek-OCR を Gemma 3 の前に配置）、Translations（同上）、Entities Models（同上）の 3 セクションに追加
+  - [[entities/sam]] — 「後継・派生モデル」表に DeepSeek-OCR を追加（SAM-base を Visual Perception 成分として活用、segmentation 用途ではなく文書 OCR の効率的視覚エンコーダに再利用される新応用例）
+  - [[entities/clip]] — 「産業応用への影響」セクションに DeepSeek-OCR を追加（CLIP-large を Visual Knowledge 成分として組み込む新応用パターン）
+  - [[concepts/foundation-model]] — A. 画像-テキスト WSL 系セクションに DeepSeek-OCR を Gemma 3 の前に追加（OCR 特化 MLLM の代表）
+  - [[questions/vit-dynamic-resolution-evolution]] — Phase 2/3 タイル分割路線の表に DeepSeek-OCR を追加（「視覚トークン数最小化」という第 3 路線）、まとめ図解、関連ページに追加
+  - [[overview]] — 最新更新ラインに DeepSeek-OCR を追加、VLM/MLLM 系統の **「OCR / 文書理解特化系」**を新規カテゴリとして追加、ingest 済みリストに追加
+  - [[log]]
+- メモ:
+  - **DeepSeek-AI 初の wiki 登録の意義**: DeepSeek-V3 / R1 は Qwen3-VL や Gemma 3 / Qwen3.5-Omni の比較対象として頻出していたが、**DeepSeek-* モデルの独立 ingest は初めて**。これにより wiki の中国系 AI ラボ系譜が **Alibaba (Qwen 系) + Shanghai AI Lab (InternVL 系) + DeepSeek-AI** の **3 系譜**に拡張
+  - **「視覚はテキストの効率的圧縮媒体」という新パラダイム**: Qwen / InternVL / Gemma 系の「視覚を視覚として扱う」哲学とは正反対の主張。**「LLM 中心視点で VLM を再定義」** という大胆な観点が新規性
+  - **SAM + CLIP を直列に組み合わせる新しい視覚エンコーダ設計**: SAM（窓注意で高解像度処理）→ 2 層 ConvNet（16× 圧縮）→ CLIP（大域注意で意味抽出）の 3 段アーキテクチャ。**SAM と CLIP の wiki 既存ページから DeepSeek-OCR への接続**を確立
+  - **視覚トークン数の劇的削減を SOTA で達成**: MinerU2.0 比 8.5× 効率、GOT-OCR2.0 比 2.56× 効率という効率性。**Qwen2.5-VL-72B（3949 トークン、0.214）/ InternVL3-78B（6790 トークン、0.218）も 800 トークン未満で凌駕**は衝撃的
+  - **同著者 Haoran Wei の系譜**: Vary → Vary-tiny → Focus Anywhere → Slow Perception → GOT-OCR2.0 → DeepSeek-OCR の **6 作系列**。GOT-OCR2.0 の正統な後継として位置付けられる
+  - **Memory Forgetting Mechanism の革新性**: 「人間の記憶減衰と視覚知覚劣化の並行性」を活用した文脈圧縮提案。**古い対話を低解像度画像にレンダリング → 自然な忘却曲線を模倣**。これは **LLM の長文脈問題への新解決策**として、Qwen3-VL の 1M YaRN 外挿や Gemma 3 の 5:1 attention とは全く異なるアプローチ
+  - **DeepSeek-VL2 系列との分業不明確**: DeepSeek-AI は別途 DeepSeek-VL2（[^40] で参照）という汎用 VLM 系列を持つ。**DeepSeek-OCR は OCR 特化分枝**で、汎用 VLM 系列とは別系統と推測されるが、両系列の関係は論文中で明示されていない
+  - **DeepSeek-3B-MoE-A570M の超軽量 MoE**: 推論時 570M 活性は **Qwen3-VL-30B-A3B (3B 活性) や InternVL 3.5 241B-A28B (28B 活性) より遥かに小さい**。「コンパクトな MoE で OCR 専門化」という戦略
+  - **訓練データの公開度**: モデル重みは GitHub で公開だが、訓練データの完全な公開はなし（InternVL 3 の OpenGVLab/InternVL-Data 完全公開とは対照的）。**訓練データの内訳は記述されているが、データセット自体は非公開**
+  - **OCR 1.0 と OCR 2.0 の分類**: OCR 1.0 = 自然テキスト文書 (30M+ ページ、シーン OCR)、OCR 2.0 = 構造化要素 (チャート → HTML 表、化学式 → SMILES、平面幾何 → 座標)。**「OCR 2.0」という用語は GOT-OCR2.0 (Wei et al., 2024c) で初出**、Haoran Wei の独自分類
+  - **本文不在の Web Clipper 抽出問題**: 今回の markdown は Abstract + References のみで本文なし。これは Obsidian Web Clipper の抽出ルール（ar5iv のページ構造）に依存する問題。**今後の Web Clipper 抽出失敗時のフォールバック手順**として、ar5iv URL 直接 fetch を確立できた
+  - **arXiv 2510.18234 と発表時期**: 2025 年 10 月公開で、Qwen3-VL (2025 Nov) の直前、Gemma 3 (2025 Mar) より後。MMLM 競争の中で **OCR 特化路線** が独立カテゴリとして確立される時期
+  - **次の ingest 候補**: GOT-OCR2.0 原典 (Wei et al., 2024c, arXiv:2409.01704)（DeepSeek-OCR の直接の前任、本論文で主要ベースライン）/ Vary 原典 (ECCV 2024)（DeepSeek-OCR 著者の前作）/ DeepSeek-VL2 原典 (arXiv:2412.10302)（DeepSeek-AI の汎用 VLM 系列）/ DeepSeek-V3 / R1 (DeepSeek-AI LLM 系列、Qwen3-VL/Gemma 3 で頻繁に比較対象として参照)/ MinerU2.0 (主要 OCR パイプライン)/ dots.ocr / OCRFlux / SmolDocling / Nougat / olmocr（OCR 競合）/ OmniDocBench 原典（評価ベンチマーク）/ Slow Perception (Wei et al., 2024d, 幾何図形の段階的知覚)
+
+## [2026-05-31] ingest | SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis
+
+- 取り込み: `raw/papers/SDXL_ Improving Latent Diffusion Models for High-Resolution Image Synthesis.md`（588 行、Web Clipper 形式 markdown、arXiv:2307.01952、Stability AI Applied Research、2023 Jul）
+- **特記事項**: **ユーザー指示で Appendix を含む**翻訳（Acknowledgements [Appendix A] と References は除外）
+- 作成:
+  - [[sources/sdxl]] — SDXL の要約（5 主要改善、Stable Diffusion 系統での位置、生成モデル wiki 初の代表として詳細）
+  - [[translations/sdxl]] — Abstract + §1-3 + Appendix B-J の本文 + 付録翻訳（References と Acknowledgements 除外）
+  - [[entities/sdxl]] — SDXL のエンティティ詳細（base + refiner + VAE 仕様、3 条件付け、訓練レシピ、全結果、系譜）
+  - `raw/assets/sdxl/`: fig1 (SDXL vs SD)、fig2 (size dist)、fig3 (size cond)、fig4 (comparison)、fig5 (crop cond)、fig6 (refiner)、fig12 (FID vs CLIP) の 7 画像を ar5iv からダウンロード
+- 更新:
+  - [[index]] — Sources / Translations / Entities Models の 3 セクションに追加（DeepSeek-OCR の前に配置）
+  - [[concepts/diffusion-model]] — Stable Diffusion 系統の系譜詳細を追加（SDXL を中心に LDM → SDXL → SDXL Turbo → Stable Cascade → SD3 → FLUX.1）
+  - [[entities/clip]] — 「産業応用への影響」セクションに SDXL を追加（CLIP ViT-L + OpenCLIP ViT-bigG の二重エンコーダの最大実用例）
+  - [[overview]] — 最新更新ライン更新、Foundation Model 3 大系統に **「拡散モデル系（生成）」**を新規追加、ingest 済みリストに SDXL を追加
+  - [[log]]
+- メモ:
+  - **wiki 初の拡散モデル系統 ingest の意義**: これまで Qwen/InternVL/Gemma 等の MLLM、SAM/DINO 等の認識系、CLIP/SigLIP 等の対比学習を ingest してきたが、**生成モデル系の代表が完全に欠落**していた。SDXL の ingest により [[concepts/diffusion-model]] が **理論ページから実装例ページへの接続**を獲得。Computer Vision wiki の **「認識 + 生成」の両輪**が整う
+  - **「Open Foundation Model の代表」としての SDXL**: 商用 Midjourney v5.1 を **54.9%** で凌駕した時点（2023 年 7 月）で、オープンソース text-to-image が初めて商用フロンティアと互角になった歴史的瞬間。**Stability AI の代表的成果**として位置付けられる
+  - **3 つの新規条件付け技術の業界的影響**: size/crop/multi-aspect conditioning は **すべて後続の拡散モデル（SD3、FLUX、Imagen 2、Stable Cascade、Würstchen 等）で標準化**。**フーリエ特徴で timestep に加算するパターン**が拡散モデル分野の de facto 標準に
+  - **39% データ廃棄問題の解決**: size-conditioning がデータ廃棄問題を **完全に解消**したという発見は、後の拡散モデル訓練手法に決定的影響。**「最小解像度しきい値」というアドホック手法を学術的に終わらせた**
+  - **Concept bleeding 問題の発見と CLIP テキスト・エンコーダの限界**: SDXL 段階で **CLIP の単一トークン圧縮と対比損失が属性バインディングを失敗させる**ことを明確に指摘。後の **SD3 / FLUX で T5-XXL 大規模 LLM エンコーダへ移行**する強い動機となった
+  - **FID/CLIP 古典指標の信頼性問題**: Pick-a-pic（Kirstain et al., 2023）の **「COCO ゼロショット FID は視覚美学と負の相関」**発見を SDXL が **追加的に裏付け**。これは生成モデル評価の **大きなパラダイム転換**を促進した
+  - **Refinement Model パラダイム**: SDEdit ベースの 2 段階生成（base → refiner）は、その後の eDiff-I、IDM-VTON、AYS、Hunyuan-DiT 等で発展。**「単一モデルでは品質と多様性のトレードオフが厳しい」**という洞察に基づく汎用的なアプローチ
+  - **Rombach lab の系譜**: LDM 原論文（Rombach et al., 2022）→ SDXL（2023）→ SD3（2024）と続き、その後 Rombach ら主要メンバーが Stability AI を離脱して **Black Forest Labs を設立、FLUX.1 を発表**。SDXL は **拡散モデル史における最も影響力のある実装の 1 つ**
+  - **Stable Diffusion 系統と DiT 系統の対立**: SDXL は **UNet ベース**の最終形で、その後の SD3 / FLUX は **DiT (Diffusion Transformer)** に移行。SDXL 論文の §3 で UViT/DiT を試したが「即時利益なし」と判断したが、後の世代で見直された。**UNet vs DiT の対立**は拡散モデル史の重要な軸
+  - **Stability AI の歴史的意義**: 商用閉源モデルが支配する分野で **完全オープンで品質を競う**という姿勢は、後の Mistral、DeepSeek、Black Forest Labs 等の **オープン基盤モデル運動**の先駆け
+  - **CLIP の主要応用例として記録**: CLIP ViT-L + OpenCLIP ViT-bigG の二重エンコーダは、CLIP/OpenCLIP の **最大規模の実用例**。後のすべての Stable Diffusion 系統で踏襲
+  - **arXiv 2307.01952 と発表時期**: 2023 年 7 月公開で、これは ChatGPT 公開（2022 Nov）から約 8 ヶ月後、Midjourney v5 リリース（2023 春）の数ヶ月後。**生成 AI 元年（2022-2023）の最後の主要オープンモデル**としての位置付け
+  - **40 アスペクト比表は重要な参考資料**: Appendix I の 40 アスペクト比表（0.25 〜 4.0、~1024² 面積）は後の拡散モデル訓練でしばしば参照される実用的詳細
+  - **次の ingest 候補**: Latent Diffusion (Rombach et al., 2022) 原論文（SDXL の直接の前任）/ DDPM 原典 (Ho et al., 2020、拡散モデルの祖)/ DDIM (Song et al., 2020、決定論的サンプラー)/ Classifier-free Guidance (Ho & Salimans, 2022)/ EDM (Karras et al., 2022、連続時間 DM)/ DiT (Peebles & Xie, 2022、Diffusion Transformer)/ SDEdit (Meng et al., 2021、image-to-image)/ Imagen (Saharia et al., 2022)/ DALL-E 2 (Ramesh et al., 2022)/ Stable Diffusion 3 (2024、DiT + T5)/ FLUX.1 (Black Forest Labs, 2024、Rombach ら独立)/ Pick-a-pic (Kirstain et al., 2023、FID 信頼性問題)
+
+## [2026-05-31] ingest | Foundational Models in Vision: A Survey and Outlook
+
+- 取り込み: `raw/papers/Foundational Models Defining a New Era in Vision_ A Survey and Outlook.md`（Awais et al., MBZUAI ら, arXiv:2307.13721 / IEEE TPAMI、1215 行・274KB）
+- 作成:
+  - [[sources/foundational-models-vision-survey]] — 要約ページ（CV 基盤モデルの 4 軸分類体系を中心に整理、本 wiki 既存 entity との接続を明示）
+  - [[translations/foundational-models-vision-survey]] — 本文翻訳（Abstract + §1-9、References 除外、Appendix なし）、図 1/2/3/4/5/13/14/15 を `<figure>` で埋め込み
+  - `raw/assets/foundational-models-vision-survey/` フォルダ + 8 図（fig1-evolution / fig2-architectures / fig3-taxonomy / fig4-clip-variants / fig5-clip-errors / fig13-sam / fig14-sam-medical / fig15-palm-e）
+- 更新:
+  - [[concepts/foundation-model]] — **「サーベイによる体系的分類（Awais et al., TPAMI 2024）」** セクションを追加、4 軸（テキスト・プロンプト型 / 視覚プロンプト型 / 異種モダリティ型 / 身体性型）+ 4 アーキテクチャ・スタイル（Dual-Encoder / Fusion / Encoder-Decoder / Adapter LLM）を整理、既存 entity 群（CLIP/SigLIP/GLIP/Grounding-DINO/Qwen-VL 系/InternVL 系/Gemma 3/DeepSeek-OCR/SAM 系/PE/Qwen3.5-Omni）を分類体系に位置付け、sources frontmatter に追加
+  - [[index]] — Sources / Translations セクションに各 1 行追加
+  - [[overview]] — 最新更新ラインに追加（updated: 2026-05-31）
+  - [[log]]
+- メモ:
+  - **wiki 初のサーベイ論文 ingest**: これまでは個別モデル論文（CLIP / SAM / DINOv2 / Qwen-VL 系等）の ingest が中心で、**「複数モデルを横断的に分類する 2 次文献」の ingest は本件が初めて**。これにより wiki に「個別 entity」と「分類体系」の 2 層構造が確立
+  - **survey が提供する「鳥瞰図」の価値**: 本 wiki は 2025 年 1 月時点で 50+ の entity ページ（CLIP / SAM / DINO 系 / Qwen-VL 系 / InternVL 系 / Gemma 3 / DeepSeek-OCR 等）を持つが、**「これらが共通の体系のどこに位置するか」を一覧で示すページが欠落**していた。survey の 4 軸（テキスト/視覚/異種/身体性）+ 4 スタイル（Dual-Enc/Fusion/Enc-Dec/Adapter LLM）の分類体系を [[concepts/foundation-model]] に統合したことで、初学者は「wiki 全体の地図」を得られるようになった
+  - **survey の発表時期（2023 年中期）と内容のズレ**: 本 survey は arXiv 2023 Jul の論文で、wiki に登録された GPT-4V / Qwen-VL 後継（Qwen2-VL/2.5-VL/3-VL）/ InternVL 後継（1.5/2.5/3/3.5）/ Gemma 3 / DeepSeek-OCR / SAM 2/3 などは含まれない。**しかし survey の分類体系は普遍的で、これら新世代モデルも 4 軸のいずれかに正確に位置付けられる**（実際に source ページと concepts/foundation-model でその位置付けを明示）
+  - **survey の scope 限定（VL のみ）**: 本 survey は明示的に純粋画像 SSL（DINOv2/v3/MAE 等）と画像生成系（拡散モデル等）を対象外と宣言。本 wiki はこれらを **独立した別軸として並列管理**（DINO 系統 / MAE / iBOT / BYOL / 拡散モデル系 = SDXL）。**両軸を統合する「視覚基盤モデル」の包括的 survey は依然欠落しており、本 wiki がその役割を担う構造**
+  - **Adapter LLM パターンの事実上の標準化**: survey が定義した 4 アーキテクチャ・スタイルのうち、2024-2025 で **Adapter LLM** がほぼすべての対話型 MLLM の標準となった。BLIP-2 の Q-Former、Qwen-VL の Position-aware VL Adapter、InternVL の MLP projector、Gemma 3 の SigLIP + P&S + average pooling などはすべて **Adapter LLM カテゴリ内の異なる実装**として理解できる。この観察は wiki 全体の MLLM 理解に新しい統一視点を与える
+  - **PVS / PCS の theoretical lineage**: survey は SAM の PVS（[[concepts/promptable-segmentation]]）を「軸 2: 視覚プロンプト型」の中核として扱う。SAM 3 の PCS（[[concepts/promptable-concept-segmentation]]）は survey 後の発展だが、軸 2 の自然な拡張として位置付けられる
+  - **対話型 VLM が軸 4（身体性型）へ侵食する流れ**: Qwen2.5-VL の **ScreenSpot Pro 43.6**、Qwen3-VL の **OSWorld 38.1**、InternVL 3.5 の **WindowsAgentArena** は「軸 1（対話型 VLM）が軸 4（仮想環境エージェント）に侵食している現代の流れ」を象徴。survey 執筆時（2023 Jul）には未予測の発展軸で、本 wiki でその流れを継続観察する重要性が確認された
+  - **次の ingest 候補との関連**: 本 survey は CV 基盤モデルの「全体地図」を与えるため、今後 ingest する論文（拡散モデル系統 / Latent Diffusion / DDPM / DiT、または新たな MLLM や SSL モデル）も、本 survey の分類体系に位置付けることで、wiki 全体の整合性が保てる

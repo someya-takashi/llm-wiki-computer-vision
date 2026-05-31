@@ -222,6 +222,8 @@ CLIP の登場以降、CV/AI 界は劇的に変化：
 - **コンテンツモデレーション**: ゼロショット分類で任意のカテゴリ
 - **ロボティクス**: CLIP 特徴量がロボットの perception に使われる
 - **マルチモーダル LLM**: GPT-4V, Claude Vision 等の基盤
+- **OCR / 文書理解の効率的圧縮**: **[[entities/deepseek-ocr\|DeepSeek-OCR]]**（DeepSeek-AI, 2025, [[sources/deepseek-ocr]]）が **CLIP-large (300M)** を「Visual Knowledge 成分」として組み込み、SAM-base + 2 層 ConvNet（16× 圧縮）+ CLIP-large の **DeepEncoder (約 380M)** で OmniDocBench SOTA（編集距離 0.083）を達成。CLIP の dense global attention で意味抽出を行う新しい応用パターン
+- **text-to-image 拡散モデルのテキスト・エンコーダ**: **[[entities/sdxl\|SDXL]]**（Stability AI, 2023, [[sources/sdxl]]）が **CLIP ViT-L + OpenCLIP ViT-bigG の二重エンコーダ**（合計 817M、context dim 2048）を採用し、Stable Diffusion 系統で最大の品質を実現。Midjourney v5.1 を 54.9% で凌駕。CLIP/OpenCLIP の **最大の実用例の 1 つ**で、後の Stable Diffusion 3 / FLUX で T5-XXL 追加へ発展
 
 ---
 
@@ -248,6 +250,7 @@ CLIP の登場以降、CV/AI 界は劇的に変化：
 
 - [[sources/clip]] — 原論文の詳細解説
 - [[translations/clip]] — 原論文全訳（Appendix 込み）
+- [[sources/foundational-models-vision-survey]] — Awais et al. の CV 基盤モデル survey で CLIP を「軸 1.1 対比型・汎用」の中核として位置付け
 - 概念:
   - [[concepts/contrastive-learning]] — CLIP の学習目的関数
   - [[concepts/zero-shot-transfer]] — CLIP が CV に持ち込んだ評価パラダイム

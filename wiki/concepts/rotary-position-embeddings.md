@@ -149,6 +149,9 @@ DINOv3 はこの **axial RoPE** を採用。
 - **YaRN**: NTK-aware の改良
 - **LongRoPE**: 200K トークン以上の超長系列対応
 - **2D RoPE / Mixed RoPE**: vision/video 向けの 2D・3D 拡張
+- **M-RoPE（Multimodal RoPE）**: [[entities/qwen2-vl|Qwen2-VL]] が導入した、回転位置埋め込みを **temporal / height / width の 3 成分**に分解する MLLM 専用版。テキストは 1D-RoPE 等価、画像は temporal 固定 + 空間 2 軸で位置 ID、動画は temporal 増分 + 空間 2 軸。**画像と動画の位置 ID 値を小さく抑えて長文脈外挿に有利** という副次効果が重要。**学習 16K → 推論 80K トークンまで頑健**という Qwen2-VL-72B の長さ外挿はこれが決定的に効いている。後続の Qwen2.5-VL / Qwen3-VL や多くの MLLM が踏襲
+- **MRoPE Aligned to Absolute Time**: [[entities/qwen2-5-vl|Qwen2.5-VL]] が導入した M-RoPE の改良版。Qwen2-VL の M-RoPE は **temporal ID をフレーム番号に結びつけていた**ため、30 fps 動画と 5 fps 動画で「同じ 10 秒」が異なる temporal ID 列で表現されていた。Qwen2.5-VL は **temporal ID 間の間隔を絶対時間（秒数）に揃える**ことで、異なる FPS の動画にわたって一貫した時間整合を学習できる。追加のテキスト・タイムスタンプ注入や追加ヘッドを必要としない（Qwen-Agent や他社 MLLM が採用するハック的アプローチを回避）。**Charades-STA mIoU 50.9（GPT-4o 35.7 を +15.2 圧倒）** と LVBench / MLVU SOTA の決定打。後続の MLLM で動画グラウンディングを扱う場合の標準アプローチに
+- **Interleaved MRoPE**: [[entities/qwen3-vl|Qwen3-VL]] が導入した M-RoPE のさらなる改良。Qwen2-VL / Qwen2.5-VL の MRoPE は **temporal/height/width を埋め込み次元の「塊」に分割**して別々の回転周波数を割り当てていたため、**周波数スペクトル不均衡**を生み、長動画理解性能を劣化させていた（Huang et al., 2025）。Interleaved MRoPE は t / h / w 成分を埋め込み次元にわたって**均一に交互配置**することで、**各時空間軸が低周波帯と高周波帯の双方で均一に表現**されることを保証。動画の長距離位置モデリングを著しく改善。さらに、Qwen3-VL は **MRoPE absolute time も捨てて `<3.0 seconds>` のような明示的テキスト・タイムスタンプ・トークン**に切り替え、長動画での temporal ID 肥大化問題を解消（後続節「テキスト・ベース時間整合」参照）
 
 ---
 
@@ -156,6 +159,12 @@ DINOv3 はこの **axial RoPE** を採用。
 
 - [[sources/dinov3]] — vision で axial RoPE を本格採用した論文
 - [[sources/sam-2]] — memory attention で 2D-RoPE を採用、画像エンコーダ側は絶対位置埋め込みのみという設計選択
+- [[sources/qwen2-vl]] — M-RoPE（temporal/height/width 3 成分）を導入し、ViT 側も 2D-RoPE で任意解像度対応にした論文
+- [[sources/qwen2-5-vl]] — M-RoPE を絶対時間に整合させた論文（Qwen2-VL のフレーム番号紐付けの問題を解消、Charades-STA mIoU 50.9 SOTA）
+- [[sources/qwen3-vl]] — Interleaved MRoPE（t/h/w を埋め込み次元に交互配置）+ テキスト・ベース時間整合（MRoPE absolute time から `<3.0 seconds>` 明示的タイムスタンプ・トークンへ転換）を導入
 - [[entities/dinov3]] — RoPE-box jittering で解像度頑健性を強化したモデル
 - [[entities/sam-2]] — 動画ストリーミング処理の memory に 2D-RoPE
+- [[entities/qwen2-vl]] — M-RoPE を採用した MLLM、学習 16K → 推論 80K 外挿
+- [[entities/qwen2-5-vl]] — MRoPE Aligned to Absolute Time を採用、Charades-STA で時間グラウンディング SOTA
+- [[entities/qwen3-vl]] — Interleaved MRoPE + テキスト・ベース時間整合を採用、Charades-STA 64.8 SOTA、256K ネイティブ / 1M YaRN 外挿
 - [[concepts/vision-transformer]] — RoPE が改善する対象アーキテクチャ
