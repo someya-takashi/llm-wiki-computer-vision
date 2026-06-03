@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/EVA-X_ a foundation model for general chest x-ray analysis with self-supervised learning - npj Digital Medicine.md
-source_page: [[sources/eva-x]]
+source_page: "[[sources/eva-x]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

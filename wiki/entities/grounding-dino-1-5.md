@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [Grounding DINO 1.5, GD 1.5, Grounding DINO 1.5 Pro, Grounding DINO 1.5 Edge, GroundingDINO 1.5]
 tags: [object-detection, open-set-detection, grounding-dino, edge-deployment, vit-l, efficientvit, idea-research]
-related: [[concepts/object-detection]], [[concepts/zero-shot-transfer]], [[concepts/foundation-model]], [[concepts/vision-transformer]]
-sources: [[sources/grounding-dino-1-5]]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]"]
+sources: ["[[sources/grounding-dino-1-5]]"]
 updated: 2026-05-28
 ---
 

@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [SDXL, Stable Diffusion XL, SD-XL, SDXL base, SDXL refiner, SDXL 1.0]
-related: [[entities/clip]], [[concepts/diffusion-model]], [[concepts/vision-transformer]], [[concepts/foundation-model]], [[concepts/contrastive-learning]]
-sources: [[sources/sdxl]]
+related: ["[[entities/clip]]", "[[concepts/diffusion-model]]", "[[concepts/vision-transformer]]", "[[concepts/foundation-model]]", "[[concepts/contrastive-learning]]"]
+sources: ["[[sources/sdxl]]"]
 updated: 2026-05-31
 ---
 

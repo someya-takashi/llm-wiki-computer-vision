@@ -8,7 +8,7 @@ year: 2023
 venue: "arXiv:2304.07193 → TMLR 2024"
 ingested: 2026-05-24
 tags: [dinov2, self-supervised-learning, vision-transformer, foundation-model, ibot, distillation]
-translation: [[translations/dinov2-learning-robust-visual-features-without-supervision]]
+translation: "[[translations/dinov2-learning-robust-visual-features-without-supervision]]"
 ---
 
 # DINOv2: 教師なしで頑健な視覚特徴量を学習する

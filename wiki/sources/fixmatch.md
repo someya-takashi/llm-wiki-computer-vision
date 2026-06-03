@@ -8,7 +8,7 @@ year: 2020
 venue: NeurIPS 2020
 ingested: 2026-05-27
 tags: [semi-supervised-learning, pseudo-label, consistency-regularization, confidence-threshold, randaugment, ctaugment, weak-strong-augmentation, cifar, svhn, stl-10, imagenet, google-research]
-translation: [[translations/fixmatch]]
+translation: "[[translations/fixmatch]]"
 ---
 
 # FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence

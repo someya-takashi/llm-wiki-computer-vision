@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [SA-1B, Segment Anything 1 Billion, SA1B]
 tags: [dataset, segmentation, meta-fair, public-release, data-engine]
-related: [[entities/sam]], [[concepts/promptable-segmentation]], [[concepts/foundation-model]]
-sources: [[sources/segment-anything]]
+related: ["[[entities/sam]]", "[[concepts/promptable-segmentation]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/segment-anything]]"]
 updated: 2026-05-26
 ---
 

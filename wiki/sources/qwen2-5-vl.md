@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv:2502.13923
 ingested: 2026-05-30
 tags: [qwen, qwen2-5-vl, mllm, multimodal, vision-language, window-attention, mrope-absolute-time, dynamic-fps, native-dynamic-resolution, omni-document-parsing, gui-agent, alibaba]
-translation: [[translations/qwen2-5-vl]]
+translation: "[[translations/qwen2-5-vl]]"
 ---
 
 # Qwen2.5-VL — ViT from scratch + Window Attention + MRoPE-aligned-to-absolute-time で「視覚エージェント」を本格化した Qwen 系第 3 世代

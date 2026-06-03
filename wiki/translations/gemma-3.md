@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Gemma 3 Technical Report.md
-source_page: [[sources/gemma-3]]
+source_page: "[[sources/gemma-3]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-31

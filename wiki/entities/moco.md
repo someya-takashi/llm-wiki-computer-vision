@@ -2,7 +2,7 @@
 type: entity
 entity_kind: model
 aliases: [MoCo, Momentum Contrast, MoCo v1, MoCo v2, MoCo v3]
-related: [[concepts/contrastive-learning]], [[concepts/self-supervised-learning]], [[entities/simclr]], [[entities/byol]], [[entities/dino]]
+related: ["[[concepts/contrastive-learning]]", "[[concepts/self-supervised-learning]]", "[[entities/simclr]]", "[[entities/byol]]", "[[entities/dino]]"]
 sources: []
 updated: 2026-05-30
 ---

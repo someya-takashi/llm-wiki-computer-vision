@@ -8,7 +8,7 @@ year: 2020
 venue: ECCV 2020
 ingested: 2026-05-28
 tags: [detr, object-detection, transformer, bipartite-matching, hungarian-loss, set-prediction, panoptic-segmentation, end-to-end, facebook-ai]
-translation: [[translations/detr]]
+translation: "[[translations/detr]]"
 ---
 
 # DETR: Transformer による end-to-end 物体検出

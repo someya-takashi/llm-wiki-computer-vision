@@ -8,7 +8,7 @@ year: 2024
 venue: ICLR 2025
 ingested: 2026-05-26
 tags: [sam-2, segmentation, video, foundation-model, promptable, meta-fair, hiera, memory]
-translation: [[translations/sam-2]]
+translation: "[[translations/sam-2]]"
 ---
 
 # SAM 2: Segment Anything in Images and Videos

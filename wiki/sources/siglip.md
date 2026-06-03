@@ -8,7 +8,7 @@ year: 2023
 venue: ICCV 2023
 ingested: 2026-05-26
 tags: [siglip, contrastive-learning, weakly-supervised, vision-language, foundation-model, google-deepmind, sigmoid-loss, efficient-training]
-translation: [[translations/siglip]]
+translation: "[[translations/siglip]]"
 ---
 
 # SigLIP: Sigmoid Loss for Language Image Pre-Training

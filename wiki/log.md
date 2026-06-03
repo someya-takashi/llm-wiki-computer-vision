@@ -1391,3 +1391,182 @@
   - **PVS / PCS の theoretical lineage**: survey は SAM の PVS（[[concepts/promptable-segmentation]]）を「軸 2: 視覚プロンプト型」の中核として扱う。SAM 3 の PCS（[[concepts/promptable-concept-segmentation]]）は survey 後の発展だが、軸 2 の自然な拡張として位置付けられる
   - **対話型 VLM が軸 4（身体性型）へ侵食する流れ**: Qwen2.5-VL の **ScreenSpot Pro 43.6**、Qwen3-VL の **OSWorld 38.1**、InternVL 3.5 の **WindowsAgentArena** は「軸 1（対話型 VLM）が軸 4（仮想環境エージェント）に侵食している現代の流れ」を象徴。survey 執筆時（2023 Jul）には未予測の発展軸で、本 wiki でその流れを継続観察する重要性が確認された
   - **次の ingest 候補との関連**: 本 survey は CV 基盤モデルの「全体地図」を与えるため、今後 ingest する論文（拡散モデル系統 / Latent Diffusion / DDPM / DiT、または新たな MLLM や SSL モデル）も、本 survey の分類体系に位置付けることで、wiki 全体の整合性が保てる
+
+## [2026-06-03] ingest | RoFormer: Enhanced Transformer with Rotary Position Embedding
+
+- 取り込み: `raw/papers/RoFormer_ Enhanced Transformer with Rotary Position Embedding.md`（Su et al., Zhuiyi Technology Co., Ltd., 深圳, 2021 Apr arXiv:2104.09864 / Neurocomputing 2024、801 行・56KB、Web Clipper 形式）
+- 作成:
+  - [[sources/roformer]] — 要約ページ（RoPE の核心アイデア、3 つの性質、4 つの実験、CV 既存ページとの接続を整理）
+  - [[translations/roformer]] — 本文翻訳（Abstract + §1-5、References 除外、Appendix なし）、図 1-3 を `<figure>` で埋め込み、表 1-5 を含む
+  - `raw/assets/roformer/` フォルダ + 3 図（fig1-rope-illustration / fig2-long-term-decay / fig3-training-loss）
+- 更新:
+  - [[concepts/rotary-position-embeddings]] — **frontmatter の sources に `[[sources/roformer]]` を追加**（既存の DINOv3/SAM 2/Qwen2-VL/Qwen2.5-VL/Qwen3-VL に加え原典として）、**一言まとめで `[[sources/roformer\|"RoFormer", 2021]]` への明示的リンク**、**関連ページ冒頭に「RoPE の原典論文」として最優先表示**
+  - [[index]] — Sources（RoFormer = RoPE 原典）/ Translations セクション、略称表に **RoFormer / PLM / GLUE / MRPC など / CAIL2019-SCM / WoBERT / NEZHA / Performer / long-term decay / Abel transformation** を追加（既存の RoPE 行も `[[sources/roformer]]` 併記に更新）
+  - [[overview]] — 最新更新ライン（updated: 2026-06-03）
+  - [[log]]
+- メモ:
+  - **CV wiki に NLP 論文を初 ingest した意義**: 本 wiki はこれまで CV / VL モデル中心だったが、RoFormer は NLP 論文でありながら **CV / Vision Transformer / MLLM の「任意解像度対応」の理論的基礎**として最重要原典。DINOv3 の axial RoPE、SAM 2 の memory 2D-RoPE、Qwen2-VL 系の M-RoPE はすべて本論文の RoPE を出発点とする。**「NLP で生まれたが CV で開花した技法」の代表例**として、wiki に原典が欠落していたことを補完
+  - **RoFormer 概念ページとの関係明確化**: 本 wiki には既に [[concepts/rotary-position-embeddings]] が存在し、RoPE の概念・CV 採用モデル・派生（NTK-aware/YaRN/LongRoPE/M-RoPE/Interleaved MRoPE）まで包括的に整理されていた。今回の ingest は **「概念ページの原典を遡って ingest した」初の事例**。概念ページ → 原典への双方向リンクを確立
+  - **論文の歴史的経路**: 2021 年 4 月 arXiv 初版時点では英語圏で大きく注目されなかった。著者 Jianlin Su は中国 Zhuiyi Technology の研究者で、ブログ記事 **"Transformer 升级之路"** で先に発想を公開していたため、論文の経路が NLP 主流の発表チャネルと違った。**LLaMA（Meta, 2023）が採用したことで一気に英語圏で標準化**され、現在に至る
+  - **GLUE では全勝でなかった点を誠実に記録**: SST-2 で -2.8、QNLI で -2.5、MNLI で -4.4/-3.6 と BERT に負けている。**「位置エンコーディングだけ替えれば常に勝てる」わけではない**。後の世代で他の改良と組み合わせて初めて全面的優位に。論文時点の比較は単純で、3/6 タスクで超えるという「部分勝利」だった
+  - **本論文がスコープ外とした話題（後の研究で重要に）**:
+    - **長期外挿**（context length extrapolation）: 訓練時の系列長を大きく超えると性能劣化する問題は本論文では触れず → 後の **NTK-aware RoPE / YaRN / LongRoPE** で解決
+    - **2D / 3D 拡張**: 画像・動画への拡張は完全に後続研究の貢献（axial RoPE, M-RoPE, Interleaved MRoPE）
+    - **線形 attention との両立は §3.3 で短く言及のみ**: 後の Performer 系研究が本格化させた
+  - **3 つの実験的観察の重要性**:
+    - **WMT 翻訳で BLEU +0.2 のみ** — Translation のような短文タスクでの改善は限定的
+    - **MLM 事前学習で収束加速** — 著者自身が「なぜ速いか説明できない」と認める観察
+    - **CAIL2019-SCM 中国語法律文書 1024 で WoBERT +1.5%** — **長文タスクで本領発揮**、これが後の長文 LLM 採用の根拠に
+  - **数式的明快さ**: §3.2 の「2D 複素数導出 → d 次元への一般化」と §3.4 の「アーベル変換による長期減衰証明」は、後の派生研究すべての基盤となる定式化。**特に `θ_i = 10000^{-2i/d}` という選択が Vaswani 2017 の正弦波エンコーディングと同じ系列を使う**点は、「正弦波を加算から乗算に変換した」という解釈を可能にする
+  - **本 wiki にとっての位置付け**: [[concepts/foundation-model]] の survey 分類で「Adapter LLM」スタイルが事実上の標準となった現代において、**RoPE は Adapter LLM のすべての実装が共有する基盤技術**。今後 ingest する任意の MLLM 論文も、その position encoding は RoPE 系（M-RoPE / Interleaved MRoPE / YaRN 等）と読み解ける
+  - **次の ingest 候補**（RoPE 系の拡張・改良）: NTK-aware RoPE（系列長外挿）/ YaRN（NTK-aware の改良、Mistral/Qwen 採用）/ LongRoPE（200K+ 系列対応）/ Attention is All You Need（Vaswani et al., 2017、Transformer 原典で正弦波 encoding の元）/ T5 paper（相対位置バイアスの代表）/ DeBERTa（disentangled attention）/ Performer（線形 attention、§4.4 で評価対象）/ Linear Transformers（Katharopoulos et al., 2020）
+
+## [2026-06-03] ingest | An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale
+
+- 取り込み: `raw/papers/An Image is Worth 16x16 Words_ Transformers for Image Recognition at Scale.md`（Dosovitskiy et al., Google Research Brain Team, 2020 Oct arXiv:2010.11929 / ICLR 2021、615 行・67KB、Web Clipper 形式）
+- 作成:
+  - [[sources/vision-transformer]] — 要約ページ（ViT アーキテクチャの 4 ステップ、B/L/H 命名規約、3 つのスケーリング知見、CV 既存ページとの広範な接続を整理）
+  - [[translations/vision-transformer]] — 本文翻訳（Abstract + §1-5、References と Appendix A-D は除外、CLAUDE.md §4 デフォルトに従う）、図 1-7 を `<figure>` で埋め込み、表 1-2 を含む
+  - `raw/assets/vision-transformer/` フォルダ + 6 図（fig1-architecture / fig2-vtab / fig3-data-requirements / fig5-scaling / fig6-attention-examples / fig7-internal-representations）
+- 更新:
+  - [[concepts/vision-transformer]] — **frontmatter sources に `[[sources/vision-transformer]]` を原典として追加**（既存の DINO 原典の前に配置）、関連ページ冒頭に「ViT 原典」として最優先表示、一言まとめに **「ImageNet 88.55% / VTAB 77.63% / 1/4 以下計算」** の重要な数値を追加
+  - [[index]] — Sources / Translations セクション、略称表に **ViT / ViT-B/L/H / MSA / JFT-300M / BiT / Noisy Student / VTAB / iGPT / TPUv3-core-days / attention distance / inductive bias / GELU / [CLS] token / pre-norm** を追加（15 項目）
+  - [[overview]] — 最新更新ライン（updated: 2026-06-03）
+  - [[log]]
+- メモ:
+  - **本 wiki の「根幹原典」を補完した意義**: ViT は CV における基盤モデル時代の出発点で、本 wiki に登録済みのほぼすべての視覚モデル（DINO/MAE/iBOT/DINOv2/DINOv3/CLIP/SigLIP/SAM/PE/Qwen-VL 系/InternVL 系/Gemma 3/DeepSeek-OCR）が ViT を視覚バックボーンとして採用。**「概念ページが頻繁に参照しているのに原典がない」という致命的欠落を、RoFormer に続いて補完**。これで wiki の主要な「概念→原典」リンクが完成
+  - **RoFormer ingest と同じパターン**: 概念ページ（concepts/vision-transformer.md、2026-05-24 作成）が既に存在し、後から原典を遡って ingest した **「概念ページの原典補完」第 2 例**。RoFormer (RoPE) に続く事例で、wiki としての設計パターンが確立
+  - **論文の発表時期と影響**: 2020 年 10 月 arXiv 初版、2021 年 ICLR。発表時点では「Transformer が画像にスケールするか」を確認する研究として注目されたが、**その後 5 年以内に CV のすべてのサブ分野（分類・検出・セグメンテーション・VLM・MLLM・生成）が ViT に移行**するという、CV 史上最大級のパラダイム・シフトを引き起こした
+  - **3 つのスケーリング知見の歴史的重要性**:
+    - **(1) データ・サイズが帰納バイアスの差を埋める** — これが後の DINOv2 (142M), DINOv3 (1.689B), CLIP (400M), SigLIP, JFT-3B などすべての「Web スケール訓練」の根拠
+    - **(2) 小データで ViT-L < ViT-B、大データで逆転** — 「大きなモデル = 必ず良い」ではなく「大きなモデル × 大きなデータ」が必要というメッセージ。後の Chinchilla scaling law（NLP）と平行的
+    - **(3) 試した最大スケールで未飽和** — CV の「スケール限界はまだ見えていない」を示し、ViT-7B（DINOv3）/ ViT-22B（Google）/ EVA-1B/2B などの巨大化を動機づけた
+  - **JFT-300M 問題**: ViT の最良結果は JFT-300M（Google 内部非公開）に依存。**この再現性問題が**:
+    - OpenCLIP / LAION-400M / LAION-5B の登場（オープン代替）
+    - DINOv2 の LVD-142M / DINOv3 の LVD-1689M の自前キュレーション
+    - **オープン基盤モデル運動全体**の根拠の一つ
+  - **位置埋め込み議論の含意**: 論文 §3.1 と Appendix D.4 で「1D ≈ 2D ≈ 相対位置 ≈ no PE（IN-21k 事前学習時）」と結論。**これが「位置埋め込みの選択は重要でない」という当時のコンセンサスを作った**が、後に間違いと判明：
+    - **任意解像度対応**の観点では学習可能 1D は致命的に弱い（事前学習時の系列長を超えると補間が必要）
+    - **DINOv3 の axial RoPE** や **Qwen2-VL の M-RoPE** が登場し、**[[sources/roformer|RoPE]] が事実上の標準**に
+    - 本論文の比較は ImageNet 系評価に限定され、任意解像度・任意系列長への汎化を評価していなかった
+  - **「シンプルさ」の哲学**: 論文の中心メッセージは **「Transformer に画像固有の修正を加えない」**。これは美しい設計思想だが、後の研究で:
+    - **Hiera/Swin**（階層型）が密予測タスクで必要に
+    - **Window Attention**（Qwen2.5-VL）が高解像度の計算量問題を解決
+    - **DeiT/CaiT**（強い拡張・蒸留）が小データでの ViT 訓練を可能に
+    - **MAE/iBOT/DINO**（SSL）が JFT 依存を解消
+    - これらすべてが「シンプル ViT を実用化する」ための補完研究として理解できる
+  - **Hybrid モデルの教訓**: 論文 §4.4 で **「Hybrid（CNN + ViT）は小モデルでわずかに勝つが大モデルで差消失」**。これは「**最終的には純粋 ViT が勝つ**」という強いメッセージで、CNN の歴史的役割を終わらせた重要な実験結果
+  - **[CLS] トークンと 1D 位置埋め込みの今**: 本論文で確立された [CLS] + 1D 位置埋め込みは、**現在の MLLM 系では大部分が変更されている**:
+    - Qwen-VL 系: 2D-RoPE（任意解像度）+ Merger（量を制御）
+    - DINOv3: axial RoPE + register tokens（[CLS] の代替・補完）
+    - Gemma 3: SigLIP 400M + average pooling 256 トークン圧縮
+    - **本論文の「初期設計」を尊重しつつ、ほぼすべての MLLM が独自改良している**
+  - **§4.6 自己教師あり予備実験の重要性**: わずか 1 段落だが、**「BERT 風マスク・パッチ予測で ViT-B/16 が ImageNet 79.9% を達成」** という観察が、後の **MAE（He et al., 2021/2022, ImageNet only で 87.8%）** や **iBOT / BEiT / SimMIM** に直結。**論文の予備実験が分野全体の新しいパラダイム（Masked Image Modeling）を生んだ**事例
+  - **次の ingest 候補**（ViT 系の自然な続き）:
+    - **DeiT**（Touvron et al., 2021）— 強い拡張 + 蒸留で ImageNet のみで ViT 訓練を可能に
+    - **Swin Transformer**（Liu et al., 2021）— 階層型 ViT、密予測の標準
+    - **Attention is All You Need**（Vaswani et al., 2017）— Transformer 原典、まだ wiki にない致命的欠落
+    - **BERT**（Devlin et al., 2018）— ViT が直接モデルとした事前学習パラダイムの原典
+    - **iGPT**（Chen et al., 2020）— ViT 直前の「画像 × Transformer」の先行研究
+    - **CoCa / BEiT / SimMIM** — ViT 後の主要 SSL 系統
+
+## [2026-06-03] query | 大規模事前学習の系列別整理
+
+- ユーザ質問: 「近年の大規模データによる自己教師あり学習には CLIP の系列と DINO の系列があると思っています。これはあっていますか？他にも系列がありますか？それぞれの系列の発展（アーキテクチャの進化、データの大規模化、革新的な工夫）を整理してください」
+- 作成: [[questions/large-scale-pretraining-series]] — 大規模事前学習の **5 系列**（①WSL 対比型 / ②自己蒸留 SSL / ③MIM / ④古典対比 SSL（pre-ViT）/ ⑤ハイブリッド）を整理
+- 更新: [[index]] / [[overview]]
+- メモ:
+  - **ユーザの認識への診断**: 「CLIP 系 + DINO 系」の 2 大主流の把握は実用上正しいが、**用語的には WSL（CLIP は弱教師あり）vs SSL（DINO は自己教師あり）の区別**あり。冒頭で明示
+  - **欠落していた 3 系列を新規追加**: ③MIM 系（MAE/BEiT、純粋系列は終焉でハイブリッドへ吸収）/ ④古典対比 SSL 系（SimCLR/MoCo/BYOL/SwAV、pre-ViT、現代 SSL の理論的基礎）/ ⑤ハイブリッド系（iBOT/DINOv2/v3、純粋 SSL の現代主流）
+  - **MLLM の Vision encoder への直接的回答**: ユーザが「LLM の Vision encoder」を CLIP 系の枝として挙げた点は概ね正しい。Qwen-VL 系（DFN/SigLIP-2 継承）/ InternVL 系（CLIP-ViT-L 初期化 + 継続事前学習）/ Gemma 3（SigLIP 400M 共有）/ DeepSeek-OCR（SAM + CLIP 直列）— **すべて CLIP/SigLIP 系の継承で独立系列ではない**
+  - **2024-2025 の系列融合論点を整理**: SigLIP 2（WSL が SILC 自己蒸留 + TIPS マスク予測を借用）、PE（WSL が alignment tuning で中間層活用 + SAM 2.1 蒸留）、DINOv3（SSL が CLIP 由来 RoPE 採用）。「系列の境界が曖昧化しつつあるが監督信号の出所での区別は根本的」と結論
+  - **次の ingest 候補を系列ごとに提示**: 系列①（ALIGN / MetaCLIP / DFN / AIMv2）/ 系列③（BEiT / SimMIM / V-JEPA）/ 系列④（MoCo / SwAV）。**wiki に未登録の重要原典が WSL/MIM/古典対比に偏っていることが可視化された**
+  - **ハブ的 question ページの価値**: [[questions/vit-dynamic-resolution-evolution]] に続く 2 つ目の question ページ。**個別 entity ページや concepts は揃っているが「系列横断の俯瞰」は [[concepts/foundation-model]] のセクションが唯一だった**ところに、独立 question として体系的整理を加えた
+
+## [2026-06-03] schema-update | frontmatter の wikilink を Obsidian 有効な YAML に修正
+
+- 問題: Obsidian で wiki/concepts, entities, questions の各ページが「**無効なプロパティ**」と表示されていた（添付スクリーンショット）
+- 原因: CLAUDE.md スキーマで指定していた `related: [[link1]], [[link2]]` という形式が **YAML 文法的に無効**（`[` で始まる値は YAML フローシーケンスとして解析されるが、`[[link]]` はネストした空リスト + 不明識別子と解釈されエラー）
+- 修正:
+  - **`wiki/` 配下の 166 ファイル × 計 238 行**を一括修正（合計 610 wikilink を保持）
+  - **複数値フィールド** `related` / `sources` / `sources_used` → インライン YAML リスト + 引用符付き文字列: `related: ["[[a]]", "[[b]]"]`
+  - **単数値フィールド** `translation` / `source_page` → スカラー引用符付き文字列: `translation: "[[t]]"`
+  - **wikilink を含まないフィールド**（`aliases`, `tags`, `authors`, `year` 等）は無変更（従来通り `tags: [vit, transformer]` 等で有効）
+  - **CLAUDE.md §2 Frontmatter 規約**を更新: 5 つのテンプレート（sources/translations/concepts/entities/questions）すべてで正しい引用符付き形式に修正、**冒頭に「Obsidian の YAML プロパティ規約」セクションを追加**して今後の ingest で誤らないように
+  - **CLAUDE.md §4 翻訳ファイルのテンプレート**の `source_page` も修正
+- 検証:
+  - 修正後に「不正な unquoted `[[...]]`」が 0 ファイル
+  - 全 wikilink（frontmatter 内 610 個）が保持されている
+  - 5 タイプ全てで spot check OK（concepts/sources/translations/entities/questions）
+- メモ:
+  - **影響範囲**: 本文中の `[[wikilink]]` には影響なし（マークダウン本文の wikilink は Obsidian が正しく処理する。YAML フロントマターのみの問題）
+  - **YAML フロー記法の罠**: `aliases: [ViT, Vision Transformer]` は **valid YAML**（フローシーケンス、内容は文字列 "ViT" と "Vision Transformer"）。一方 `related: [[a]], [[b]]` は **invalid YAML**（先頭の `[` でフローシーケンス開始だがその中に `[a]` ネストして閉じ忘れ + コンマ区切りの後続要素が不正）
+  - **過去の ingest すべてに影響**: 2026 年 5 月以降に作成した 166 ファイルすべてに同問題が存在。今回一括修正で解決
+  - **今後の予防**: CLAUDE.md スキーマ修正により、次の ingest からは初出で正しい形式で frontmatter を書ける。新規ページ作成時に「無効なプロパティ」表示の再発がないことを確認するのが望ましい
+
+## [2026-06-03] ingest | YaRN: Efficient Context Window Extension of Large Language Models
+
+- 取り込み: `raw/papers/YaRN_ Efficient Context Window Extension of Large Language Models.md`（Peng et al., Nous Research + EleutherAI + University of Geneva, 2023 arXiv:2309.00071 / ICLR 2024、587 行・60KB、Web Clipper 形式）
+- ユーザー指示: **「appendix 含めて ingest」**
+- 作成:
+  - [[sources/yarn]] — 要約ページ（PI → NTK-aware → NTK-by-parts → Dynamic NTK → YaRN の 5 世代を整理、Qwen3-VL 1M YaRN 外挿との接続を明記）
+  - [[translations/yarn]] — 本文 + Appendix 翻訳（**Abstract + §1-6 + Appendix A.1, A.2, B.1, B.2, B.3, B.4 含む**、References のみ除外）、図 1-6 を `<figure>` で埋め込み、表 1-6 を含む
+  - `raw/assets/yarn/` フォルダ + 6 図（fig1 sliding-window-perplexity / fig2 mscale-vs-ppl overall / fig3 mscale-vs-ppl segment / fig4 mscale-vs-ppl argmin / fig5 dynamic-scaling / fig6 mistral-perplexity）
+- 更新:
+  - [[concepts/rotary-position-embeddings]] — **「派生」セクションを大幅拡張**: PI → NTK-aware → Dynamic NTK / NTK-by-parts → YaRN → LongRoPE の 5 世代系譜を ASCII 図と数式定義で整理、frontmatter sources に `[[sources/yarn]]` を追加、関連ページに YaRN 行追加
+  - [[index]] — Sources / Translations セクション、略称表に **YaRN / PI / NTK-aware / NTK-by-parts / Dynamic NTK / Dynamic-YaRN / LongRoPE / scale factor s / wavelength $\lambda_d$ / ramp function $\gamma(r)$ / Passkey Retrieval / PG19 / Proof-pile / GovReport / Flash Attention 2 / bloc97 / emozilla** の 17 項目追加
+  - [[overview]] — 最新更新ライン（updated: 2026-06-03）
+  - [[log]]
+- メモ:
+  - **wiki の RoPE 系列を完成させる ingest**: RoFormer（RoPE 原典）→ ViT 原典 → **YaRN（RoPE 拡張の決定版）** の 3 連で、wiki の「位置エンコーディング × 任意系列長」の理論的基礎が揃った。**Qwen3-VL の 1M YaRN 外挿に対する明確な原典参照が成立**
+  - **Reddit / GitHub コミュニティ駆動研究の代表事例**: NTK-aware（bloc97 Reddit 投稿）/ Dynamic NTK（emozilla Reddit 投稿）/ NTK-by-parts（bloc97 GitHub PR）はいずれもピアレビュー前のコミュニティ発見だった。本論文はこれらを **「事後的に学術形式に整える」役割**。著者 Bowen Peng 自身が Reddit `/u/bloc97` で NTK-aware の発見者。**Nous Research + EleutherAI + Reddit コミュニティの生態系**を象徴する論文
+  - **本論文の真の貢献**: 「新規アイデアの提案」より「**4 つの先行手法（PI, NTK-aware, Dynamic NTK, NTK-by-parts）の整理 + 1 つの新規要素（温度スケーリング）の統合**」。**YaRN そのものは増分的改良**で、整理と統合に重きがある
+  - **5 世代の系譜の知識的価値**: wiki に **PI / NTK-aware / NTK-by-parts / Dynamic NTK / YaRN の数式定義と歴史**が整理されたことで、今後の Qwen / Mistral / Llama 系の MLLM ingest でこれらの用語を **概念ページに飛ばすだけで済む** ようになった。MLLM 各モデルが「どの拡張手法を採用しているか」を明確に区別可能に
+  - **CV / MLLM での意義**:
+    - **[[entities/qwen3-vl|Qwen3-VL]]**: 256K ネイティブ + 1M YaRN 外挿、Needle 256K 100% / 1M 99.5% は **本論文の YaRN $s=32$ の MLLM スケール延長**
+    - **[[entities/qwen2-vl|Qwen2-VL]]**: 学習 16K → 推論 80K 外挿は YaRN 系技法に依拠
+    - **DINOv3 の RoPE-box jittering**（[[sources/dinov3]]）: 訓練時に座標範囲をランダムスケール、**YaRN の Dynamic Scaling と発想的に近い**
+    - 純粋 Vision モデルでの YaRN 直接適用論文はまだ稀（Vision では DINOv3 の axial RoPE のように **RoPE 自体の 2D 化** が先行）
+  - **訓練効率の革命**: 「事前学習データの 0.1% 未満、400 ステップ」で 4k → 128k 拡張は **以前不可能だった効率**。後続の長文脈手法（LongRoPE 2024、Qwen の各 long-context モード）が **YaRN の効率水準を当然視**するようになった
+  - **「Effective context size」と perplexity の乖離**（B.2）: Code Llama 13B は 100k 超で perplexity 増加するが、Passkey 検索 128k で 99.4%。**perplexity 単独では長文脈評価指標として不十分**という重要な観察。これが後の Needle-in-a-Haystack / RULER / LongBench 等の長文脈ベンチマーク登場を促した
+  - **未解決の論点**: (1) 温度 $\sqrt{1/t}=0.1\ln(s)+1$ の理論的説明欠如、(2) Llama 2 への一般化が「普遍性」かどうか、(3) MLLM 文脈での YaRN ベストプラクティスは依然エンジニアリング知識、(4) Vision での YaRN 直接適用論文の少なさ
+  - **次の ingest 候補**（RoPE 系完成後の自然な発展）: LongRoPE（Ding et al., 2024、200K 超）/ Position Interpolation 原典（Chen et al., 2023、arXiv:2306.15595）/ ALiBi（Press et al., 2022、ICLR、長系列外挿の代替パラダイム）/ Code Llama（Roziere et al., 2023、NTK-aware の最初の本格採用）/ Together LLongMA-2（PI の代表応用）/ V-JEPA（Vision での長系列・動画 SSL）
+
+## [2026-06-03] ingest | Data Filtering Networks（DFN）
+
+- 取り込み: `raw/papers/Data Filtering Networks.md`（Fang et al., Apple + University of Washington, 2023 Sept arXiv:2309.17425 / ICLR 2024、418 行・51KB、Web Clipper 形式）
+- ユーザー指示: **「appendix 含めて ingest」**
+- 作成:
+  - [[sources/dfn]] — 要約ページ（手法・3 つの非自明発見・CLIP 系列での位置付け・MLLM での採用を整理）
+  - [[entities/dfn]] — エンティティページ（DFN モデル仕様、DFN-2B/DFN-5B データセット詳細、4 つの公開チェックポイント、CLIP 系列との比較）
+  - [[translations/dfn]] — 本文 + Appendix A-G 翻訳（**Abstract + §1-5 + Appendix A-G 含む**、References のみ除外）、図 1-8 を `<figure>` で埋め込み、表 1-10 を含む
+  - `raw/assets/dfn/` フォルダ + 8 図（fig1 compute-scaling / fig2 pipeline / fig3 filtering-vs-IN / fig4 data-quality / fig5 robustness / fig6 avg-fig3 / fig7 avg-fig4 / fig8 log-scale）
+- 更新:
+  - [[concepts/weakly-supervised-pretraining]] — **「A. 画像-テキスト対比学習（CLIP 系）」セクションに DFN を追加**、PE の後・Qwen 系の前に配置、3 つの鍵発見と Qwen2-VL/2.5-VL での採用を明記、frontmatter sources に `[[sources/dfn]]` 追加
+  - [[index]] — Sources / Translations / Entities Models セクション、略称表に **DFN / DFN-2B / DFN-5B / HQITP-350M/135M / DataComp / DataComp-1B / CommonPool / filter dataset / induced dataset / induced model / OAI-Init / M3AE / AXlearn / CC12M / CC3M / SS15M** の 15 項目追加
+  - [[overview]] — 最新更新ライン（updated: 2026-06-03）
+  - [[log]]
+- メモ:
+  - **wiki の MLLM 視覚エンコーダ系譜が完成**: Qwen2-VL/2.5-VL の ViT 初期化に使われている DFN が ingest 済みになり、**「視覚エンコーダの出自」を Qwen-VL 全世代について明示的に追跡可能**に：
+    - Qwen-VL（2023.08）: OpenCLIP ViT-bigG
+    - **Qwen2-VL（2024.09）: DFN ← 今回**
+    - **Qwen2.5-VL（2025.02）: DFN + 社内データ ← 今回**
+    - Qwen3-VL（2025.11）: SigLIP-2 から継続学習
+  - **Apple 系の wiki 第 1 弾**: 本 wiki に Apple 系モデルがまだなかった。**DFN ingest で Apple Hugging Face（apple/DFN5B-CLIP-ViT-H-14-378 等）と Apple のデータ・キュレーション哲学を取り込んだ**。次の Apple 系候補は AIMv2（autoregressive image modeling）、HQITP（人間検証キャプション）、MM1（Apple MLLM）
+  - **3 つの非自明発見が現代的に重要**:
+    - **「フィルタ性能 ≠ ImageNet 性能」**: 別領域でも応用可能な深い洞察。「下流タスクで強いモデル」が「データ選別に強いモデル」と一致しないことを実証。これは **MLLM の vision encoder 評価でも「分類ベンチで強い ≠ MLLM で強い」** という観察に通じる
+    - **「データ品質が決定的」**: 図 4 の即座崩壊カーブは劇的。**Web スケール訓練でデータ品質を維持することが量より重要**という主張
+    - **「CLIP フィルタ > バイナリ分類器」**: マルチモーダル整列が単純な分類より柔軟なフィルタ基準を提供するという原理的観察
+  - **DataComp との関係**: 並行発表の DataComp（Gadre et al. 2023）と相補的。**DataComp = ベンチマーク + ベースライン・データ (DC-1B)、DFN = ベンチマーク上で SOTA を取る手法**。両者が「データ中心 AI」の代表ペア
+  - **MetaCLIP との対比**: MetaCLIP（Xu et al. 2024、ICLR）はデータ公開で相補的、DFN は手法公開。**MetaCLIP は CLIP 訓練データの選別基準を初公開、DFN はその選別をニューラルネットで学習可能にする**。両者が異なる軸で CLIP データを民主化
+  - **SigLIP 2 との比較**: SigLIP 2 (2025、85.0% IN) は **5 系統融合**（対比 + 自己蒸留 + MIM + decoder + 蒸留）で DFN-5B（84.4%）を上回るが、**SigLIP 2 は損失関数 + 補助タスクの革新、DFN はデータ・キュレーションの革新**。**直交する改善軸で、原理的には組み合わせ可能**
+  - **HQITP-350M の謎**: 「人間検証済みキャプション 357M」という強力なデータの出自・キュレーション基準が論文中で詳細未公開。**「Apple 内部資産」とのみ記述**。再現性の最大の障害だが、§4.2 で公開データのみでも競争的 DFN 構築可能と示すことで一部緩和
+  - **DFN-5B の 30B 非 DataComp 画像**: 出自完全非公開。**完全再現が困難**だが、公開された DFN-2B（DataComp 12.8B から選別）は完全再現可能
+  - **MLLM 視覚エンコーダの選択理由が明確化**: Qwen2-VL/2.5-VL が DFN を選んだ理由は **「DFN-2B の HQITP-FT 効果で多言語 OCR / Document / Chart のキュレーション品質が高い」** と推測される。実際 Qwen2-VL は多言語 OCR で GPT-4o を 7/8 言語で凌駕しており、DFN の HQITP のような高品質キャプションへのファインチューンが効いている可能性
+  - **データ中心 AI の意義**: 本論文の最大の貢献は「**データセット設計はモデル設計と同じツールを使える**」という主張。これは：
+    - DataComp（ベンチマーク化）と相補的
+    - MetaCLIP（データ公開）と相補的
+    - SigLIP 2 / PE のキュレーション哲学に影響
+    - 「Data-Centric AI」運動の代表事例
+  - **未解決の論点**: (1) 「フィルタ性能 ≠ IN 性能」の理論的説明欠如、(2) HQITP-350M の中身（人間検証基準）が不透明、(3) DFN-5B の 30B 非 DataComp 画像の出自不明、(4) 再帰的改善（DFN-5B モデルを新しい DFN として使う）は未検証、(5) 動画・3D・専門ドメインでの DFN は未検証
+  - **次の ingest 候補**（CLIP 系列の wiki 補完）: AIMv2（Apple 2024、autoregressive image modeling、DFN の対抗パラダイム）/ MetaCLIP（Meta ICLR 2024、データ公開）/ EVA-CLIP（BAAI 2023、ViT-G/14 5B）/ DataComp 原典（Gadre et al. 2023、ベンチマーク詳細）/ MM1（Apple 2024、Apple 系の MLLM、DFN を使った）/ Florence-2（Microsoft 2024、統合 vision foundation）

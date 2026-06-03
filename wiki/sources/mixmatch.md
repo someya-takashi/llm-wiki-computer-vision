@@ -8,7 +8,7 @@ year: 2019
 venue: NeurIPS 2019
 ingested: 2026-05-27
 tags: [semi-supervised-learning, mixup, consistency-regularization, entropy-minimization, cifar, svhn, stl-10, wide-resnet, differential-privacy, label-guessing, sharpening]
-translation: [[translations/mixmatch]]
+translation: "[[translations/mixmatch]]"
 ---
 
 # MixMatch: A Holistic Approach to Semi-Supervised Learning

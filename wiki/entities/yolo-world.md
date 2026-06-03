@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [YOLO-World, YOLOWorld, YOLO World]
 tags: [yolo, real-time, open-vocabulary, object-detection, tencent, clip-text-encoder, repvl-pan]
-related: [[concepts/object-detection]], [[concepts/zero-shot-transfer]], [[concepts/foundation-model]]
-sources: [[sources/yolo-world]]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/yolo-world]]"]
 updated: 2026-05-28
 ---
 

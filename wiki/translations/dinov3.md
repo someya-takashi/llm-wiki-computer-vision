@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/DINOv3.md
-source_page: [[sources/dinov3]]
+source_page: "[[sources/dinov3]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-24

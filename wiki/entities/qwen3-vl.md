@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Qwen3-VL, Qwen3-VL-2B, Qwen3-VL-4B, Qwen3-VL-8B, Qwen3-VL-32B, Qwen3-VL-30B-A3B, Qwen3-VL-235B-A22B, Qwen3VL, qwen3-vl]
-related: [[entities/qwen2-5-vl]], [[entities/qwen2-vl]], [[entities/qwen-vl]], [[entities/siglip]], [[entities/internvl-3]], [[entities/internvl-3-5]], [[concepts/rotary-position-embeddings]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]]
-sources: [[sources/qwen3-vl]]
+related: ["[[entities/qwen2-5-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen-vl]]", "[[entities/siglip]]", "[[entities/internvl-3]]", "[[entities/internvl-3-5]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]"]
+sources: ["[[sources/qwen3-vl]]"]
 updated: 2026-05-30
 ---
 

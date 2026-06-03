@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv 2502.14786
 ingested: 2026-05-27
 tags: [vision-language, contrastive, sigmoid-loss, multilingual, self-distillation, masked-prediction, locca, dense-features, naflex, distillation, foundation-model, paligemma]
-translation: [[translations/siglip-2]]
+translation: "[[translations/siglip-2]]"
 ---
 
 # SigLIP 2: 多言語・dense feature・位置特定を改善した SigLIP の後継

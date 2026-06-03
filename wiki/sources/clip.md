@@ -8,7 +8,7 @@ year: 2021
 venue: "arXiv:2103.00020 → ICML 2021"
 ingested: 2026-05-25
 tags: [clip, weakly-supervised-pretraining, contrastive-learning, zero-shot-transfer, vision-language, openai, foundation-model]
-translation: [[translations/clip]]
+translation: "[[translations/clip]]"
 ---
 
 # CLIP: 自然言語の教師信号から転移可能な視覚モデルを学習する

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/DINO_ DETR with Improved DeNoising Anchor Boxes for End-to-End Object Detection.md
-source_page: [[sources/dino-detector]]
+source_page: "[[sources/dino-detector]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

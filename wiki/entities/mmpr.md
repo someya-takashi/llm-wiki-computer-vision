@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [MMPR, MMPR-v1, MMPR-v1.2, MultiModal PReference dataset]
 tags: [dataset, preference-optimization, multimodal, cot, opengvlab]
-related: [[entities/mpo]], [[entities/internvl-3]]
-sources: [[sources/mpo]]
+related: ["[[entities/mpo]]", "[[entities/internvl-3]]"]
+sources: ["[[sources/mpo]]"]
 updated: 2026-05-29
 ---
 

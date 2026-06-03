@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv:2510.18234
 ingested: 2026-05-31
 tags: [deepseek, deepseek-ocr, ocr, optical-compression, mllm, vision-language, sam, clip, moe, memory-forgetting, omnidocbench, fox-benchmark, document-understanding]
-translation: [[translations/deepseek-ocr]]
+translation: "[[translations/deepseek-ocr]]"
 ---
 
 # DeepSeek-OCR — 「LLM 中心視点」から VLM を再定義し、視覚モダリティをテキスト圧縮媒体として使う新パラダイム

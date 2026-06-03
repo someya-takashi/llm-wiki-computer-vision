@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [MixMatch]
 tags: [semi-supervised-learning, consistency-regularization, entropy-minimization, mixup, label-guessing, sharpening, wide-resnet, cifar, svhn, stl-10, google-research]
-related: [[concepts/semi-supervised-learning]], [[concepts/self-supervised-learning]], [[entities/simclr]], [[entities/byol]], [[entities/dino]]
-sources: [[sources/mixmatch]]
+related: ["[[concepts/semi-supervised-learning]]", "[[concepts/self-supervised-learning]]", "[[entities/simclr]]", "[[entities/byol]]", "[[entities/dino]]"]
+sources: ["[[sources/mixmatch]]"]
 updated: 2026-05-27
 ---
 

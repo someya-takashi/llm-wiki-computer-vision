@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [ImageNet, ILSVRC, INet, IN-1k, ImageNet-1k]
 tags: [dataset, benchmark, classification]
-related: [[concepts/self-supervised-learning]], [[concepts/vision-transformer]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]"]
+sources: ["[[sources/dino-emerging-properties-in-self-supervised-vit]]"]
 updated: 2026-05-24
 ---
 

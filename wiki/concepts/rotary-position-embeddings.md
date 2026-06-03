@@ -2,16 +2,16 @@
 type: concept
 aliases: [RoPE, Rotary Position Embeddings, 回転位置埋め込み, Rotary Positional Encoding]
 tags: [architecture, transformer, position-encoding]
-related: [[vision-transformer]]
-sources: [[sources/dinov3]], [[sources/sam-2]]
-updated: 2026-05-24
+related: ["[[vision-transformer]]"]
+sources: ["[[sources/roformer]]", "[[sources/yarn]]", "[[sources/dinov3]]", "[[sources/sam-2]]", "[[sources/qwen2-vl]]", "[[sources/qwen2-5-vl]]", "[[sources/qwen3-vl]]"]
+updated: 2026-06-03
 ---
 
 # Rotary Position Embeddings（RoPE, 回転位置埋め込み）
 
 ## 一言で
 
-**Transformer の attention の中で、トークン間の相対位置を「回転行列を用いた変換」として表現する位置埋め込み手法**。Su ら（"RoFormer", 2021）が NLP のために提案し、現在は LLaMA・Mistral・PaLM・Qwen など主要 LLM の事実上の標準となっている。Computer Vision でも DINOv3（[[entities/dinov3]]）や RoPE-ViT などで採用が進む。**任意の解像度／系列長で fine-tuning なしに使える**のが視覚での最大の利点。
+**Transformer の attention の中で、トークン間の相対位置を「回転行列を用いた変換」として表現する位置埋め込み手法**。Su ら（**[[sources/roformer|"RoFormer", 2021]]** — Zhuiyi Technology、原典論文）が NLP のために提案し、現在は LLaMA・Mistral・PaLM・Qwen など主要 LLM の事実上の標準となっている。Computer Vision でも DINOv3（[[entities/dinov3]]）や RoPE-ViT などで採用が進む。**任意の解像度／系列長で fine-tuning なしに使える**のが視覚での最大の利点。
 
 ---
 
@@ -145,10 +145,43 @@ DINOv3 はこの **axial RoPE** を採用。
 
 ## 派生
 
-- **NTK-aware RoPE**: 長系列への外挿性を改善（LLaMA で広く使われる）
-- **YaRN**: NTK-aware の改良
-- **LongRoPE**: 200K トークン以上の超長系列対応
-- **2D RoPE / Mixed RoPE**: vision/video 向けの 2D・3D 拡張
+### 長文脈外挿の系譜（NLP 中心、wiki 別ページに詳細）
+
+[[sources/roformer|RoFormer]] 原論文は「長系列外挿の挙動の理論的説明は欠ける」と限界として認めていた（§4.5.5）。2023 年に **Reddit / GitHub のコミュニティ駆動**で以下の系譜が発展：
+
+```
+Position Interpolation (PI) — Chen et al. 2023, Kaiokendev 2023
+   │ m → m/s で位置インデックスを均等圧縮、訓練範囲内に押し込む
+   ▼
+NTK-aware RoPE — bloc97 (Reddit 投稿, 2023)
+   │ 周波数を基底変換 b' で再分配、高周波保持 + 低周波スケール
+   │ Code Llama が b=1M で採用、本論文発表直前
+   ▼
+Dynamic NTK — emozilla (Reddit 投稿, 2023) / NTK-by-parts — bloc97 (GitHub PR, 2023)
+   │ Dynamic NTK: 推論時に s を動的更新（Qwen 7B 採用）
+   │ NTK-by-parts: 波長 λ_d ごとに補間戦略を変える「ターゲット補間」
+   ▼
+YaRN — Peng, Quesnelle ら ([[sources/yarn]], 2023, ICLR 2024)
+   │ NTK-by-parts + attention 温度スケーリング
+   │ Llama 2 で 4k → 128k を 0.1% のデータ・400 ステップで実現
+   │ Qwen3-VL の 1M 文脈外挿の理論的基盤
+   ▼
+LongRoPE (2024)
+   │ 進化アルゴリズムで非一様補間係数を探索、200K 以上の超長系列対応
+```
+
+各手法の核心:
+
+- **PI**: 全次元を均等にスケール（**ブラインド補間**）。$g(m)=m/s$
+- **NTK-aware**: 基底 $b \to b'=b\cdot s^{|D|/(|D|-2)}$ で **周波数を再分配**。高周波を保持・低周波をスケール。**Code Llama が採用**
+- **Dynamic NTK**: 各 forward-pass で $s=\max(1, l'/L)$ を動的更新。**ファインチューン不要**、**Qwen 7B 初期版が採用**
+- **NTK-by-parts**: 波長 $\lambda_d = 2\pi b^{2d/|D|}$ を考慮し、**短波長は補間せず・長波長は完全補間** という **ターゲット補間**。境界は ramp 関数 $\gamma(r)$ で滑らかに遷移
+- **YaRN** ([[sources/yarn]]): **NTK-by-parts + attention pre-softmax 温度スケーリング**（$\sqrt{1/t}=0.1\ln(s)+1$）。**Llama 2 で 128k 達成**、**Qwen3-VL の 1M 外挿で実用化**
+
+### Vision / MLLM での 2D / 3D 拡張（前述）
+
+- **2D RoPE / axial RoPE**: vision で次元を 2 軸に分割（[[entities/dinov3|DINOv3]] / [[entities/sam-2|SAM 2]] で採用）
+- **M-RoPE / MRoPE absolute time / Interleaved MRoPE**: MLLM 用の時空間 3 軸拡張（後述）
 - **M-RoPE（Multimodal RoPE）**: [[entities/qwen2-vl|Qwen2-VL]] が導入した、回転位置埋め込みを **temporal / height / width の 3 成分**に分解する MLLM 専用版。テキストは 1D-RoPE 等価、画像は temporal 固定 + 空間 2 軸で位置 ID、動画は temporal 増分 + 空間 2 軸。**画像と動画の位置 ID 値を小さく抑えて長文脈外挿に有利** という副次効果が重要。**学習 16K → 推論 80K トークンまで頑健**という Qwen2-VL-72B の長さ外挿はこれが決定的に効いている。後続の Qwen2.5-VL / Qwen3-VL や多くの MLLM が踏襲
 - **MRoPE Aligned to Absolute Time**: [[entities/qwen2-5-vl|Qwen2.5-VL]] が導入した M-RoPE の改良版。Qwen2-VL の M-RoPE は **temporal ID をフレーム番号に結びつけていた**ため、30 fps 動画と 5 fps 動画で「同じ 10 秒」が異なる temporal ID 列で表現されていた。Qwen2.5-VL は **temporal ID 間の間隔を絶対時間（秒数）に揃える**ことで、異なる FPS の動画にわたって一貫した時間整合を学習できる。追加のテキスト・タイムスタンプ注入や追加ヘッドを必要としない（Qwen-Agent や他社 MLLM が採用するハック的アプローチを回避）。**Charades-STA mIoU 50.9（GPT-4o 35.7 を +15.2 圧倒）** と LVBench / MLVU SOTA の決定打。後続の MLLM で動画グラウンディングを扱う場合の標準アプローチに
 - **Interleaved MRoPE**: [[entities/qwen3-vl|Qwen3-VL]] が導入した M-RoPE のさらなる改良。Qwen2-VL / Qwen2.5-VL の MRoPE は **temporal/height/width を埋め込み次元の「塊」に分割**して別々の回転周波数を割り当てていたため、**周波数スペクトル不均衡**を生み、長動画理解性能を劣化させていた（Huang et al., 2025）。Interleaved MRoPE は t / h / w 成分を埋め込み次元にわたって**均一に交互配置**することで、**各時空間軸が低周波帯と高周波帯の双方で均一に表現**されることを保証。動画の長距離位置モデリングを著しく改善。さらに、Qwen3-VL は **MRoPE absolute time も捨てて `<3.0 seconds>` のような明示的テキスト・タイムスタンプ・トークン**に切り替え、長動画での temporal ID 肥大化問題を解消（後続節「テキスト・ベース時間整合」参照）
@@ -157,6 +190,10 @@ DINOv3 はこの **axial RoPE** を採用。
 
 ## 関連ページ
 
+- [[sources/roformer]] — **RoPE の原典論文**（Su et al., 2021、Zhuiyi Technology）。NLP 向けに提案され、現代 LLM の事実上の標準に。4 つの NLP タスク（WMT 翻訳・BERT 事前学習・GLUE・CAIL2019-SCM 中国語長文）で評価
+- [[translations/roformer]] — 原典の本文和訳
+- [[sources/yarn]] — **YaRN（Peng, Quesnelle ら, 2023, arXiv:2309.00071 / ICLR 2024）**。RoPE 拡張系の決定的論文。PI → NTK-aware → NTK-by-parts → Dynamic NTK → YaRN の 5 世代を整理、**Llama 2 を 4k → 128k に 400 ステップで拡張**、Qwen3-VL の 1M YaRN 外挿の理論的基盤。**Reddit/GitHub のコミュニティ発見を学術化した代表事例**
+- [[translations/yarn]] — YaRN 原典の本文 + Appendix 和訳
 - [[sources/dinov3]] — vision で axial RoPE を本格採用した論文
 - [[sources/sam-2]] — memory attention で 2D-RoPE を採用、画像エンコーダ側は絶対位置埋め込みのみという設計選択
 - [[sources/qwen2-vl]] — M-RoPE（temporal/height/width 3 成分）を導入し、ViT 側も 2D-RoPE で任意解像度対応にした論文

@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [SAM 3, Segment Anything Model 3, SAM v3]
 tags: [model, segmentation, concept, open-vocabulary, video, foundation-model, meta-superintelligence-labs, perception-encoder, detr]
-related: [[concepts/promptable-concept-segmentation]], [[concepts/promptable-segmentation]], [[concepts/foundation-model]]
-sources: [[sources/sam-3]]
+related: ["[[concepts/promptable-concept-segmentation]]", "[[concepts/promptable-segmentation]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/sam-3]]"]
 updated: 2026-05-26
 ---
 

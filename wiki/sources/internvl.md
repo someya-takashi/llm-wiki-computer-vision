@@ -8,7 +8,7 @@ year: 2023
 venue: CVPR 2024
 ingested: 2026-05-28
 tags: [vision-language, foundation-model, llm-alignment, internvit, qllama, opengvlab, vllm, multimodal]
-translation: [[translations/internvl]]
+translation: "[[translations/internvl]]"
 ---
 
 # InternVL — 6B 視覚基盤モデルを LLM と整列させる初の本格的試み

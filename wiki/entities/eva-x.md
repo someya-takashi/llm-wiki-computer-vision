@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [EVA-X, EVA-X-Ti, EVA-X-S, EVA-X-B]
 tags: [medical-imaging, chest-x-ray, foundation-model, self-supervised-learning, masked-image-modeling, vision-transformer, eva-clip, mgca, dual-vit, hustvl, npj-digital-medicine]
-related: [[concepts/foundation-model]], [[concepts/masked-image-modeling]], [[concepts/self-supervised-learning]], [[concepts/vision-transformer]], [[entities/ibot]], [[entities/mae]], [[entities/clip]], [[entities/i-synmed]], [[sources/eva-x]]
-sources: [[sources/eva-x]]
+related: ["[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[entities/ibot]]", "[[entities/mae]]", "[[entities/clip]]", "[[entities/i-synmed]]", "[[sources/eva-x]]"]
+sources: ["[[sources/eva-x]]"]
 updated: 2026-05-28
 ---
 

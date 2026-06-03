@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/DINOv2_ Learning Robust Visual Features without Supervision.md
-source_page: [[sources/dinov2-learning-robust-visual-features-without-supervision]]
+source_page: "[[sources/dinov2-learning-robust-visual-features-without-supervision]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-24

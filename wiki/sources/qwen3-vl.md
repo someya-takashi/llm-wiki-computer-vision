@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv:2511.21631
 ingested: 2026-05-30
 tags: [qwen, qwen3-vl, mllm, multimodal, vision-language, interleaved-mrope, deepstack, text-based-time-alignment, moe, 256k-context, sapo, sthinking-mode, alibaba]
-translation: [[translations/qwen3-vl]]
+translation: "[[translations/qwen3-vl]]"
 ---
 
 # Qwen3-VL — Interleaved MRoPE + DeepStack + テキスト・タイムスタンプで「思考する VLM」と「MoE スケーリング」を本格化した Qwen 系第 4 世代

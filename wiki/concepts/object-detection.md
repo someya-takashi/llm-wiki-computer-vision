@@ -2,8 +2,8 @@
 type: concept
 aliases: [Object Detection, 物体検出, 物体検知]
 tags: [task, dense-prediction, localization]
-related: [[vision-transformer]], [[foundation-model]], [[promptable-segmentation]], [[promptable-concept-segmentation]]
-sources: [[sources/detr]], [[sources/segment-anything]], [[sources/sam-3]], [[sources/perception-encoder]]
+related: ["[[vision-transformer]]", "[[foundation-model]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]"]
+sources: ["[[sources/detr]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/perception-encoder]]"]
 updated: 2026-05-28
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Grounding DINO 1.5_ Advance the "Edge" of Open-Set Object Detection.md
-source_page: [[sources/grounding-dino-1-5]]
+source_page: "[[sources/grounding-dino-1-5]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

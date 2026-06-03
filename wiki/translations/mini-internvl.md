@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Mini-InternVL_ A Flexible-Transfer Pocket Multimodal Model with 5% Parameters and 90% Performance.md
-source_page: [[sources/mini-internvl]]
+source_page: "[[sources/mini-internvl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

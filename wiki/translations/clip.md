@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Learning Transferable Visual Models From Natural Language Supervision.md
-source_page: [[sources/clip]]
+source_page: "[[sources/clip]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-25

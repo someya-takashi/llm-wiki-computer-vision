@@ -8,7 +8,7 @@ year: 2025
 venue: IEEE Access 2025
 ingested: 2026-05-28
 tags: [medical-imaging, x-ray, chest-radiography, synthetic-data, diffusion-model, ddpm, dino, self-supervised-learning, weill-cornell, application-paper]
-translation: [[translations/i-synmed]]
+translation: "[[translations/i-synmed]]"
 ---
 
 # Self-Supervised Learning Powered by Synthetic Data From Diffusion Models: Application to X-Ray Images

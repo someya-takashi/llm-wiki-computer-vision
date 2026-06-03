@@ -8,7 +8,7 @@ year: 2023
 venue: ECCV 2024
 ingested: 2026-05-28
 tags: [grounding-dino, open-set-detection, dino-detector, glip, phrase-grounding, referring-expression, tight-fusion, idea, tsinghua, microsoft]
-translation: [[translations/grounding-dino]]
+translation: "[[translations/grounding-dino]]"
 ---
 
 # Grounding DINO: DINO 検出器と Grounded Pre-Training を結婚させる

@@ -8,7 +8,7 @@ year: 2020
 venue: ICML 2020
 ingested: 2026-05-27
 tags: [contrastive-learning, ssl, data-augmentation, projection-head, nt-xent, representation-learning, resnet, imagenet]
-translation: [[translations/simclr]]
+translation: "[[translations/simclr]]"
 ---
 
 # A Simple Framework for Contrastive Learning of Visual Representations（SimCLR）

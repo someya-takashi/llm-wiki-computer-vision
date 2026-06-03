@@ -8,7 +8,7 @@ year: 2024
 venue: arXiv preprint (November 2024)
 ingested: 2026-05-28
 tags: [dino-x, grounding-dino, open-world-detection, multi-prompt, multi-head, idea-research, grounding-100m, edge-deployment, vit-l, efficientvit, knowledge-distillation, mllm-perception]
-translation: [[translations/dino-x]]
+translation: "[[translations/dino-x]]"
 ---
 
 # DINO-X: Open-World 物体検出と理解のための統一視覚モデル

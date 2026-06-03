@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/DINO-X_ A Unified Vision Model for Open-World Object Detection and Understanding.md
-source_page: [[sources/dino-x]]
+source_page: "[[sources/dino-x]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

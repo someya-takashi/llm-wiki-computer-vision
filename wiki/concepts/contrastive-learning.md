@@ -2,8 +2,8 @@
 type: concept
 aliases: [Contrastive Learning, 対比学習, contrastive representation learning]
 tags: [paradigm, ssl, training-technique, representation-learning]
-related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[knn-evaluation-protocol]], [[alignment-tuning]]
-sources: [[sources/simclr]], [[sources/simclr]], [[sources/clip]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]]
+related: ["[[self-supervised-learning]]", "[[weakly-supervised-pretraining]]", "[[knn-evaluation-protocol]]", "[[alignment-tuning]]"]
+sources: ["[[sources/simclr]]", "[[sources/simclr]]", "[[sources/clip]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]"]
 updated: 2026-05-28
 ---
 

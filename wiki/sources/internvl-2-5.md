@@ -8,7 +8,7 @@ year: 2024
 venue: "arXiv:2412.05271 (technical report)"
 ingested: 2026-05-29
 tags: [mllm, vllm, internvl-2-5, internvit-v2-5, mmmu-70-percent, cot-reasoning, test-time-scaling, progressive-scaling, opengvlab]
-translation: [[translations/internvl-2-5]]
+translation: "[[translations/internvl-2-5]]"
 ---
 
 # InternVL 2.5 — MMMU で 70% を超えた初のオープンソース MLLM + 段階的スケーリング戦略を公式化

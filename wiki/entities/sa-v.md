@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [SA-V, Segment Anything Video, SAV]
 tags: [dataset, segmentation, video, meta-fair, public-release, cc-by-4, data-engine]
-related: [[entities/sam-2]], [[concepts/promptable-segmentation]], [[entities/sa-1b]]
-sources: [[sources/sam-2]]
+related: ["[[entities/sam-2]]", "[[concepts/promptable-segmentation]]", "[[entities/sa-1b]]"]
+sources: ["[[sources/sam-2]]"]
 updated: 2026-05-26
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Segment Anything.md
-source_page: [[sources/segment-anything]]
+source_page: "[[sources/segment-anything]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-26

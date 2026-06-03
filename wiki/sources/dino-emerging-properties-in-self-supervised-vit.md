@@ -8,7 +8,7 @@ year: 2021
 venue: ICCV 2021 (arXiv:2104.14294)
 ingested: 2026-05-24
 tags: [dino, self-supervised-learning, vision-transformer, knowledge-distillation, segmentation]
-translation: [[translations/dino-emerging-properties-in-self-supervised-vit]]
+translation: "[[translations/dino-emerging-properties-in-self-supervised-vit]]"
 ---
 
 # DINO: 自己教師あり Vision Transformer に現れる新たな特性

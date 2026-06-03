@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Qwen-VL_ A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond.md
-source_page: [[sources/qwen-vl]]
+source_page: "[[sources/qwen-vl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-30

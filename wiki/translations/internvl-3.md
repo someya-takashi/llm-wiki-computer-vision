@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/InternVL3_ Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models.md
-source_page: [[sources/internvl-3]]
+source_page: "[[sources/internvl-3]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

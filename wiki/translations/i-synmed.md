@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Self-Supervised Learning Powered by Synthetic Data From Diffusion Models_ Application to X-Ray Images.md
-source_page: [[sources/i-synmed]]
+source_page: "[[sources/i-synmed]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

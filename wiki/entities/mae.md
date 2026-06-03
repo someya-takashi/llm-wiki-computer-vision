@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [MAE, Masked Autoencoder]
 tags: [self-supervised, vision-transformer, masked-image-modeling, fair, meta-ai]
-related: [[concepts/masked-image-modeling]], [[concepts/self-supervised-learning]], [[concepts/vision-transformer]], [[concepts/denoising-autoencoder]]
-sources: [[sources/mae]]
+related: ["[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[concepts/denoising-autoencoder]]"]
+sources: ["[[sources/mae]]"]
 updated: 2026-05-25
 ---
 

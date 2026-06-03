@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Perception Encoder- The best visual embeddings are not at the output of the network.pdf
-source_page: [[sources/perception-encoder]]
+source_page: "[[sources/perception-encoder]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

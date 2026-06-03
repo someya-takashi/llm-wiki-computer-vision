@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternVL 3.5, InternVL3.5, InternVL3.5-1B, InternVL3.5-2B, InternVL3.5-4B, InternVL3.5-8B, InternVL3.5-14B, InternVL3.5-38B, InternVL3.5-20B-A4B, InternVL3.5-30B-A3B, InternVL3.5-241B-A28B, InternVL3.5-Flash]
 tags: [mllm, vllm, internvl-3-5, cascade-rl, mpo, gspo, vir, dvd, moe, qwen3, opengvlab, internvl-series]
-related: [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/zero-shot-transfer]], [[concepts/alignment-tuning]], [[entities/internvl]], [[entities/internvl-1-5]], [[entities/mini-internvl]], [[entities/internvl-2-5]], [[entities/internvl-3]], [[entities/mpo]], [[entities/mmpr]], [[entities/internvit-300m]]
-sources: [[sources/internvl-3-5]]
+related: ["[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/zero-shot-transfer]]", "[[concepts/alignment-tuning]]", "[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/mini-internvl]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3]]", "[[entities/mpo]]", "[[entities/mmpr]]", "[[entities/internvit-300m]]"]
+sources: ["[[sources/internvl-3-5]]"]
 updated: 2026-05-29
 ---
 

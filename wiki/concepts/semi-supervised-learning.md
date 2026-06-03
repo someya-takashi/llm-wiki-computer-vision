@@ -2,8 +2,8 @@
 type: concept
 aliases: [SeSL, 半教師あり学習, Semi-Supervised Learning]
 tags: [paradigm, semi-supervised, label-efficiency, consistency-regularization, entropy-minimization, mixup, pseudo-label, foundation-model, peft]
-related: [[concepts/self-supervised-learning]], [[concepts/contrastive-learning]], [[concepts/knowledge-distillation]], [[concepts/foundation-model]], [[concepts/parameter-efficient-fine-tuning]]
-sources: [[sources/mixmatch]], [[sources/fixmatch]], [[sources/flexmatch]], [[sources/revisiting-ssl-foundation-models]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/foundation-model]]", "[[concepts/parameter-efficient-fine-tuning]]"]
+sources: ["[[sources/mixmatch]]", "[[sources/fixmatch]]", "[[sources/flexmatch]]", "[[sources/revisiting-ssl-foundation-models]]"]
 updated: 2026-05-28
 ---
 

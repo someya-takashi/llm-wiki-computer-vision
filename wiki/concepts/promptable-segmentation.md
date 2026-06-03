@@ -2,8 +2,8 @@
 type: concept
 aliases: [Promptable Segmentation, プロンプト可能セグメンテーション, promptable mask]
 tags: [task, segmentation, foundation-model, prompt-engineering]
-related: [[zero-shot-transfer]], [[foundation-model]], [[contrastive-learning]], [[promptable-concept-segmentation]]
-sources: [[sources/segment-anything]], [[sources/sam-2]], [[sources/sam-3]]
+related: ["[[zero-shot-transfer]]", "[[foundation-model]]", "[[contrastive-learning]]", "[[promptable-concept-segmentation]]"]
+sources: ["[[sources/segment-anything]]", "[[sources/sam-2]]", "[[sources/sam-3]]"]
 updated: 2026-05-26
 ---
 

@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv 2511.16719
 ingested: 2026-05-26
 tags: [sam-3, segmentation, concept, open-vocabulary, foundation-model, meta-superintelligence-labs, detr, perception-encoder]
-translation: [[translations/sam-3]]
+translation: "[[translations/sam-3]]"
 ---
 
 # SAM 3: Segment Anything with Concepts

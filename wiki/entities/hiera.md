@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [Hiera, Hierarchical Vision Transformer]
 tags: [model, architecture, vision-transformer, hierarchical, mae, meta-fair]
-related: [[concepts/vision-transformer]], [[concepts/masked-image-modeling]], [[entities/mae]]
-sources: [[sources/sam-2]]
+related: ["[[concepts/vision-transformer]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]"]
+sources: ["[[sources/sam-2]]"]
 updated: 2026-05-26
 ---
 

@@ -8,7 +8,7 @@ year: 2025
 venue: npj Digital Medicine
 ingested: 2026-05-28
 tags: [medical-imaging, chest-x-ray, foundation-model, self-supervised-learning, masked-image-modeling, vision-transformer, eva-clip, mgca, dual-vit, knowledge-distillation, hustvl]
-translation: [[translations/eva-x]]
+translation: "[[translations/eva-x]]"
 ---
 
 # EVA-X: a foundation model for general chest x-ray analysis with self-supervised learning

@@ -52,6 +52,17 @@ Computer Vision/
 
 すべての wiki ページに YAML frontmatter を付与する。Obsidian Dataview で集計できるようにする。
 
+**重要: Obsidian の YAML プロパティ規約** — Obsidian は `[[wikilink]]` をプロパティ値として認識するが、**YAML 文法的には文字列として引用符で囲む必要がある**。具体的に：
+
+- ❌ 不正: `related: [[attention-mechanism]], [[convolutional-neural-network]]`（YAML パーサが「無効なプロパティ」と判定）
+- ✅ 正: `related: ["[[attention-mechanism]]", "[[convolutional-neural-network]]"]`（インライン YAML リスト、各 wikilink は引用符付き文字列）
+- ✅ 正（単一値）: `translation: "[[translations/2020-vit]]"`（スカラー文字列）
+
+**運用ルール**:
+- **単数値フィールド**（`translation`, `source_page`）→ スカラー: `key: "[[link]]"`
+- **複数値フィールド**（`related`, `sources`, `sources_used`）→ インラインリスト: `key: ["[[link1]]", "[[link2]]"]`（要素 1 つでもリスト形式: `key: ["[[link]]"]`）
+- **wikilink を含まないフィールド**（`aliases`, `tags`, `authors`）→ 従来通り: `tags: [vit, transformer]`（引用符不要）
+
 ### sources/*.md
 
 ```yaml
@@ -65,7 +76,7 @@ year: 2020
 venue: ICLR 2021
 ingested: 2026-05-24
 tags: [vit, transformer, image-classification]
-translation: [[translations/2020-vit]]
+translation: "[[translations/2020-vit]]"
 ---
 ```
 
@@ -75,7 +86,7 @@ translation: [[translations/2020-vit]]
 ---
 type: translation
 source_path: raw/papers/2020-vit.pdf
-source_page: [[sources/2020-vit]]
+source_page: "[[sources/2020-vit]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-24
@@ -89,8 +100,8 @@ translated_at: 2026-05-24
 type: concept
 aliases: [ViT, Vision Transformer]
 tags: [architecture, transformer]
-related: [[attention-mechanism]], [[convolutional-neural-network]]
-sources: [[sources/2020-vit]], [[sources/2021-deit]]
+related: ["[[attention-mechanism]]", "[[convolutional-neural-network]]"]
+sources: ["[[sources/2020-vit]]", "[[sources/2021-deit]]"]
 updated: 2026-05-24
 ---
 ```
@@ -115,7 +126,7 @@ updated: 2026-05-24
 type: question
 asked: 2026-05-24
 question: "ViT と CNN は ImageNet でどちらが強いか？"
-sources_used: [[sources/2020-vit]], [[sources/2015-resnet]]
+sources_used: ["[[sources/2020-vit]]", "[[sources/2015-resnet]]"]
 ---
 ```
 
@@ -188,7 +199,7 @@ sources_used: [[sources/2020-vit]], [[sources/2015-resnet]]
 ---
 type: translation
 source_path: raw/papers/2020-vit.pdf
-source_page: [[sources/2020-vit]]
+source_page: "[[sources/2020-vit]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-24

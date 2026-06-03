@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Emerging Properties in Self-Supervised Vision Transformers.md
-source_page: [[sources/dino-emerging-properties-in-self-supervised-vit]]
+source_page: "[[sources/dino-emerging-properties-in-self-supervised-vit]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-24

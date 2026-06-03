@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [iBOT, image BERT pre-Training with Online Tokenizer]
 tags: [self-supervised, vision-transformer, masked-image-modeling, distillation, bytedance]
-related: [[concepts/self-supervised-learning]], [[concepts/masked-image-modeling]], [[concepts/online-tokenizer]], [[concepts/vision-transformer]], [[concepts/knowledge-distillation]]
-sources: [[sources/ibot]], [[sources/dinov2-learning-robust-visual-features-without-supervision]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/masked-image-modeling]]", "[[concepts/online-tokenizer]]", "[[concepts/vision-transformer]]", "[[concepts/knowledge-distillation]]"]
+sources: ["[[sources/ibot]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]"]
 updated: 2026-05-25
 ---
 

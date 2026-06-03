@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DINO, self-DIstillation with NO labels]
 tags: [self-supervised, vision-transformer, fair]
-related: [[concepts/self-supervised-learning]], [[concepts/vision-transformer]], [[concepts/knowledge-distillation]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[concepts/knowledge-distillation]]"]
+sources: ["[[sources/dino-emerging-properties-in-self-supervised-vit]]"]
 updated: 2026-05-24
 ---
 

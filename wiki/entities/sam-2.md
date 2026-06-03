@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [SAM 2, Segment Anything Model 2, SAM v2]
 tags: [model, segmentation, video, foundation-model, meta-fair, promptable, hiera]
-related: [[concepts/promptable-segmentation]], [[concepts/foundation-model]], [[concepts/rotary-position-embeddings]]
-sources: [[sources/sam-2]]
+related: ["[[concepts/promptable-segmentation]]", "[[concepts/foundation-model]]", "[[concepts/rotary-position-embeddings]]"]
+sources: ["[[sources/sam-2]]"]
 updated: 2026-05-26
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Qwen2.5-VL Technical Report.pdf
-source_page: [[sources/qwen2-5-vl]]
+source_page: "[[sources/qwen2-5-vl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-30

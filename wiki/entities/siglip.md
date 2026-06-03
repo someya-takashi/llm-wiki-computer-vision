@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [SigLIP, SigLiT, SigLIP 2, mSigLIP, Sigmoid Loss Image-Language Pre-training]
 tags: [weakly-supervised, vision-language, foundation-model, google-deepmind, sigmoid-loss, efficient-training, contrastive-learning, naflex, multilingual]
-related: [[concepts/weakly-supervised-pretraining]], [[concepts/foundation-model]], [[concepts/contrastive-learning]], [[concepts/vision-transformer]], [[concepts/zero-shot-transfer]], [[concepts/self-supervised-learning]], [[concepts/masked-image-modeling]], [[concepts/knowledge-distillation]]
-sources: [[sources/siglip]], [[sources/siglip-2]]
+related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/foundation-model]]", "[[concepts/contrastive-learning]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[concepts/self-supervised-learning]]", "[[concepts/masked-image-modeling]]", "[[concepts/knowledge-distillation]]"]
+sources: ["[[sources/siglip]]", "[[sources/siglip-2]]"]
 updated: 2026-05-27
 ---
 

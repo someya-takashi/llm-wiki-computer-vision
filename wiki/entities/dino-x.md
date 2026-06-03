@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DINO-X, DINO X, DINO-X Pro, DINO-X Edge, DinoX]
 tags: [object-detection, open-world-detection, grounding-dino, unified-perception, multi-prompt, multi-head, idea-research, edge-deployment, vit-l, efficientvit, mllm-perception]
-related: [[concepts/object-detection]], [[concepts/zero-shot-transfer]], [[concepts/foundation-model]], [[concepts/vision-transformer]]
-sources: [[sources/dino-x]]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]"]
+sources: ["[[sources/dino-x]]"]
 updated: 2026-05-28
 ---
 

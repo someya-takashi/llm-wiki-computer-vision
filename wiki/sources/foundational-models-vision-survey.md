@@ -8,7 +8,7 @@ year: 2023
 venue: arXiv 2307.13721 / IEEE TPAMI
 ingested: 2026-05-31
 tags: [survey, foundation-model, vision-language, vlm, sam, clip, taxonomy, embodied-ai]
-translation: [[translations/foundational-models-vision-survey]]
+translation: "[[translations/foundational-models-vision-survey]]"
 ---
 
 # Foundational Models Defining a New Era in Vision: A Survey and Outlook（視覚における新時代を定義する基盤モデル：サーベイと展望）

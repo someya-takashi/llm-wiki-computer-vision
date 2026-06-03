@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Masked Autoencoders Are Scalable Vision Learners.md
-source_page: [[sources/mae]]
+source_page: "[[sources/mae]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-25

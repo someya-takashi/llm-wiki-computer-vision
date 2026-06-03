@@ -2,8 +2,8 @@
 type: concept
 aliases: [MIM, Masked Image Modeling, マスク画像モデリング]
 tags: [paradigm, pretraining, ssl, transformer]
-related: [[self-supervised-learning]], [[vision-transformer]], [[denoising-autoencoder]], [[online-tokenizer]]
-sources: [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/mae]], [[sources/ibot]], [[sources/siglip-2]]
+related: ["[[self-supervised-learning]]", "[[vision-transformer]]", "[[denoising-autoencoder]]", "[[online-tokenizer]]"]
+sources: ["[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/mae]]", "[[sources/ibot]]", "[[sources/siglip-2]]"]
 updated: 2026-05-27
 ---
 

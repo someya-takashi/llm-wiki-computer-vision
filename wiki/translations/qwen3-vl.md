@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Qwen3-VL Technical Report.pdf
-source_page: [[sources/qwen3-vl]]
+source_page: "[[sources/qwen3-vl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-30

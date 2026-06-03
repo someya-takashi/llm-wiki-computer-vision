@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/FlexMatch_ Boosting Semi-Supervised Learning with Curriculum Pseudo Labeling.md
-source_page: [[sources/flexmatch]]
+source_page: "[[sources/flexmatch]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

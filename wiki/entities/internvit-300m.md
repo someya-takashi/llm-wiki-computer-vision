@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternViT-300M, InternViT-300M-448px]
 tags: [vision-foundation-model, vfm, knowledge-distillation, lightweight, mllm, opengvlab]
-related: [[concepts/knowledge-distillation]], [[concepts/vision-transformer]], [[concepts/foundation-model]], [[entities/internvl]], [[entities/internvl-1-5]], [[entities/mini-internvl]], [[entities/clip]]
-sources: [[sources/mini-internvl]]
+related: ["[[concepts/knowledge-distillation]]", "[[concepts/vision-transformer]]", "[[concepts/foundation-model]]", "[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/mini-internvl]]", "[[entities/clip]]"]
+sources: ["[[sources/mini-internvl]]"]
 updated: 2026-05-29
 ---
 

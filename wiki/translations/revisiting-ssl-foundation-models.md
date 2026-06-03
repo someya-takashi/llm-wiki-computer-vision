@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Revisiting Semi-Supervised Learning in the Era of Foundation Models.pdf
-source_page: [[sources/revisiting-ssl-foundation-models]]
+source_page: "[[sources/revisiting-ssl-foundation-models]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Grounded Language-Image Pre-training.md
-source_page: [[sources/glip]]
+source_page: "[[sources/glip]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

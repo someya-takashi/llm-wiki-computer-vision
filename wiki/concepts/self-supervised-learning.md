@@ -2,8 +2,8 @@
 type: concept
 aliases: [SSL, 自己教師あり学習, Self-Supervised Learning]
 tags: [paradigm, pretraining, representation-learning]
-related: [[knowledge-distillation]], [[vision-transformer]], [[knn-evaluation-protocol]], [[masked-image-modeling]], [[foundation-model]], [[weakly-supervised-pretraining]], [[gram-anchoring]], [[semi-supervised-learning]], [[semi-supervised-learning]], [[diffusion-model]]
-sources: [[sources/simclr]], [[sources/byol]], [[sources/simclr]], [[sources/byol]], [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/dinov3]], [[sources/siglip-2]], [[sources/i-synmed]], [[sources/eva-x]]
+related: ["[[knowledge-distillation]]", "[[vision-transformer]]", "[[knn-evaluation-protocol]]", "[[masked-image-modeling]]", "[[foundation-model]]", "[[weakly-supervised-pretraining]]", "[[gram-anchoring]]", "[[semi-supervised-learning]]", "[[semi-supervised-learning]]", "[[diffusion-model]]"]
+sources: ["[[sources/simclr]]", "[[sources/byol]]", "[[sources/simclr]]", "[[sources/byol]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/dinov3]]", "[[sources/siglip-2]]", "[[sources/i-synmed]]", "[[sources/eva-x]]"]
 updated: 2026-05-28
 ---
 

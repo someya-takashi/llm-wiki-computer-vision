@@ -2,8 +2,8 @@
 type: concept
 aliases: [alignment tuning, アラインメント・チューニング, アラインメントチューニング]
 tags: [training-strategy, fine-tuning, contrastive-learning, mllm, dense-prediction]
-related: [[contrastive-learning]], [[foundation-model]], [[knowledge-distillation]], [[masked-image-modeling]]
-sources: [[sources/perception-encoder]]
+related: ["[[contrastive-learning]]", "[[foundation-model]]", "[[knowledge-distillation]]", "[[masked-image-modeling]]"]
+sources: ["[[sources/perception-encoder]]"]
 updated: 2026-05-28
 ---
 

@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Gemma 3, Gemma3, Gemma-3, Gemma 3 PT, Gemma 3 IT, Gemma-3-1B, Gemma-3-4B, Gemma-3-12B, Gemma-3-27B, Gemma-3-27B-IT]
-related: [[entities/siglip]], [[entities/qwen3-vl]], [[entities/qwen2-vl]], [[entities/internvl-1-5]], [[entities/internvl-3-5]], [[concepts/vision-transformer]], [[concepts/rotary-position-embeddings]], [[concepts/foundation-model]], [[concepts/knowledge-distillation]]
-sources: [[sources/gemma-3]]
+related: ["[[entities/siglip]]", "[[entities/qwen3-vl]]", "[[entities/qwen2-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-3-5]]", "[[concepts/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/knowledge-distillation]]"]
+sources: ["[[sources/gemma-3]]"]
 updated: 2026-05-31
 ---
 

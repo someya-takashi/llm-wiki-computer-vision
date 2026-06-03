@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [BYOL, "Bootstrap Your Own Latent"]
 tags: [ssl, non-contrastive, self-supervised-learning, momentum-encoder, representation-learning, resnet, imagenet, predictor]
-related: [[concepts/self-supervised-learning]], [[concepts/contrastive-learning]], [[entities/simclr]], [[entities/dino]], [[entities/moco]]
-sources: [[sources/byol]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[entities/simclr]]", "[[entities/dino]]", "[[entities/moco]]"]
+sources: ["[[sources/byol]]"]
 updated: 2026-05-27
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/MixMatch_ A Holistic Approach to Semi-Supervised Learning.md
-source_page: [[sources/mixmatch]]
+source_page: "[[sources/mixmatch]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

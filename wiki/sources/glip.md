@@ -8,7 +8,7 @@ year: 2022
 venue: CVPR 2022
 ingested: 2026-05-28
 tags: [glip, object-detection, phrase-grounding, vision-language, open-vocabulary, microsoft, ucla, prompt-tuning, deep-fusion, self-training]
-translation: [[translations/glip]]
+translation: "[[translations/glip]]"
 ---
 
 # GLIP: Grounded Language-Image Pre-training

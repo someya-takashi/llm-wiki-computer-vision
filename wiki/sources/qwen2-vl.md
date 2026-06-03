@@ -8,7 +8,7 @@ year: 2024
 venue: arXiv:2409.12191
 ingested: 2026-05-30
 tags: [qwen, qwen2-vl, mllm, multimodal, vision-language, dynamic-resolution, m-rope, naive-dynamic-resolution, video-understanding, 3d-conv, dfn, alibaba]
-translation: [[translations/qwen2-vl]]
+translation: "[[translations/qwen2-vl]]"
 ---
 
 # Qwen2-VL — Naive Dynamic Resolution + M-RoPE で「任意解像度」を実現した Qwen 系第 2 世代 MLLM

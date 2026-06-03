@@ -8,7 +8,7 @@ year: 2026
 venue: arXiv:2604.15804（テクニカル・レポート）
 ingested: 2026-05-30
 tags: [qwen, qwen3-5-omni, omnimodal, mllm, thinker-talker, hybrid-moe, aria, aut, rvq, audio-visual, speech-generation, audio-visual-vibe-coding, alibaba]
-translation: [[translations/qwen3-5-omni]]
+translation: "[[translations/qwen3-5-omni]]"
 ---
 
 # Qwen3.5-Omni — Hybrid MoE Thinker-Talker + AuT + ARIA で「真の omnimodal エージェント」を実現した Qwen-Omni シリーズ最新版

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/How Far Are We to GPT-4V_ Closing the Gap to Commercial Multimodal Models with Open-Source Suites.md
-source_page: [[sources/internvl-1-5]]
+source_page: "[[sources/internvl-1-5]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

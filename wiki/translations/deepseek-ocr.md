@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/DeepSeek-OCR_ Contexts Optical Compression.md
-source_page: [[sources/deepseek-ocr]]
+source_page: "[[sources/deepseek-ocr]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-31

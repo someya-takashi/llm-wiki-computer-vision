@@ -8,7 +8,7 @@ year: 2024
 venue: "arXiv:2410.16261 (technical report)"
 ingested: 2026-05-29
 tags: [mllm, vllm, mini-internvl, internvit-300m, knowledge-distillation, edge-deployment, domain-adaptation, autonomous-driving, medical, remote-sensing, opengvlab]
-translation: [[translations/mini-internvl]]
+translation: "[[translations/mini-internvl]]"
 ---
 
 # Mini-InternVL — 5% パラメータ × 90% 性能のポケット MLLM + 統一ドメイン適応フレームワーク

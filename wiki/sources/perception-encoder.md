@@ -8,7 +8,7 @@ year: 2025
 venue: NeurIPS 2025
 ingested: 2026-05-28
 tags: [perception-encoder, contrastive, vision-language, alignment-tuning, intermediate-layer-features, foundation-model, meta-ai, video-data-engine, sam-distillation]
-translation: [[translations/perception-encoder]]
+translation: "[[translations/perception-encoder]]"
 ---
 
 # Perception Encoder: 最良の視覚埋め込みはネットワークの出力にはない

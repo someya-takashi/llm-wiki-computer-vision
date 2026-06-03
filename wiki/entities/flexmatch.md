@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [FlexMatch]
 tags: [semi-supervised-learning, pseudo-label, dynamic-threshold, curriculum-learning, fixmatch, cifar, svhn, stl-10, imagenet, titech, microsoft-research-asia]
-related: [[concepts/semi-supervised-learning]], [[entities/fixmatch]], [[entities/mixmatch]], [[sources/flexmatch]]
-sources: [[sources/flexmatch]]
+related: ["[[concepts/semi-supervised-learning]]", "[[entities/fixmatch]]", "[[entities/mixmatch]]", "[[sources/flexmatch]]"]
+sources: ["[[sources/flexmatch]]"]
 updated: 2026-05-27
 ---
 

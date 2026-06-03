@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Expanding Performance Boundaries of Open-Source Multimodal Models with Model, Data, and Test-Time Scaling.md
-source_page: [[sources/internvl-2-5]]
+source_page: "[[sources/internvl-2-5]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

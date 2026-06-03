@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternVL 2.5, InternVL2.5-1B, InternVL2.5-2B, InternVL2.5-4B, InternVL2.5-8B, InternVL2.5-26B, InternVL2.5-38B, InternVL2.5-78B, InternVL2_5, InternViT-6B-V2.5, InternViT-300M-V2.5]
 tags: [mllm, vllm, internvl-2-5, mmmu-70-percent, opengvlab, internvl-series, test-time-scaling]
-related: [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/vision-transformer]], [[concepts/zero-shot-transfer]], [[concepts/knowledge-distillation]], [[concepts/alignment-tuning]], [[entities/internvl]], [[entities/internvl-1-5]], [[entities/mini-internvl]], [[entities/internvit-300m]], [[entities/clip]]
-sources: [[sources/internvl-2-5]]
+related: ["[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[concepts/knowledge-distillation]]", "[[concepts/alignment-tuning]]", "[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/mini-internvl]]", "[[entities/internvit-300m]]", "[[entities/clip]]"]
+sources: ["[[sources/internvl-2-5]]"]
 updated: 2026-05-29
 ---
 

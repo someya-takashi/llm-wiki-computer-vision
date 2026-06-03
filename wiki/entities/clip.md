@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [CLIP, OpenCLIP, Contrastive Language-Image Pre-training]
 tags: [weakly-supervised, vision-language, foundation-model, openai, contrastive-learning]
-related: [[concepts/weakly-supervised-pretraining]], [[concepts/contrastive-learning]], [[concepts/zero-shot-transfer]], [[concepts/foundation-model]], [[concepts/vision-transformer]], [[concepts/promptable-segmentation]]
-sources: [[sources/clip]]
+related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/contrastive-learning]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]", "[[concepts/promptable-segmentation]]"]
+sources: ["[[sources/clip]]"]
 updated: 2026-05-26
 ---
 

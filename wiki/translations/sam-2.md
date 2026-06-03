@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/SAM 2_ Segment Anything in Images and Videos.md
-source_page: [[sources/sam-2]]
+source_page: "[[sources/sam-2]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-26

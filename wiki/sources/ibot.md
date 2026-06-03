@@ -8,7 +8,7 @@ year: 2021
 venue: "arXiv:2111.07832 → ICLR 2022"
 ingested: 2026-05-25
 tags: [ibot, self-supervised-learning, masked-image-modeling, vision-transformer, online-tokenizer, dino, bytedance]
-translation: [[translations/ibot]]
+translation: "[[translations/ibot]]"
 ---
 
 # iBOT: オンライントークナイザを用いた画像 BERT 事前学習

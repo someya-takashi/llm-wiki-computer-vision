@@ -8,7 +8,7 @@ year: 2025
 venue: "arXiv:2504.10479 (technical report)"
 ingested: 2026-05-29
 tags: [mllm, vllm, internvl-3, native-multimodal-pretraining, v2pe, mpo, mixed-preference-optimization, visualprm, mmmu-72-2, opengvlab]
-translation: [[translations/internvl-3]]
+translation: "[[translations/internvl-3]]"
 ---
 
 # InternVL 3 — Native Multimodal Pre-Training パラダイムを確立、MMMU 72.2 で新 SOTA

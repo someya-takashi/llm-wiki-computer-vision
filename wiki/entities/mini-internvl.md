@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [Mini-InternVL, Mini-InternVL-1B, Mini-InternVL-2B, Mini-InternVL-4B, Mini-InternVL-DA]
 tags: [mllm, lightweight, edge-deployment, opengvlab, internvl-series, domain-adaptation, knowledge-distillation]
-related: [[concepts/foundation-model]], [[concepts/knowledge-distillation]], [[concepts/weakly-supervised-pretraining]], [[concepts/zero-shot-transfer]], [[entities/internvit-300m]], [[entities/internvl]], [[entities/internvl-1-5]], [[entities/clip]]
-sources: [[sources/mini-internvl]]
+related: ["[[concepts/foundation-model]]", "[[concepts/knowledge-distillation]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/zero-shot-transfer]]", "[[entities/internvit-300m]]", "[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/clip]]"]
+sources: ["[[sources/mini-internvl]]"]
 updated: 2026-05-29
 ---
 

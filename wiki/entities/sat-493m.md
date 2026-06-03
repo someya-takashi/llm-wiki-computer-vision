@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [SAT-493M, DINOv3 Satellite Dataset]
 tags: [dataset, satellite, geospatial, ssl, meta-ai]
-related: [[concepts/self-supervised-learning]], [[concepts/foundation-model]]
-sources: [[sources/dinov3]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/dinov3]]"]
 updated: 2026-05-24
 ---
 

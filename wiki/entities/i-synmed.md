@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [I-SynMed, Image-Synthetic-Medical]
 tags: [medical-imaging, x-ray, chest-radiography, synthetic-data, diffusion-model, ddpm, dino, self-supervised-learning, weill-cornell-qatar]
-related: [[concepts/diffusion-model]], [[entities/dino]], [[concepts/self-supervised-learning]], [[concepts/vision-transformer]], [[sources/i-synmed]]
-sources: [[sources/i-synmed]]
+related: ["[[concepts/diffusion-model]]", "[[entities/dino]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[sources/i-synmed]]"]
+sources: ["[[sources/i-synmed]]"]
 updated: 2026-05-28
 ---
 

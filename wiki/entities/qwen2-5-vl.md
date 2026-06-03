@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Qwen2.5-VL, Qwen2.5-VL-3B, Qwen2.5-VL-7B, Qwen2.5-VL-72B, Qwen25VL, qwen2-5-vl, Qwen2.5VL]
-related: [[entities/qwen2-vl]], [[entities/qwen-vl]], [[entities/internvl-2-5]], [[entities/internvl-3]], [[concepts/rotary-position-embeddings]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]]
-sources: [[sources/qwen2-5-vl]]
+related: ["[[entities/qwen2-vl]]", "[[entities/qwen-vl]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]"]
+sources: ["[[sources/qwen2-5-vl]]"]
 updated: 2026-05-30
 ---
 
@@ -50,7 +50,7 @@ updated: 2026-05-30
 | Vocabulary Size | 151646 | 151646 | 151646 |
 | # Trained Tokens | 4.1T | 4.1T | 4.1T |
 
-**重要**: 全サイズで **同一の ViT 構造を共有**（[[entities/qwen2-vl|Qwen2-VL]] と同じ思想）、ただし **DFN 初期化から「ゼロから学習」に変更**。最小モデルは Qwen2-VL の 2B から 3B に大型化（Qwen2.5 ファミリーに 2B が存在しないため）。
+**重要**: 全サイズで **同一の ViT 構造を共有**（[[entities/qwen2-vl|Qwen2-VL]] と同じ思想）、ただし **[[entities/dfn|DFN]] 初期化から「DataComp + 社内データでゼロから学習」に変更**（cf. [[sources/dfn]]）。最小モデルは Qwen2-VL の 2B から 3B に大型化（Qwen2.5 ファミリーに 2B が存在しないため）。
 
 ## アーキテクチャの 4 つの主要技術
 

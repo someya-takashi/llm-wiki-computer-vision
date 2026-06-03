@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternVL, InternVL-1.0, InternViT-6B, QLLaMA, InternVL-C, InternVL-G, InternVL-Chat]
 tags: [vision-language, foundation-model, llm-alignment, vit, transformer, opengvlab]
-related: [[concepts/vision-transformer]], [[concepts/foundation-model]], [[concepts/contrastive-learning]], [[concepts/zero-shot-transfer]], [[concepts/weakly-supervised-pretraining]], [[entities/clip]], [[entities/perception-encoder]], [[entities/siglip]], [[entities/dinov2]]
-sources: [[sources/internvl]]
+related: ["[[concepts/vision-transformer]]", "[[concepts/foundation-model]]", "[[concepts/contrastive-learning]]", "[[concepts/zero-shot-transfer]]", "[[concepts/weakly-supervised-pretraining]]", "[[entities/clip]]", "[[entities/perception-encoder]]", "[[entities/siglip]]", "[[entities/dinov2]]"]
+sources: ["[[sources/internvl]]"]
 updated: 2026-05-28
 ---
 

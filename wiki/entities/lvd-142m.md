@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [LVD-142M, Large-scale Visual Dataset 142M]
 tags: [dataset, ssl, curated, meta-ai]
-related: [[concepts/self-supervised-learning]], [[concepts/foundation-model]]
-sources: [[sources/dinov2-learning-robust-visual-features-without-supervision]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/dinov2-learning-robust-visual-features-without-supervision]]"]
 updated: 2026-05-24
 ---
 

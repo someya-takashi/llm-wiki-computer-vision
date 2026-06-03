@@ -8,7 +8,7 @@ year: 2024
 venue: arXiv preprint (May 2024)
 ingested: 2026-05-28
 tags: [grounding-dino-1-5, grounding-dino, open-set-detection, edge-deployment, vit-l, efficientvit, idea-research, grounding-20m, real-time]
-translation: [[translations/grounding-dino-1-5]]
+translation: "[[translations/grounding-dino-1-5]]"
 ---
 
 # Grounding DINO 1.5: Open-Set 検出の「Edge」を進化させる

@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [SimCLR, "A Simple Framework for Contrastive Learning"]
 tags: [contrastive-learning, ssl, representation-learning, resnet, data-augmentation]
-related: [[concepts/contrastive-learning]], [[concepts/self-supervised-learning]], [[entities/moco]], [[entities/dino]]
-sources: [[sources/simclr]]
+related: ["[[concepts/contrastive-learning]]", "[[concepts/self-supervised-learning]]", "[[entities/moco]]", "[[entities/dino]]"]
+sources: ["[[sources/simclr]]"]
 updated: 2026-05-27
 ---
 

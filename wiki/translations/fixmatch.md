@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/FixMatch- Simplifying Semi-Supervised Learning with Consistency and Confidence.pdf
-source_page: [[sources/fixmatch]]
+source_page: "[[sources/fixmatch]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

@@ -8,7 +8,7 @@ year: 2025
 venue: arXiv:2503.19786
 ingested: 2026-05-31
 tags: [gemma, gemma-3, mllm, multimodal, vision-language, siglip, pan-and-scan, local-global-attention, qk-norm, qat, knowledge-distillation, google-deepmind, consumer-grade, open-source]
-translation: [[translations/gemma-3]]
+translation: "[[translations/gemma-3]]"
 ---
 
 # Gemma 3 — Google DeepMind の SigLIP 400M + Pan&Scan + 5:1 local:global attention で「軽量オープン MLLM」を完成させた Gemma 系第 3 世代

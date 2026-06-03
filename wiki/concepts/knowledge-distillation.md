@@ -2,8 +2,8 @@
 type: concept
 aliases: [KD, Knowledge Distillation, 知識蒸留]
 tags: [training-technique, distillation, transfer]
-related: [[self-supervised-learning]], [[vision-transformer]], [[alignment-tuning]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]], [[sources/siglip-2]], [[sources/perception-encoder]]
+related: ["[[self-supervised-learning]]", "[[vision-transformer]]", "[[alignment-tuning]]"]
+sources: ["[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]"]
 updated: 2026-05-28
 ---
 

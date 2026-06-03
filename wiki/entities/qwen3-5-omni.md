@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Qwen3.5-Omni, Qwen3.5-Omni-Plus, Qwen3.5-Omni-Flash, qwen3-5-omni]
-related: [[entities/qwen3-vl]], [[entities/qwen2-5-vl]], [[entities/siglip]], [[concepts/rotary-position-embeddings]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]]
-sources: [[sources/qwen3-5-omni]]
+related: ["[[entities/qwen3-vl]]", "[[entities/qwen2-5-vl]]", "[[entities/siglip]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]"]
+sources: ["[[sources/qwen3-5-omni]]"]
 updated: 2026-05-30
 ---
 

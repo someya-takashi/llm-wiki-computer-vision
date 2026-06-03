@@ -2,8 +2,8 @@
 type: concept
 aliases: [Online Tokenizer, オンライントークナイザ]
 tags: [ssl, masked-image-modeling, distillation, tokenization]
-related: [[masked-image-modeling]], [[knowledge-distillation]], [[self-supervised-learning]]
-sources: [[sources/ibot]]
+related: ["[[masked-image-modeling]]", "[[knowledge-distillation]]", "[[self-supervised-learning]]"]
+sources: ["[[sources/ibot]]"]
 updated: 2026-05-25
 ---
 

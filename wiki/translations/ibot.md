@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/iBOT _ Image BERT Pre-Training with Online Tokenizer.md
-source_page: [[sources/ibot]]
+source_page: "[[sources/ibot]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-25

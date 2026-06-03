@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DINOv2, DINO v2]
 tags: [self-supervised, vision-transformer, foundation-model, meta-ai]
-related: [[concepts/self-supervised-learning]], [[concepts/foundation-model]], [[concepts/masked-image-modeling]], [[concepts/vision-transformer]]
-sources: [[sources/dinov2-learning-robust-visual-features-without-supervision]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/vision-transformer]]"]
+sources: ["[[sources/dinov2-learning-robust-visual-features-without-supervision]]"]
 updated: 2026-05-24
 ---
 

@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Qwen2-VL, Qwen2-VL-2B, Qwen2-VL-7B, Qwen2-VL-72B, Qwen2VL, qwen2-vl]
-related: [[entities/qwen-vl]], [[entities/internvl-1-5]], [[entities/internvl-2-5]], [[entities/internvl-3]], [[concepts/rotary-position-embeddings]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]]
-sources: [[sources/qwen2-vl]]
+related: ["[[entities/qwen-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]"]
+sources: ["[[sources/qwen2-vl]]"]
 updated: 2026-05-30
 ---
 
@@ -83,7 +83,7 @@ updated: 2026-05-30
 | Stage 3 | ViT 凍結 | ChatML 命令データ | SFT |
 
 - LLM 初期化: **Qwen2 シリーズ**
-- ViT 初期化: **DFN（Data Filtering Networks）の ViT**（絶対位置埋め込みを 2D-RoPE に置換）
+- ViT 初期化: **[[entities/dfn|DFN（Data Filtering Networks）]]の ViT**（絶対位置埋め込みを 2D-RoPE に置換）。詳細: [[sources/dfn]]
 - データカットオフ: 2023 年 6 月
 - **テキスト・トークンにのみ監督を与える**（視覚トークンは予測対象としない）
 

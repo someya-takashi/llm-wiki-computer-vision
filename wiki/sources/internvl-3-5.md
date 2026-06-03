@@ -8,7 +8,7 @@ year: 2025
 venue: "arXiv:2508.18265 (technical report)"
 ingested: 2026-05-29
 tags: [mllm, vllm, internvl-3-5, cascade-rl, mpo, gspo, vir, dvd, moe, qwen3, gpt-oss, opengvlab, internvl-series]
-translation: [[translations/internvl-3-5]]
+translation: "[[translations/internvl-3-5]]"
 ---
 
 # InternVL 3.5 — Cascade RL + ViR + DvD + MoE で 4.05× 推論加速、GPT-5 との差を 3.9% に縮める

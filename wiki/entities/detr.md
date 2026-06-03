@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DETR, DEtection TRansformer]
 tags: [object-detection, transformer, set-prediction, facebook-ai, end-to-end, panoptic-segmentation]
-related: [[concepts/object-detection]], [[concepts/vision-transformer]], [[concepts/foundation-model]]
-sources: [[sources/detr]]
+related: ["[[concepts/object-detection]]", "[[concepts/vision-transformer]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/detr]]"]
 updated: 2026-05-28
 ---
 

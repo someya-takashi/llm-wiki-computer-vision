@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [WIT, WebImageText, WIT-400M]
 tags: [dataset, weakly-supervised, vision-language, openai]
-related: [[concepts/weakly-supervised-pretraining]], [[concepts/contrastive-learning]]
-sources: [[sources/clip]]
+related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/contrastive-learning]]"]
+sources: ["[[sources/clip]]"]
 updated: 2026-05-25
 ---
 

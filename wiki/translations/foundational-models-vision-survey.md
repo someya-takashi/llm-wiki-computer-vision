@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Foundational Models Defining a New Era in Vision_ A Survey and Outlook.md
-source_page: [[sources/foundational-models-vision-survey]]
+source_page: "[[sources/foundational-models-vision-survey]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-31

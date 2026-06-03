@@ -2,8 +2,8 @@
 type: concept
 aliases: [Foundation Model, 基盤モデル, foundation models]
 tags: [paradigm, scaling, pretraining]
-related: [[self-supervised-learning]], [[weakly-supervised-pretraining]], [[vision-transformer]], [[zero-shot-transfer]], [[contrastive-learning]], [[promptable-segmentation]], [[promptable-concept-segmentation]], [[alignment-tuning]]
-sources: [[sources/clip]], [[sources/dinov2-learning-robust-visual-features-without-supervision]], [[sources/segment-anything]], [[sources/sam-3]], [[sources/siglip]], [[sources/siglip-2]], [[sources/perception-encoder]], [[sources/foundational-models-vision-survey]]
+related: ["[[self-supervised-learning]]", "[[weakly-supervised-pretraining]]", "[[vision-transformer]]", "[[zero-shot-transfer]]", "[[contrastive-learning]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]", "[[alignment-tuning]]"]
+sources: ["[[sources/clip]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]", "[[sources/foundational-models-vision-survey]]"]
 updated: 2026-05-31
 ---
 

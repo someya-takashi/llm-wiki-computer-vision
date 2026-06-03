@@ -8,7 +8,7 @@ year: 2024
 venue: "arXiv:2404.16821 (technical report)"
 ingested: 2026-05-29
 tags: [vision-language, mllm, vllm, gpt-4v, internvl-1-5, internvit, dynamic-high-resolution, bilingual, opengvlab, openai-gap]
-translation: [[translations/internvl-1-5]]
+translation: "[[translations/internvl-1-5]]"
 ---
 
 # InternVL 1.5 — オープンソース MLLM で GPT-4V との差を初めて明確に縮めた論文

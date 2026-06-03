@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DINO (detector), DINO detector, DINO-DETR, DETR with Improved DeNoising Anchor boxes]
 tags: [object-detection, transformer, detr-family, denoising, contrastive-denoising, idea, hkust]
-related: [[concepts/object-detection]], [[concepts/foundation-model]]
-sources: [[sources/dino-detector]]
+related: ["[[concepts/object-detection]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/dino-detector]]"]
 updated: 2026-05-28
 ---
 

@@ -8,7 +8,7 @@ year: 2020
 venue: NeurIPS 2020
 ingested: 2026-05-27
 tags: [ssl, self-supervised-learning, non-contrastive, momentum-encoder, representation-learning, resnet, imagenet, byol, predictor, ema]
-translation: [[translations/byol]]
+translation: "[[translations/byol]]"
 ---
 
 # Bootstrap Your Own Latent（BYOL）

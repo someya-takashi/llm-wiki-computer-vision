@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [SAM, Segment Anything Model, SAM v1]
 tags: [model, segmentation, foundation-model, meta-fair, promptable]
-related: [[concepts/promptable-segmentation]], [[concepts/foundation-model]], [[concepts/zero-shot-transfer]], [[concepts/vision-transformer]]
-sources: [[sources/segment-anything]]
+related: ["[[concepts/promptable-segmentation]]", "[[concepts/foundation-model]]", "[[concepts/zero-shot-transfer]]", "[[concepts/vision-transformer]]"]
+sources: ["[[sources/segment-anything]]"]
 updated: 2026-05-26
 ---
 

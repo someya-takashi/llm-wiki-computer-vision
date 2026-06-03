@@ -8,7 +8,7 @@ year: 2025
 venue: NeurIPS 2025
 ingested: 2026-05-28
 tags: [semi-supervised-learning, foundation-model, vision-foundation-model, parameter-efficient-fine-tuning, peft, lora, adaptformer, self-training, pseudo-label-ensemble, clip, dinov2, vtab, ohio-state]
-translation: [[translations/revisiting-ssl-foundation-models]]
+translation: "[[translations/revisiting-ssl-foundation-models]]"
 ---
 
 # Revisiting Semi-Supervised Learning in the Era of Foundation Models

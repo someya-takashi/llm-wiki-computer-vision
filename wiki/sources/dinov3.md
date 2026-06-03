@@ -8,7 +8,7 @@ year: 2025
 venue: "arXiv:2508.10104"
 ingested: 2026-05-24
 tags: [dinov3, self-supervised-learning, vision-transformer, foundation-model, gram-anchoring, rope, distillation, geospatial]
-translation: [[translations/dinov3]]
+translation: "[[translations/dinov3]]"
 ---
 
 # DINOv3

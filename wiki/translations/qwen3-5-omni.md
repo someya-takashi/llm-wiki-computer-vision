@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Qwen3.5-Omni Technical Report.md
-source_page: [[sources/qwen3-5-omni]]
+source_page: "[[sources/qwen3-5-omni]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-30

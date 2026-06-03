@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [GLIP, Grounded Language-Image Pre-training, GLIP-T, GLIP-L]
 tags: [object-detection, phrase-grounding, open-vocabulary, microsoft, vision-language, foundation-model]
-related: [[concepts/object-detection]], [[concepts/zero-shot-transfer]], [[concepts/promptable-concept-segmentation]], [[concepts/foundation-model]]
-sources: [[sources/glip]]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/glip]]"]
 updated: 2026-05-28
 ---
 

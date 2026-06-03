@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [V-PET, VFM-PEFT Ensemble Training]
 tags: [semi-supervised-learning, self-training, pseudo-label-ensemble, parameter-efficient-fine-tuning, peft, lora, adaptformer, clip, dinov2, vfm, mean-labels, ohio-state]
-related: [[concepts/semi-supervised-learning]], [[concepts/parameter-efficient-fine-tuning]], [[concepts/foundation-model]], [[entities/clip]], [[entities/dinov2]], [[entities/fixmatch]], [[entities/flexmatch]], [[sources/revisiting-ssl-foundation-models]]
-sources: [[sources/revisiting-ssl-foundation-models]]
+related: ["[[concepts/semi-supervised-learning]]", "[[concepts/parameter-efficient-fine-tuning]]", "[[concepts/foundation-model]]", "[[entities/clip]]", "[[entities/dinov2]]", "[[entities/fixmatch]]", "[[entities/flexmatch]]", "[[sources/revisiting-ssl-foundation-models]]"]
+sources: ["[[sources/revisiting-ssl-foundation-models]]"]
 updated: 2026-05-28
 ---
 

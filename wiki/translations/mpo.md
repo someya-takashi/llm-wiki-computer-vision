@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Enhancing the Reasoning Ability of Multimodal Large Language Models via Mixed Preference Optimization.md
-source_page: [[sources/mpo]]
+source_page: "[[sources/mpo]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

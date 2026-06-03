@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternVL 1.5, InternVL-Chat-V1-5, InternViT-6B-448px-V1.5, InternViT-6B-448px-V1.2, InternVL 1.2]
 tags: [mllm, vllm, vision-language, opengvlab, internvl-series, gpt-4v-competitor]
-related: [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/vision-transformer]], [[concepts/zero-shot-transfer]], [[entities/internvl]], [[entities/clip]], [[entities/siglip]], [[entities/perception-encoder]]
-sources: [[sources/internvl-1-5]]
+related: ["[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[entities/internvl]]", "[[entities/clip]]", "[[entities/siglip]]", "[[entities/perception-encoder]]"]
+sources: ["[[sources/internvl-1-5]]"]
 updated: 2026-05-29
 ---
 

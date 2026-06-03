@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [DeepSeek-OCR, DeepSeek OCR, DeepEncoder, DeepSeek3B-MoE-A570M, deepseek-ocr]
-related: [[entities/sam]], [[entities/clip]], [[entities/qwen2-5-vl]], [[entities/qwen3-vl]], [[entities/internvl-3]], [[entities/internvl-3-5]], [[concepts/vision-transformer]], [[concepts/foundation-model]]
-sources: [[sources/deepseek-ocr]]
+related: ["[[entities/sam]]", "[[entities/clip]]", "[[entities/qwen2-5-vl]]", "[[entities/qwen3-vl]]", "[[entities/internvl-3]]", "[[entities/internvl-3-5]]", "[[concepts/vision-transformer]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/deepseek-ocr]]"]
 updated: 2026-05-31
 ---
 

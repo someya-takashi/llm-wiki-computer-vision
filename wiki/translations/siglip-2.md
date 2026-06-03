@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/SigLIP 2_ Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features.md
-source_page: [[sources/siglip-2]]
+source_page: "[[sources/siglip-2]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

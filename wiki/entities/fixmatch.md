@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [FixMatch]
 tags: [semi-supervised-learning, pseudo-label, confidence-threshold, weak-strong-augmentation, consistency-regularization, randaugment, ctaugment, cifar, svhn, stl-10, imagenet, google-research]
-related: [[concepts/semi-supervised-learning]], [[entities/mixmatch]], [[sources/fixmatch]]
-sources: [[sources/fixmatch]]
+related: ["[[concepts/semi-supervised-learning]]", "[[entities/mixmatch]]", "[[sources/fixmatch]]"]
+sources: ["[[sources/fixmatch]]"]
 updated: 2026-05-27
 ---
 

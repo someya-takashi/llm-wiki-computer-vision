@@ -8,7 +8,7 @@ year: 2023
 venue: arXiv:2307.01952
 ingested: 2026-05-31
 tags: [sdxl, stable-diffusion, latent-diffusion, ldm, diffusion-model, text-to-image, generative-model, stability-ai, refinement-model, micro-conditioning, multi-aspect-training, clip, openclip]
-translation: [[translations/sdxl]]
+translation: "[[translations/sdxl]]"
 ---
 
 # SDXL — Stability AI のオープン LDM 第 3 世代、Stable Diffusion 系統を商用フロンティアと互角に押し上げた決定版

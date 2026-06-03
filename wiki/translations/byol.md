@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Bootstrap Your Own Latent A New Approach to Self-Supervised Learning.md
-source_page: [[sources/byol]]
+source_page: "[[sources/byol]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

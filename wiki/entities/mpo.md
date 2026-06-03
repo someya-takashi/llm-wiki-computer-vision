@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [MPO, Mixed Preference Optimization, InternVL2-8B-MPO]
 tags: [preference-optimization, dpo, bco, post-training, mllm-cot, opengvlab]
-related: [[concepts/foundation-model]], [[entities/mmpr]], [[entities/internvl-3]], [[entities/internvl-2-5]], [[entities/internvl]]
-sources: [[sources/mpo]]
+related: ["[[concepts/foundation-model]]", "[[entities/mmpr]]", "[[entities/internvl-3]]", "[[entities/internvl-2-5]]", "[[entities/internvl]]"]
+sources: ["[[sources/mpo]]"]
 updated: 2026-05-29
 ---
 

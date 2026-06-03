@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Grounding DINO_ Marrying DINO with Grounded Pre-Training for Open-Set Object Detection.md
-source_page: [[sources/grounding-dino]]
+source_page: "[[sources/grounding-dino]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

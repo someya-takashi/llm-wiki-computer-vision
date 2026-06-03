@@ -8,7 +8,7 @@ year: 2024
 venue: CVPR 2024
 ingested: 2026-05-28
 tags: [yolo-world, yolo, real-time, open-vocabulary, object-detection, vision-language, tencent, repvl-pan, prompt-then-detect, clip-text-encoder]
-translation: [[translations/yolo-world]]
+translation: "[[translations/yolo-world]]"
 ---
 
 # YOLO-World: リアルタイム Open-Vocabulary 物体検出

@@ -2,8 +2,8 @@
 type: concept
 aliases: [Gram Anchoring, Gram 行列正則化, Gram regularization]
 tags: [regularization, ssl, training-technique]
-related: [[self-supervised-learning]], [[masked-image-modeling]], [[knowledge-distillation]]
-sources: [[sources/dinov3]]
+related: ["[[self-supervised-learning]]", "[[masked-image-modeling]]", "[[knowledge-distillation]]"]
+sources: ["[[sources/dinov3]]"]
 updated: 2026-05-24
 ---
 

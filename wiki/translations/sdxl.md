@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/SDXL_ Improving Latent Diffusion Models for High-Resolution Image Synthesis.md
-source_page: [[sources/sdxl]]
+source_page: "[[sources/sdxl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-31

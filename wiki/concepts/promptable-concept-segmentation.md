@@ -2,8 +2,8 @@
 type: concept
 aliases: [Promptable Concept Segmentation, PCS, コンセプトプロンプトセグメンテーション]
 tags: [task, segmentation, open-vocabulary, foundation-model, prompt-engineering, concept]
-related: [[promptable-segmentation]], [[zero-shot-transfer]], [[foundation-model]], [[contrastive-learning]]
-sources: [[sources/sam-3]]
+related: ["[[promptable-segmentation]]", "[[zero-shot-transfer]]", "[[foundation-model]]", "[[contrastive-learning]]"]
+sources: ["[[sources/sam-3]]"]
 updated: 2026-05-26
 ---
 

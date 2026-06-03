@@ -2,7 +2,7 @@
 type: question
 asked: 2026-05-30
 question: "ViT などでは固定解像度のものが多いと思うが、なぜ固定解像度が多いのか。任意解像度で入力できるようになったのはなぜか。ViT の登場からの解像度の扱いの変化は？"
-sources_used: [[concepts/vision-transformer]], [[concepts/rotary-position-embeddings]], [[entities/qwen-vl]], [[entities/qwen2-vl]], [[entities/qwen2-5-vl]], [[entities/qwen3-vl]], [[entities/internvl-1-5]], [[entities/internvl-2-5]], [[entities/internvl-3]], [[entities/internvl-3-5]], [[entities/dinov3]], [[entities/dino]], [[entities/dinov2]]
+sources_used: ["[[concepts/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[entities/qwen-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen2-5-vl]]", "[[entities/qwen3-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3]]", "[[entities/internvl-3-5]]", "[[entities/dinov3]]", "[[entities/dino]]", "[[entities/dinov2]]"]
 ---
 
 # ViT における解像度処理の進化 — 固定解像度から任意解像度へ

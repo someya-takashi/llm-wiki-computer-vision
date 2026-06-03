@@ -2,8 +2,8 @@
 type: concept
 aliases: [Zero-Shot Transfer, ゼロショット転移, zero-shot classification, zero-shot learning]
 tags: [paradigm, evaluation, transfer-learning]
-related: [[weakly-supervised-pretraining]], [[foundation-model]], [[knn-evaluation-protocol]], [[promptable-segmentation]]
-sources: [[sources/clip]], [[sources/segment-anything]]
+related: ["[[weakly-supervised-pretraining]]", "[[foundation-model]]", "[[knn-evaluation-protocol]]", "[[promptable-segmentation]]"]
+sources: ["[[sources/clip]]", "[[sources/segment-anything]]"]
 updated: 2026-05-26
 ---
 

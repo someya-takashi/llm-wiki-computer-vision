@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/Qwen2-VL_ Enhancing Vision-Language Model's Perception of the World at Any Resolution.md
-source_page: [[sources/qwen2-vl]]
+source_page: "[[sources/qwen2-vl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-30

@@ -2,8 +2,8 @@
 type: concept
 aliases: [PEFT, PETL, Parameter-Efficient Fine-Tuning, Parameter-Efficient Transfer Learning, パラメータ効率的ファインチューニング]
 tags: [fine-tuning, transfer-learning, foundation-model, lora, adaptformer, bitfit, vpt, adapter, low-rank]
-related: [[concepts/foundation-model]], [[concepts/vision-transformer]], [[concepts/semi-supervised-learning]], [[entities/clip]], [[entities/dinov2]]
-sources: [[sources/revisiting-ssl-foundation-models]]
+related: ["[[concepts/foundation-model]]", "[[concepts/vision-transformer]]", "[[concepts/semi-supervised-learning]]", "[[entities/clip]]", "[[entities/dinov2]]"]
+sources: ["[[sources/revisiting-ssl-foundation-models]]"]
 updated: 2026-05-28
 ---
 

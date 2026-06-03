@@ -2,8 +2,8 @@
 type: entity
 entity_kind: model
 aliases: [Qwen-VL, Qwen-VL-Chat, QwenVL, qwen-vl]
-related: [[entities/internvl]], [[entities/internvit-300m]], [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/zero-shot-transfer]], [[concepts/alignment-tuning]]
-sources: [[sources/qwen-vl]]
+related: ["[[entities/internvl]]", "[[entities/internvit-300m]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/zero-shot-transfer]]", "[[concepts/alignment-tuning]]"]
+sources: ["[[sources/qwen-vl]]"]
 updated: 2026-05-30
 ---
 

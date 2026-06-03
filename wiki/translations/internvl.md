@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/InternVL_ Scaling up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks.md
-source_page: [[sources/internvl]]
+source_page: "[[sources/internvl]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

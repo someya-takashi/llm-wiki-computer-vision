@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/SAM 3_ Segment Anything with Concepts.md
-source_page: [[sources/sam-3]]
+source_page: "[[sources/sam-3]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-26

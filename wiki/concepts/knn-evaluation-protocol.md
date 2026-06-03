@@ -2,8 +2,8 @@
 type: concept
 aliases: [k-NN evaluation, k-Nearest Neighbors classifier, k 近傍評価]
 tags: [evaluation, protocol, representation-learning]
-related: [[self-supervised-learning]], [[vision-transformer]]
-sources: [[sources/dino-emerging-properties-in-self-supervised-vit]]
+related: ["[[self-supervised-learning]]", "[[vision-transformer]]"]
+sources: ["[[sources/dino-emerging-properties-in-self-supervised-vit]]"]
 updated: 2026-05-24
 ---
 

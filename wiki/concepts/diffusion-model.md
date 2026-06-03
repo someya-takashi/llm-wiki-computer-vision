@@ -2,8 +2,8 @@
 type: concept
 aliases: [Diffusion Model, DDPM, Denoising Diffusion Probabilistic Model, 拡散モデル]
 tags: [generative-model, ddpm, unet, score-based, latent-diffusion, stable-diffusion, synthetic-data]
-related: [[concepts/denoising-autoencoder]], [[concepts/foundation-model]], [[concepts/self-supervised-learning]]
-sources: [[sources/i-synmed]]
+related: ["[[concepts/denoising-autoencoder]]", "[[concepts/foundation-model]]", "[[concepts/self-supervised-learning]]"]
+sources: ["[[sources/i-synmed]]"]
 updated: 2026-05-28
 ---
 

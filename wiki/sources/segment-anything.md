@@ -8,7 +8,7 @@ year: 2023
 venue: ICCV 2023
 ingested: 2026-05-26
 tags: [sam, segmentation, foundation-model, promptable, meta-fair]
-translation: [[translations/segment-anything]]
+translation: "[[translations/segment-anything]]"
 ---
 
 # Segment Anything（SAM）

@@ -8,7 +8,7 @@ year: 2024
 venue: "arXiv:2411.10442 (technical report)"
 ingested: 2026-05-29
 tags: [mllm, preference-optimization, dpo, bco, mpo, mmpr, dropoutntp, cot, internvl-2-8b-mpo, opengvlab]
-translation: [[translations/mpo]]
+translation: "[[translations/mpo]]"
 ---
 
 # MPO — Mixed Preference Optimization と MMPR データセット、CoT 推論を救った論文

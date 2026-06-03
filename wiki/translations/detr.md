@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/End-to-End Object Detection with Transformers.md
-source_page: [[sources/detr]]
+source_page: "[[sources/detr]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

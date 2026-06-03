@@ -3,8 +3,8 @@ type: entity
 entity_kind: dataset
 aliases: [SA-Co, Segment Anything with Concepts, SACo]
 tags: [dataset, benchmark, segmentation, concept, open-vocabulary, meta-superintelligence-labs, hard-negatives, ai-verifier]
-related: [[entities/sam-3]], [[concepts/promptable-concept-segmentation]], [[entities/sa-v]], [[entities/sa-1b]]
-sources: [[sources/sam-3]]
+related: ["[[entities/sam-3]]", "[[concepts/promptable-concept-segmentation]]", "[[entities/sa-v]]", "[[entities/sa-1b]]"]
+sources: ["[[sources/sam-3]]"]
 updated: 2026-05-26
 ---
 

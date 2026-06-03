@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [InternVL 3, InternVL3-1B, InternVL3-2B, InternVL3-8B, InternVL3-9B, InternVL3-14B, InternVL3-38B, InternVL3-78B, InternVL3]
 tags: [mllm, vllm, internvl-3, native-multimodal-pretraining, v2pe, mpo, mmmu-72-2, opengvlab, internvl-series]
-related: [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/vision-transformer]], [[concepts/zero-shot-transfer]], [[concepts/alignment-tuning]], [[entities/internvl]], [[entities/internvl-1-5]], [[entities/mini-internvl]], [[entities/internvl-2-5]], [[entities/internvit-300m]], [[entities/clip]]
-sources: [[sources/internvl-3]]
+related: ["[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[concepts/alignment-tuning]]", "[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/mini-internvl]]", "[[entities/internvl-2-5]]", "[[entities/internvit-300m]]", "[[entities/clip]]"]
+sources: ["[[sources/internvl-3]]"]
 updated: 2026-05-29
 ---
 

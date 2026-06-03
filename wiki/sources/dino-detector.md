@@ -8,7 +8,7 @@ year: 2022
 venue: ICLR 2023
 ingested: 2026-05-28
 tags: [dino-detector, object-detection, transformer, detr-family, denoising, contrastive-denoising, query-selection, look-forward-twice, idea]
-translation: [[translations/dino-detector]]
+translation: "[[translations/dino-detector]]"
 ---
 
 # DINO（検出器）: 改良された DeNoising Anchor Boxes を持つ DETR

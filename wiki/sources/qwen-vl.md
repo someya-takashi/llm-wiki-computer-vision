@@ -8,7 +8,7 @@ year: 2023
 venue: arXiv:2308.12966
 ingested: 2026-05-30
 tags: [qwen, qwen-vl, mllm, multimodal, vision-language, grounding, ocr, openclip, vit-bigg, cross-attention-adapter, alibaba]
-translation: [[translations/qwen-vl]]
+translation: "[[translations/qwen-vl]]"
 ---
 
 # Qwen-VL — Alibaba 製の細粒度グラウンディング対応 MLLM 第 1 世代

@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [Perception Encoder, PE, PEcore, PElang, PEspatial, PE-Core, PE-Lang, PE-Spatial]
 tags: [weakly-supervised, vision-language, foundation-model, meta-ai, distillation, alignment-tuning]
-related: [[concepts/weakly-supervised-pretraining]], [[concepts/foundation-model]], [[concepts/vision-transformer]], [[concepts/promptable-concept-segmentation]], [[concepts/alignment-tuning]]
-sources: [[sources/perception-encoder]], [[sources/dinov3]], [[sources/sam-3]], [[sources/siglip-2]]
+related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/alignment-tuning]]"]
+sources: ["[[sources/perception-encoder]]", "[[sources/dinov3]]", "[[sources/sam-3]]", "[[sources/siglip-2]]"]
 updated: 2026-05-28
 ---
 

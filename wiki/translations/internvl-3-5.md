@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/InternVL3.5_ Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency.md
-source_page: [[sources/internvl-3-5]]
+source_page: "[[sources/internvl-3-5]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-29

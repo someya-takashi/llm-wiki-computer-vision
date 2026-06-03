@@ -2,7 +2,7 @@
 type: entity
 entity_kind: model
 aliases: [InternVL 2.0, InternVL2, InternVL-2, InternVL2-Llama3-76B]
-related: [[entities/internvl]], [[entities/internvl-1-5]], [[entities/internvl-2-5]], [[entities/internvl-3]], [[entities/internvit-300m]], [[entities/mini-internvl]]
+related: ["[[entities/internvl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3]]", "[[entities/internvit-300m]]", "[[entities/mini-internvl]]"]
 sources: []
 updated: 2026-05-30
 ---

@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/YOLO-World_ Real-Time Open-Vocabulary Object Detection.md
-source_page: [[sources/yolo-world]]
+source_page: "[[sources/yolo-world]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-28

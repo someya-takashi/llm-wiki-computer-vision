@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [DINOv3, DINO v3]
 tags: [self-supervised, vision-transformer, foundation-model, meta-ai, convnext]
-related: [[concepts/self-supervised-learning]], [[concepts/foundation-model]], [[concepts/masked-image-modeling]], [[concepts/vision-transformer]], [[concepts/gram-anchoring]], [[concepts/rotary-position-embeddings]]
-sources: [[sources/dinov3]]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/vision-transformer]]", "[[concepts/gram-anchoring]]", "[[concepts/rotary-position-embeddings]]"]
+sources: ["[[sources/dinov3]]"]
 updated: 2026-05-24
 ---
 

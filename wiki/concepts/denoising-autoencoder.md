@@ -2,8 +2,8 @@
 type: concept
 aliases: [DAE, Denoising Autoencoder, ノイズ除去オートエンコーダ]
 tags: [paradigm, representation-learning, foundational]
-related: [[self-supervised-learning]], [[masked-image-modeling]]
-sources: [[sources/mae]]
+related: ["[[self-supervised-learning]]", "[[masked-image-modeling]]"]
+sources: ["[[sources/mae]]"]
 updated: 2026-05-25
 ---
 

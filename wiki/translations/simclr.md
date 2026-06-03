@@ -1,7 +1,7 @@
 ---
 type: translation
 source_path: raw/papers/A Simple Framework for Contrastive Learning of Visual Representations.md
-source_page: [[sources/simclr]]
+source_page: "[[sources/simclr]]"
 original_language: en
 translated_to: ja
 translated_at: 2026-05-27

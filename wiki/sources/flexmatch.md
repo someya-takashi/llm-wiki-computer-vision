@@ -8,7 +8,7 @@ year: 2021
 venue: NeurIPS 2021
 ingested: 2026-05-27
 tags: [semi-supervised-learning, pseudo-label, dynamic-threshold, curriculum-learning, fixmatch, cifar, svhn, stl-10, imagenet, titech, microsoft-research-asia]
-translation: [[translations/flexmatch]]
+translation: "[[translations/flexmatch]]"
 ---
 
 # FlexMatch: Curriculum Pseudo Labeling によるFixMatch改良

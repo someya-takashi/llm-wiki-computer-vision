@@ -3,8 +3,8 @@ type: entity
 entity_kind: model
 aliases: [Grounding DINO, Grounding-DINO, GroundingDINO, GD]
 tags: [object-detection, open-set-detection, dino-detector, glip, tight-fusion, idea, microsoft, vision-language]
-related: [[concepts/object-detection]], [[concepts/zero-shot-transfer]], [[concepts/promptable-concept-segmentation]], [[concepts/foundation-model]]
-sources: [[sources/grounding-dino]]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]"]
+sources: ["[[sources/grounding-dino]]"]
 updated: 2026-05-28
 ---
 

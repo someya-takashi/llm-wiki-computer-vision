@@ -8,7 +8,7 @@ year: 2021
 venue: "arXiv:2111.06377 → CVPR 2022"
 ingested: 2026-05-25
 tags: [mae, self-supervised-learning, masked-image-modeling, vision-transformer, fair]
-translation: [[translations/mae]]
+translation: "[[translations/mae]]"
 ---
 
 # MAE: マスクオートエンコーダはスケーラブルな視覚学習器である
