@@ -1570,3 +1570,112 @@
     - 「Data-Centric AI」運動の代表事例
   - **未解決の論点**: (1) 「フィルタ性能 ≠ IN 性能」の理論的説明欠如、(2) HQITP-350M の中身（人間検証基準）が不透明、(3) DFN-5B の 30B 非 DataComp 画像の出自不明、(4) 再帰的改善（DFN-5B モデルを新しい DFN として使う）は未検証、(5) 動画・3D・専門ドメインでの DFN は未検証
   - **次の ingest 候補**（CLIP 系列の wiki 補完）: AIMv2（Apple 2024、autoregressive image modeling、DFN の対抗パラダイム）/ MetaCLIP（Meta ICLR 2024、データ公開）/ EVA-CLIP（BAAI 2023、ViT-G/14 5B）/ DataComp 原典（Gadre et al. 2023、ベンチマーク詳細）/ MM1（Apple 2024、Apple 系の MLLM、DFN を使った）/ Florence-2（Microsoft 2024、統合 vision foundation）
+
+## [2026-06-10] query | RoPE 外挿のメカニズム（形式的可能性 vs 実用的可能性）
+
+- ユーザ質問:「RoPE が学習データにない相対位置にも適応できるのはなぜでしょうか？例えば学習時の最大系列長が 1000 の場合は、推論時に 1 番目と 2000 番目の相対関係はわからないのではないでしょうか？」
+- 作成: [[questions/rope-extrapolation-mechanism]] — **「形式的可能性（数式は連続値で計算可能）」と「実用的可能性（学習器の経験範囲）」の 2 段階を区別**して回答
+- 更新: [[index]] / [[overview]]
+- メモ:
+  - **ユーザの直感は半分正しい**: 形式的には RoPE は任意の相対位置を計算できる（連続関数 + 学習可能パラメータなし）が、**実際の LLM では学習範囲を大きく超えると性能が崩壊**する
+  - **崩壊の真の原因 = 波長ごとの分布内/外問題**: [[sources/yarn|YaRN]] §3.1-3.2 が解明した「**RoPE の各次元は異なる波長 $\lambda_i = 2\pi b^{2i/d}$ を持ち、低周波次元は訓練中に 1 回転すら経験していない**」が核心
+  - **具体例の数値計算**: $d=64, L=1000$ で $i=31$（最低周波）は波長 55,000 トークン → 訓練中に 1.8% 回転しか経験しない。相対位置 1999 では 3.6% 回転 → 訓練分布外
+  - **「数式が動く」と「モデルが意味のある attention を計算できる」の区別**: 本ページの中心メッセージ。RoPE の理論的優位性（任意位置に形式的対応）と実用的限界（学習範囲超で崩壊）の **2 段階を切り分けて理解する**ことが鍵
+  - **wiki 既存ページの「曖昧さ」を明示化**: [[concepts/rotary-position-embeddings]] の「あらゆる解像度で動く」記述は数式的には正しいが、実用的に誤解を招く可能性があった。本 question で明示的に補強
+  - **5 世代の解決系譜**: PI → NTK-aware → NTK-by-parts → Dynamic NTK → YaRN の段階的進化を「**ユーザの問題に対する答え**」として再解釈。特に NTK-by-parts の「波長ごとに戦略を変える」が本質的洞察
+  - **ピアノ鍵盤の例え**: 高音側（高周波、短い波長）は周期的に繰り返されるので未経験音域にも対応、低音側（低周波、長い波長）は 1 オクターブの一部しか聞いていなければ次オクターブの予測不可能 — これが各次元での RoPE の振る舞いの違いを直感的に説明
+  - **CV/MLLM での実用例の整理**:
+    - Qwen2-VL: 16K → 80K（M-RoPE の位置 ID 抑制効果 + YaRN 系）
+    - Qwen3-VL: **256K ネイティブ + 1M YaRN 外挿、Needle-in-a-Haystack 1M で 99.5%**
+    - DINOv3: axial RoPE + RoPE-box jittering（訓練時に多様な実効解像度を見せる）— YaRN の Dynamic Scaling と発想的に近い
+  - **質問の wiki 価値**: 個別の論文ページ（roformer / yarn）と概念ページ（rotary-position-embeddings）にまたがる「**形式と実用の差**」という横断的論点。**wiki の理論的補完として価値が高い**
+  - **次の関連 query 候補**: (1) ALiBi vs RoPE の長文脈外挿能力比較、(2) M-RoPE の位置 ID 値抑制効果の数学的詳細、(3) Vision での YaRN 直接適用の現状調査
+
+## [2026-06-10] query | SigLIP の sigmoid vs CLIP の softmax 損失（メモリ効率と分散学習）
+
+- ユーザ質問:「SigLIP で softmax と sigmoid の損失関数の比較が説明されているが、メモリ効率が良い理由と、分散学習で利点がある理由のわかりやすい解説をお願いします」
+- 作成: [[questions/sigmoid-vs-softmax-loss]] — CLIP softmax と SigLIP sigmoid を段階的に対比、8 ステップで解説
+- 更新: [[index]] / [[overview]]
+- メモ:
+  - **鍵となる洞察**: **「セル間の独立性」**が memory 効率と分散効率の両方の源泉。softmax は **グローバル正規化** で行全体の materialize が必要、sigmoid は **各 $(i,j)$ セルが独立な二値分類** でブロック単位計算可能
+  - **具体的数値で実感させる**: バッチ 32k で softmax の類似度行列は 4 GB+（FP32）、sigmoid は **1024² ブロック単位** で計算すれば 4 MB → **1000 倍の削減**。これが「4 TPU で 1 日訓練」を可能にした根本原理
+  - **分散学習の対比**: softmax = 全 GPU 埋め込みの **all-gather**（通信爆発、メモリ爆発）vs sigmoid = **テキスト・チャンクの順送り**（ring all-reduce 風、隣接 GPU 間転送のみ）
+  - **直感的例えの活用**: 「**競争（試験の偏差値）vs 個別判定（合否判定）**」が今回最も伝わる説明。softmax = クラス全員の点数が必要、sigmoid = 一人ずつ独立に採点
+  - **学習可能バイアス $b$ の役割を明示化**: 正例 1 個 vs 負例 $N-1$ 個の不均衡を **$b_0 = -10$ の初期化** で補正、これがないと「全部負例」の自明解に陥る
+  - **バッチサイズ飽和の発見**: SigLIP §4.3 図 4 が示した「**32k で性能飽和**」は CLIP 派の「大バッチ無限スケール」常識を覆した重要な実証。**小バッチでも sigmoid は強い** → 計算予算限定研究にも開かれる
+  - **後続研究での影響を整理**:
+    - SigLIP 2 → 5 系統融合（対比 sigmoid + 自己蒸留 + マスク予測 + decoder + 蒸留）
+    - Qwen3-VL: SigLIP-2 から継続学習
+    - Gemma 3: SigLIP 400M variant を共有・凍結
+    - PE は対立軸として softmax-based を保持しつつ大バッチ（131k）で頑健化
+  - **wiki 価値**: [[concepts/contrastive-learning]] と [[entities/siglip]] の橋渡し的位置付け。**「対比学習の数学的核心」を明示する横断的論点**として、[[questions/rope-extrapolation-mechanism]] と並んで「**論文に書かれているが実装的詳細が暗黙**」になりがちなトピックを解明
+  - **次の関連 query 候補**: (1) **InfoNCE と sigmoid 損失の温度パラメータの役割比較**、(2) **SigLIP 2 の 5 系統融合の各成分の貢献度（ablation）詳細**、(3) **OpenCLIP / EVA-CLIP がなぜ softmax を選び続けたか**（実装上の trade-off の本質）
+
+## [2026-06-10] query | VLM の vision encoder を継続事前学習する目的
+
+- ユーザ質問:「VLM の vision encoder は SigLIP などを継続事前学習しているとあるが、何のために継続事前学習するのか？」
+- 作成: [[questions/vlm-vision-encoder-continued-pretraining]] — wiki の複数 MLLM 事例を横断整理した 6 つの目的軸 + 11 モデル戦略比較表 + 凍結戦略の対比
+- 更新: [[index]] / [[overview]]
+- メモ:
+  - **wiki の蓄積を横断する価値**: Qwen-VL 系 4 世代、InternVL 系 8 世代、Gemma 3、DeepSeek-OCR の **個別記述に散らばっていた継続事前学習の戦略・目的** を 1 ページで体系化。各モデルページを個別に読まなくても全体像が掴めるハブ的 question ページ
+  - **6 つの目的軸**:
+    1. **解像度・アスペクト比の柔軟化**（最重要）— [[questions/vit-dynamic-resolution-evolution]] と直結
+    2. **位置エンコーディング変更**（学習可能 1D → 2D-RoPE / M-RoPE）— [[questions/rope-extrapolation-mechanism]] と直結
+    3. **OCR・文書・図表理解強化** — Qwen2-VL 系 / InternVL 系の主要動機
+    4. **計算効率改善** — トークン圧縮、Window Attention、ViR 等
+    5. **LLM 整合特徴空間整形** — [[concepts/alignment-tuning]] / DeepStack / Native Multimodal Pre-Training
+    6. **追加モダリティ・タスクへの適応** — 動画、3D、グラウンディング
+  - **凍結戦略の重要性を明示化**: [[entities/gemma-3|Gemma 3]] が SigLIP-400M を凍結 + Pan & Scan で対応する保守路線を「対立軸」として正当に評価。**継続学習が「常に正解」ではない**ことを明示
+  - **3 つの戦略分類で整理**:
+    - **積極的継続学習**（Qwen 系 / InternVL 1.5）: 構造変更 + 大規模再訓練
+    - **凍結**（Gemma 3 / InternVL 3.5 の InternViT-V2.5 継承）: 訓練コスト削減、推論最適化に集中
+    - **ハイブリッド**（DeepSeek-OCR）: SAM（高解像度処理）+ CLIP（意味抽出）直列
+  - **11 モデルの戦略一覧表**: Qwen-VL〜Qwen3-VL（4 世代）、InternVL〜InternVL 3.5（7 世代）、Gemma 3、DeepSeek-OCR を横断比較。**各モデルが何を base に何を継続学習したか**を一目で
+  - **wiki の他 question との接続**:
+    - [[questions/vit-dynamic-resolution-evolution]]: 目的 1（解像度）の詳細
+    - [[questions/rope-extrapolation-mechanism]]: 目的 2（位置エンコーディング）の数学的背景
+    - [[questions/large-scale-pretraining-series]]: vision encoder の系統的位置付け
+    - [[questions/sigmoid-vs-softmax-loss]]: SigLIP がなぜ継続学習の優秀な基盤か
+  - **本質的メッセージ**: 「**汎用視覚モデル → MLLM 用カスタマイズされた視覚モジュール**」への変換が継続事前学習の役割。**訓練コスト vs カスタマイズ度のトレードオフ**が戦略選択を決定
+  - **Qwen2.5-VL の「ゼロから訓練」例外の理由**: Window Attention の構造改変が継続学習では実現困難だったため。一方 Qwen3-VL では SigLIP-2 が登場したことで「優秀な基盤からの継続学習」に戻る — **基盤 vision encoder の優秀さがあれば継続学習が選ばれる**という一般則を実証
+  - **次の関連 query 候補**: (1) **MLLM の projector（MLP / Merger / Q-Former）の設計比較**、(2) **vision encoder の凍結 vs 継続学習の性能差の定量比較**（Gemma 3 vs Qwen3-VL 等）、(3) **Native Multimodal Pre-Training vs 事後改造 MLLM の理論的差異**（InternVL 3 の発見）
+
+## [2026-06-10] query | ViT (2020) → DINOv3/SigLIP 2 までのアーキテクチャ進化 8 軸
+
+- ユーザ質問:「DINOv3 や SigLIP 2 に至るまで、学習やデータの工夫は大幅に改善されてきたが、アーキテクチャの本質的な部分は初期の ViT モデルからあまり変化ないように思う。これは正しいか？アーキテクチャにおける変化を教えてほしい」
+- 作成: [[questions/vit-architecture-evolution]] — wiki の蓄積知識を横断して **8 軸の変化** を整理、DINOv3/SigLIP 2 の累積変化を比較
+- 更新: [[index]] / [[overview]]
+- メモ:
+  - **「半分正しい」という回答が本質**: ユーザの認識は **正しい部分（基本骨格不変）と修正すべき部分（構成要素入れ替わり）の両方** を持つ。ニュアンスを正確に伝えるのが重要
+  - **8 軸の変化**:
+    1. **位置エンコーディング**（最大の変化）: 学習可能 1D → RoPE 系
+    2. **Norm**: LayerNorm → RMSNorm + QK-norm + LayerScale
+    3. **MLP 活性化**: GELU → SwiGLU
+    4. **Register tokens の追加**: [CLS] 単独からの脱却
+    5. **Attention 効率化**: 完全 SA → Window/階層型
+    6. **出力読み出し**: 最終 [CLS] → 中間層活用 / attention pooling
+    7. **解像度処理**: 固定 → 任意解像度・可変アスペクト比
+    8. **トークン圧縮機構**: 新コンポーネント（Pixel Shuffle/Merger/ViR）
+  - **DINOv3 vs SigLIP 2 の対比で路線分化を可視化**:
+    - **DINOv3 = アーキテクチャ革新型**: axial RoPE + SwiGLU + register tokens + FlashAttention + LayerScale を統合
+    - **SigLIP 2 = 学習革新型**: NaFlex 以外はアーキテクチャ控えめ、5 系統融合（自己蒸留 + MIM + decoder + ACID + 多言語）が中心
+    - これがユーザが「SigLIP 2 では変化少ない」と感じる正当な根拠
+  - **メタ観察「NLP からの逆輸入」**: 変化の通底テーマ
+    - RoPE: [[sources/roformer|RoFormer]] (2021) → DINOv3, SAM 2, Qwen-VL 系
+    - RMSNorm: T5, LLaMA → Qwen2.5-VL ViT
+    - SwiGLU: PaLM, LLaMA → DINOv2/v3
+    - YaRN: LLM 長文脈 → Qwen3-VL の 1M 外挿
+    - FlashAttention: LLM 高速化 → DINOv3
+    - Window Attention: NLP Sparse Transformer → Qwen2.5-VL ViT
+    - → **「ViT 時代の Vision 独自進化」から「Vision と Language が同じアーキテクチャ要素を共有」への移行**
+  - **「学習・データ・アーキテクチャの 3 軸並行進化」というフレーム**: ユーザの観察「学習・データの大幅改善」とアーキテクチャ変化を **対立ではなく並列** として捉えるのが正確。これが ViT 以降の 5 年間の総括として最適
+  - **wiki の他 question との接続**:
+    - [[questions/vit-dynamic-resolution-evolution]]: 変化 ⑦ の詳細
+    - [[questions/rope-extrapolation-mechanism]]: 変化 ① の数学的背景
+    - [[questions/vlm-vision-encoder-continued-pretraining]]: 変化 ①〜⑧ がなぜ起きるかの動機
+    - [[questions/large-scale-pretraining-series]]: 学習・データ軸の俯瞰
+    - [[questions/sigmoid-vs-softmax-loss]]: SigLIP の学習革新（アーキテクチャ以外）
+  - **wiki の蓄積知識のフル活用**: DINO 系（[[entities/dino]]/[[entities/dinov2]]/[[entities/dinov3]]）、SigLIP 系（[[entities/siglip]]/[[sources/siglip-2]]）、MLLM 系（Qwen-VL 4 世代、InternVL 系、Gemma 3、DeepSeek-OCR）の **モデル詳細を横断** して構成要素レベルで比較。**個別 entity ページの記述が「変化軸」の視点で統合的に整理される** という wiki ハブ的価値
+  - **「Vision Transformers Need Registers」(Darcet et al., ICLR 2024) は wiki 未取り込み**: 影響大きい論文だが ingest していない。今後の候補
+  - **Swin Transformer も wiki 未取り込み**: 階層型 ViT の代表だが [[entities/hiera|Hiera]] からの言及のみ。これも候補
+  - **次の関連 query 候補**: (1) **GELU vs SwiGLU の性能差と理論的根拠**、(2) **register tokens の最適個数の経験則**（Darcet et al. の知見）、(3) **LayerNorm vs RMSNorm の数値的安定性と計算効率の定量比較**
