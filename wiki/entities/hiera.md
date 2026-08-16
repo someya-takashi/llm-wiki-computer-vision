@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [Hiera, Hierarchical Vision Transformer]
 tags: [model, architecture, vision-transformer, hierarchical, mae, meta-fair]
-related: ["[[concepts/vision-transformer]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]"]
+related: ["[[concepts/vision-transformer]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]", "[[entities/convnext]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]"]
 sources: ["[[sources/sam-2]]"]
-updated: 2026-05-26
+updated: 2026-06-17
 ---
 
 # Hiera（Hierarchical Vision Transformer）
@@ -118,8 +118,14 @@ SAM 2（[[entities/sam-2]]）は Hiera を画像エンコーダに採用：
 | **PVT / PVTv2** | Spatial Reduction Attention | RPB, MIT 風設計 | △ |
 | **MViT v1/v2** | Pool attention の先駆 | Decomposed RPB | ✅ |
 | **Hiera**（2023） | **Pool attention のみ** | **工夫なし** | ✅（MAE 前提） |
+| **[[entities/convnext\|ConvNeXt]]**（2022） | **畳み込み（attention なし）** | **工夫なし**（特殊モジュールを持たない） | ❌（マスクトークンを扱えない） |
+| **[[entities/convnext-v2\|ConvNeXt V2]]**（2023） | 畳み込み（attention なし） | **GRN**（特徴崩壊対策） | ✅（**疎畳み込みの FCMAE 前提**） |
 
 Hiera は MViT v2 の発展形と見るのが正確。「**MViT v2 から余計な工夫を全部削除して MAE に賭けたもの**」が Hiera。
+
+> **同じ *simplicity* 論の反対側: ConvNeXt** — Hiera が「階層型 ViT から特殊モジュールを削ぐ」方向なのに対し、**[[entities/convnext]]（CVPR 2022, [[sources/convnext]]）は「ConvNet 側から Transformer に追いつく」方向**で同じ結論に至った。ConvNeXt も shifted window attention も相対位置バイアスも持たず、それで Swin を上回る。両者に共通する主張は「**Swin の特殊モジュールは性能の源泉ではなかった**」である。決定的な違いは MAE との相性で、Hiera が MAE 互換を設計目標に据えたのに対し、ConvNeXt V1 は畳み込みゆえマスクトークンを自然に扱えず、SAM 2 のような MAE 前提のパイプラインには乗らなかった。
+>
+> **ただし翌年、ConvNet 側も同じ答えに辿り着く** — **[[entities/convnext-v2]]（CVPR 2023, [[sources/convnext-v2]]）が「MIM に合わせてアーキテクチャを直す」という Hiera とまったく同じ発想（co-design）を ConvNet で実行した**。疎畳み込みで可視画素のみを処理する FCMAE と、特徴崩壊を防ぐ GRN 層を一緒に設計し、CNN でも MIM が効くことを示した（IN-1K 88.9%）。**Hiera（2023）と ConvNeXt V2（2023）は同年に、Transformer 側と ConvNet 側から「MAE 互換性を設計目標に据える」という同一の結論に到達している**。
 
 ## なぜ重要か
 
@@ -142,4 +148,8 @@ Hiera は MViT v2 の発展形と見るのが正確。「**MViT v2 から余計�
 - [[concepts/vision-transformer]] — Hiera が拡張する元の ViT
 - [[concepts/masked-image-modeling]] — Hiera を活かす MAE 系の事前学習
 - [[entities/mae]] — Hiera の事前学習に使用
-- 比較: Swin Transformer / MViT v2 / PVTv2（独立ページなし）
+- [[entities/convnext]] / [[sources/convnext]] — 同じ「特殊モジュールを削ぐ」simplicity 論を ConvNet 側から実行した研究（CVPR 2022）
+- [[entities/convnext-v2]] / [[sources/convnext-v2]] — 同じ「MAE 互換性を設計目標に据える」co-design を ConvNet 側で実行（CVPR 2023、Hiera と同年）
+- [[concepts/convolutional-neural-network]] — ConvNeXt 側の背景となる CNN の帰納バイアスと部品
+- [[entities/swin-transformer]] / [[sources/swin-transformer]] — Hiera が「工夫を削ぎ落とす」対象そのもの（ICCV 2021 最優秀論文賞）
+- 比較: MViT v2 / PVTv2（独立ページなし）

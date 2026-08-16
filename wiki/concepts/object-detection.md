@@ -114,7 +114,7 @@ updated: 2026-05-28
             — open-vocab 検出パラダイムを確立
 2022  OWL-ViT — ViT + DETR、open-vocab 検出（Google）
 2023  ★ Grounding DINO ([[sources/grounding-dino]] / [[entities/grounding-dino]]) ★
-            — GLIP × [[entities/dino-detector|DINO 検出器]]、Swin-L で COCO ZS 52.5 AP / FT 63.0 AP / ODinW ZS 26.1 SOTA
+            — GLIP × [[entities/dino-detector|DINO 検出器]]、[[entities/swin-transformer|Swin]]-L で COCO ZS 52.5 AP / FT 63.0 AP / ODinW ZS 26.1 SOTA
             — Tight 3-phase fusion (A+B+C) + sub-sentence text representation
 2024  MM-Grounding-DINO — マルチモーダル拡張
 2024 May  ★ Grounding DINO 1.5 ([[sources/grounding-dino-1-5]] / [[entities/grounding-dino-1-5]]) ★

@@ -44,7 +44,7 @@ CV では ViT が画像を 16×16 のパッチに切って系列化するので�
 
 ### 3. Relative positional embedding（相対位置埋め込み）
 
-Shaw ら（2018）, Swin Transformer 等が採用。
+Shaw ら（2018）, **[[entities/swin-transformer|Swin Transformer]]**（[[sources/swin-transformer]]、窓内の相対位置を $(2M-1)^2$ の表で学習）等が採用。
 
 - attention の計算式中に「クエリとキーの相対位置」によるバイアスを直接挿入
 - 長所: 相対距離をモデルが直接認識できる

@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [MAE, Masked Autoencoder]
 tags: [self-supervised, vision-transformer, masked-image-modeling, fair, meta-ai]
-related: ["[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[concepts/denoising-autoencoder]]"]
+related: ["[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[concepts/denoising-autoencoder]]", "[[entities/i-jepa]]", "[[concepts/joint-embedding-predictive-architecture]]", "[[entities/convnext-v2]]"]
 sources: ["[[sources/mae]]"]
 updated: 2026-05-25
 ---
@@ -209,6 +209,8 @@ GitHub <https://github.com/facebookresearch/mae> で以下が公開:
 - [[concepts/self-supervised-learning]] — SSL 全般
 - [[concepts/vision-transformer]] — バックボーン
 - 系譜的関連: [[entities/dino]] / [[entities/ibot]] / [[entities/dinov2]] / [[entities/dinov3]]
+- 直接の対照群: [[entities/i-jepa]] / [[sources/i-jepa]] — 同じ「マスク → 欠落部を埋める」骨格だが、MAE が**画素を再構成**するのに対し I-JEPA は**表現を予測**する（[[concepts/joint-embedding-predictive-architecture]]）
+- 派生: [[entities/convnext-v2]] / [[sources/convnext-v2]] — **MAE を ConvNet へ移植した FCMAE**。非対称エンコーダ・デコーダとパッチ正規化 MSE を継承しつつ、「エンコーダが可視部分だけ処理する」を**疎畳み込み**で実現（マスク率は 75% でなく 60%、デコーダは単一 ConvNeXt ブロック）
 - データセット: [[entities/imagenet]]
 - 応用先: [[entities/sam]] — SAM が MAE 事前学習済み ViT-H/16 を画像エンコーダ初期化に採用
 - 応用先: [[entities/sam-2]] / [[entities/hiera]] — SAM 2 が MAE 事前学習済み Hiera を画像エンコーダに採用（plain ViT より 6× 高速化）

@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [Grounding DINO, Grounding-DINO, GroundingDINO, GD]
 tags: [object-detection, open-set-detection, dino-detector, glip, tight-fusion, idea, microsoft, vision-language]
-related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]"]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]", "[[entities/swin-transformer]]"]
 sources: ["[[sources/grounding-dino]]"]
 updated: 2026-05-28
 ---
@@ -277,3 +277,4 @@ DINO 検出器の Mixed Query Selection の **言語誘導版**: 物体性スコ
 - [[entities/yolo-world]] / [[sources/yolo-world]] — 同じ open-vocab 路線の対照軸（精度志向 vs 速度志向、CVPR 2024）
 - [[entities/grounding-dino-1-5]] / [[sources/grounding-dino-1-5]] — **直接の後継**（2024 May、Pro/Edge 双子スイート、ViT-L + Grounding-20M で SOTA 更新）
 - [[entities/dino-x]] / [[sources/dino-x]] — IDEA 系譜の現時点最新版（2024 Nov、unified perception、4 ヘッド + 3 プロンプト、Grounding-100M）
+- [[entities/swin-transformer]] / [[sources/swin-transformer]] — Grounding-DINO-T/L のバックボーン（ICCV 2021 最優秀論文賞）

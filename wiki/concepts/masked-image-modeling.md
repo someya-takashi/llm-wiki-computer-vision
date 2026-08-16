@@ -2,9 +2,9 @@
 type: concept
 aliases: [MIM, Masked Image Modeling, マスク画像モデリング]
 tags: [paradigm, pretraining, ssl, transformer]
-related: ["[[self-supervised-learning]]", "[[vision-transformer]]", "[[denoising-autoencoder]]", "[[online-tokenizer]]"]
-sources: ["[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/mae]]", "[[sources/ibot]]", "[[sources/siglip-2]]"]
-updated: 2026-05-27
+related: ["[[self-supervised-learning]]", "[[vision-transformer]]", "[[denoising-autoencoder]]", "[[online-tokenizer]]", "[[joint-embedding-predictive-architecture]]", "[[convolutional-neural-network]]"]
+sources: ["[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/mae]]", "[[sources/ibot]]", "[[sources/siglip-2]]", "[[sources/i-jepa]]", "[[sources/convnext-v2]]"]
+updated: 2026-06-17
 ---
 
 # Masked Image Modeling（MIM, マスク画像モデリング）
@@ -15,9 +15,11 @@ updated: 2026-05-27
 
 ## なぜ ViT 時代に流行ったのか
 
-- **CNN ではマスキングが扱いにくい**: 畳み込みは局所的な計算で、「あるピクセルを隠す」と周囲の畳み込みカーネルが意味を成さない。
+- **CNN ではマスキングが扱いにくい**: 畳み込みは局所的な計算で、「あるピクセルを隠す」と周囲の畳み込みカーネルが意味を成さない。より正確には、**密なスライディングウィンドウがマスク領域を跨いで計算してしまうため、モデルが「隠された部分を周囲からコピーしてくる」ショートカットを学習でき、学習信号が壊れる**（情報漏洩）。
 - **ViT は系列として処理する**: トークンを 1 つ取り除いたり、`[MASK]` トークンに置き換えたりすることが NLP の BERT と同じ感覚で自然にできる。
 - **画素レベル予測との接続**: MIM は本質的に密予測なので、セグメンテーション・深度推定など pixel-level の下流タスクと相性が良い。
+
+> **ただしこの「CNN では無理」は 2023 年に覆される** — [[sources/convnext-v2|ConvNeXt V2]] が **疎畳み込み（sparse convolution）で可視画素のみを処理する**ことで情報漏洩を遮断し、CNN でも MIM が効くことを実証した（後述）。上の制約は「畳み込みの本質的限界」ではなく「素朴な実装の問題」だった。
 
 ## 代表的な MIM 手法の系譜
 
@@ -123,6 +125,58 @@ iBOT の貢献は、MIM を**知識蒸留の枠組みで再解釈**したこと�
 
 つまり「**MIM は今や SSL 専売特許ではなく、WSL の dense 性能向上のための標準ツール**」になっている。CLIP/SigLIP のような対比学習だけでは捉えきれない局所的意味性を、MIM が補う役割。
 
+### FCMAE / ConvNeXt V2（Woo et al., CVPR 2023）— MIM を ConvNet へ持ち込む
+
+**[[entities/convnext-v2]] = 疎畳み込み MIM + GRN の共設計**。詳細: [[sources/convnext-v2]]。
+
+MIM は長らく「ViT 専用の技法」とみなされていた。**ConvNeXt V2 はこれを CNN 側に開いた最初の成功例**である。
+
+**なぜ CNN で MIM が難しかったか**: MAE の効率は「エンコーダが可視パッチだけを処理する」非対称設計に由来するが、CNN は密なスライディングウィンドウで動くのでマスク領域を跨いで計算してしまい、**モデルがマスク部分を周囲からコピーするショートカットを学習してしまう**。入力側に学習可能なマスクトークンを置く素朴な解（SimMIM 流）は、事前学習効率を下げ、テスト時にマスクトークンが存在しないため訓練・テストの分布不整合も生む。
+
+**FCMAE の解法**: **マスク画像を「2D の疎な画素配列」とみなし、submanifold sparse convolution で可視データ点のみを処理する**（3D 点群処理からの着想）。ファインチューニング時は特別な扱いなしに標準の密畳み込みへ戻せる。
+
+- **この 1 点の効果が決定的**: 疎畳み込みなし **79.3** → あり **83.7**（+4.4）
+- デコーダは**単一の ConvNeXt ブロック**（次元 512）。UNet 比 1.7× 高速で精度同等
+- **マスク率 0.6**（MAE の 75% より低い）、マスク単位 32×32
+- 副産物として**スループット 1.3×、メモリ 1/2**
+
+**ただし FCMAE だけでは足りなかった**——ここが本論文の肝である。V1 に FCMAE を適用しても 83.7 で、教師あり 300ep の 83.8 に届かない。原因は **特徴崩壊**（チャネル間で活性化が冗長になり、死んだ／飽和したチャネルが増える現象）で、主に次元拡大 MLP 層で起きていた。これを **GRN（Global Response Normalization）** で解決する。
+
+**GRN**: 各チャネルを空間方向の L2 ノルムで集約 → 除法正規化 $||X_i||/\sum_j||X_j||$ で**相対的重要度**を出す → 元の応答に掛け戻す。ゼロ初期化の $\gamma,\beta$ と残差接続を伴い、**実装 3 行・追加パラメータ実質ゼロ**。生物の側方抑制に着想。
+
+**co-design（共設計）が主張の中核**:
+
+| | IN-1K ft（Base） |
+|---|---|
+| V1 + 教師あり 300ep | 83.8 |
+| V1 + FCMAE（枠組みだけ） | 83.7 |
+| V2 + 教師あり（GRN だけ） | 84.3 |
+| **V2 + FCMAE（両方）** | **84.6**（1600ep で 84.9） |
+
+**枠組みだけでもアーキテクチャだけでも効かず、両方揃って初めて効く**。「自己教師あり手法は既存アーキテクチャに後から載せるもの」という業界の慣行への異議申し立てになっている。**GRN は事前学習と FT の両方に入っていないと壊滅する**（片方だけだと 78.8 / 80.6）という実験が、この不可分性を最も直接的に示す。
+
+**MIM 手法としての立ち位置**（同一条件の IN-1K 事前学習）:
+
+- **SimMIM（Swin）は全サイズで上回る**
+- **MAE（ViT）は Large まで互角**（198M で 85.8 vs ViT-L 307M で 85.9）
+- **Huge では負ける**（86.3 vs ViT-H 86.9）
+- **MoCo v3（対比学習）には勝つ**（84.9 vs 83.7）。「MIM > 対比学習」という ViT 側の知見が ConvNet でも成立
+
+> **MIM 史における意味** — [[entities/hiera]] が「MAE 互換であること」を設計目標に階層型 ViT を作り直したのと同じ *co-design* の発想を、ConvNet 側で実行したもの。**MIM がアーキテクチャを選ぶのではなく、アーキテクチャを MIM に合わせて直せばよい**という方向転換を示した。
+
+### I-JEPA（Assran et al., CVPR 2023）— MIM を「表現空間予測」へ拡張
+
+**[[entities/i-jepa]] = マスクして *画素ではなく表現* を予測**。詳細: [[sources/i-jepa]] / [[concepts/joint-embedding-predictive-architecture]]。
+
+厳密には I-JEPA は MIM（再構成型）ではなく **JEPA（予測型）** だが、「画像をマスクして欠落部を埋める」という骨格を MIM と共有するため、MIM の発展形として理解すると分かりやすい。
+
+- **MAE との決定的な違い**: MAE が「マスク → 軽量デコーダで**画素を再構成**」なのに対し、I-JEPA は「マスク → 予測器で**ターゲットエンコーダ出力（表現）を予測**」。再構成先が画素か表現かが分岐点。
+- **なぜ表現予測か**: 画素再構成は予測不能な低レベル詳細（背景・テクスチャ）まで当てさせるため意味性が下がる。表現空間なら、ターゲットエンコーダが無関係な詳細を捨てた抽象ターゲットを作るので、予測器は意味構造だけを学べる。**損失を画素空間に戻すと ImageNet-1% が 66.9 → 40.7 に激減**（[[sources/i-jepa]] 表7）し、この設計の重要性が裏づけられる。
+- **崩壊回避**: MIM は再構成ターゲットがあるので崩壊しないが、I-JEPA は表現を予測するため JEA 同様に崩壊しうる。EMA ターゲットエンコーダ（[[entities/byol]] / [[entities/dino]] の momentum）で回避する。
+- **結果**: 凍結特徴量で MAE を上回り、Clevr 深度などの低レベル・密予測で DINO/iBOT を大差で上回りつつ、iBOT 比 2.5×・MAE 比 10× の計算効率。
+
+> **MIM 3 系統の整理**: ①画素再構成（MAE/SimMIM）、②離散/外部トークン予測（BEiT / EVA / online tokenizer の iBOT）、③**表現予測（I-JEPA）**。①②が「決まったターゲット（画素・固定トークン）」を当てるのに対し、③は「EMA で共進化する自分自身の表現」を当てる点で質的に異なる。
+
 ## MIM vs 他の SSL 系統
 
 | | MIM (BEiT, MAE, iBOT) | 識別型 (SimCLR, MoCo, BYOL, DINO) |
@@ -134,6 +188,20 @@ iBOT の貢献は、MIM を**知識蒸留の枠組みで再解釈**したこと�
 | 崩壊回避 | 不要（再構成ターゲットがある） | 必須（[[concepts/self-supervised-learning]] 参照） |
 
 iBOT/DINOv2 は**ハイブリッド**で、両方の長所を取りに行く設計。これが「凍結特徴量が線形分類でも密予測でも強い」DINOv2 の性能の源泉。
+
+## MIM とアーキテクチャの相性
+
+MIM は「どのバックボーンでも動く」わけではなく、**マスクをどう表現するか**でアーキテクチャを選ぶ。
+
+| バックボーン | マスクの扱い | MIM 適性 | 代表 |
+|---|---|---|---|
+| **plain ViT** | トークンを列から取り除く | ◎ 最も自然 | [[entities/mae]] |
+| **階層型 ViT（窓 attention）** | 窓構造がマスクと干渉 | △ 工夫が要る | Swin + SimMIM |
+| **階層型 ViT（pool attention）** | MAE 互換を設計目標に据えた | ◎ | [[entities/hiera]] |
+| **ConvNet（素朴）** | 密な畳み込みがマスクを跨ぐ → 情報漏洩 | ✗ | ConvNeXt V1 + MAE（83.7、教師あり以下） |
+| **ConvNet（疎畳み込み）** | 可視画素のみ演算し漏洩を遮断 | ◎ | [[entities/convnext-v2]] + FCMAE |
+
+**この表の含意**: [[entities/hiera]] と [[entities/convnext-v2]] はどちらも「**MIM に合わせてアーキテクチャを直す**」という同じ発想（co-design）に立っている。MIM が普及した結果、**アーキテクチャ設計の評価軸に「MIM と組めるか」が加わった**というのが 2022-2023 年の重要な変化。
 
 ## 関連する歴史的線
 
@@ -160,3 +228,8 @@ CV 側の系譜:
 - [[concepts/vision-transformer]] — MIM の主要ターゲットアーキテクチャ
 - [[sources/eva-x]] / [[entities/eva-x]] — EVA-02 系統の医療版（npj Digital Medicine 2025）。凍結 EVA-CLIP トークナイザ × MIM で胸部 X 線基盤モデル構築
 - [[sources/i-synmed]] / [[entities/i-synmed]] — 対比される医療 X 線 SSL（DDPM 合成 + DINO、MIM ではない）
+- [[sources/i-jepa]] / [[entities/i-jepa]] — MIM の「再構成」を「表現予測」に置き換えた JEPA 系。MAE の直接の対照群
+- [[concepts/joint-embedding-predictive-architecture]] — I-JEPA が確立した「表現空間予測」パラダイムの解説
+- [[sources/convnext-v2]] / [[entities/convnext-v2]] — 疎畳み込み（FCMAE）+ GRN で **MIM を ConvNet へ開いた**研究
+- [[concepts/convolutional-neural-network]] — CNN 側の背景。BN がマスク入力と相性が悪い理由など
+- [[entities/hiera]] — 「MAE 互換であること」を設計目標に据えた階層型 ViT。ConvNeXt V2 と同じ co-design

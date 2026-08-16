@@ -19,6 +19,7 @@
 - [[sources/dinov3]] — DINOv3（Siméoni et al., 2025）。ViT-7B × LVD-1689M に scale、Gram anchoring で dense feature 劣化を解決。凍結バックボーンで PE / SigLIP 2 に対し dense タスクで広く優位、SOTA 多数更新。**ただし PE PEspatial が後に SAM 2.1 蒸留 + 自己蒸留で dense SOTA を部分的に奪還、最大スケール ADE20k 等では DINOv3 7B が依然優位**（[[sources/perception-encoder]] 参照）。
 - [[sources/mae]] — MAE（He et al., 2021/CVPR 2022）。「画像の 75% をマスクして残り 25% から画素を再構成」というシンプルな SSL。非対称 encoder-decoder で ViT-H を IN1K のみで 87.8% 達成。CV MIM の中核手法。
 - [[sources/ibot]] — iBOT（Zhou et al., 2021/ICLR 2022）。**online tokenizer** を提案し、DINO の自己蒸留と MIM を統合。DINOv2/DINOv3 の損失関数の直接の源。
+- [[sources/i-jepa]] — I-JEPA（Assran et al., **Yann LeCun** ら, 2023/CVPR 2023）。**「1 つのコンテキストブロックから、同じ画像の複数ターゲットブロックの *表現* を予測する」** データ拡張なしの SSL。MAE の「画素再構成」を「表現空間予測」に置き換えた、**JEPA（[[concepts/joint-embedding-predictive-architecture]]）の最初の本格的画像実装**。**3 ViT 構成**（コンテキストエンコーダ + EMA ターゲットエンコーダ + 狭い予測器 384ch）+ **multi-block マスキング**（意味的ターゲット 4 個 scale 0.15-0.2 + 情報量豊富なコンテキスト 1 個 scale 0.85-1.0）+ **L2 損失のみ**。**ターゲットはエンコーダ *出力* をマスク**（入力マスクだと 67.3→56.1）、**損失は表現空間**（画素空間だと IN-1% 66.9→40.7 激減）が 2 大設計判断。**IN-1K linear**: ViT-H/14 79.3 / ViT-H/16₄₄₈ **81.1**（拡張あり iBOT ViT-L 81.0 に並ぶ、拡張なし MAE/CAE/data2vec 圧倒）。**Clevr 深度 72.4**（DINO 53.4 / iBOT 62.8 を大差で上回る、低レベル・密予測の汎用性）。**ViT-H/14 を 16× A100 で 72 時間未満**（iBOT ViT-S/16 比 2.5× 速、MAE ViT-H/14 比 10× 効率、約 5× 少ない反復で収束）。**V-JEPA / V-JEPA 2（動画）へ続く LeCun 世界モデル構想の起点**。**凍結特徴量の絶対性能では後の DINOv2 に及ばず**、価値は計算効率・低レベル汎用性・拡張不要にある。
 - [[sources/clip]] — CLIP（Radford et al., 2021/ICML 2021）。4 億画像-テキスト対 + 対比学習で「a photo of a {class}」プロンプトによるゼロショット分類を実現。現代マルチモーダル AI の起点。
 - [[sources/segment-anything]] — SAM（Kirillov et al., 2023/ICCV 2023）。promptable segmentation という新タスクを定義し、データエンジンで 1.1B マスクを構築。CV における初の本格的セグメンテーション基盤モデル。
 - [[sources/sam-2]] — SAM 2（Ravi et al., 2024/ICLR 2025）。SAM を動画に拡張、streaming memory + Hiera 画像エンコーダ。SA-V（35.5M マスク / 642.6K masklet / 50.9K 動画、CC by 4.0）を構築。画像でも SAM v1 比 6× 高速。
@@ -60,6 +61,12 @@
 - [[sources/foundational-models-vision-survey]] — Foundational Models in Vision Survey（Awais et al., MBZUAI ら, arXiv:2307.13721 / IEEE TPAMI）。**CV 基盤モデルを「テキスト・プロンプト型 / 視覚プロンプト型 / 異種モダリティ型 / 身体性型」の 4 軸で体系的に分類**、CLIP / SAM / PaLM-E など 100+ モデルを共通の分類体系（taxonomy）に位置付けた survey。テキスト・プロンプト型はさらに CL / Generative / Hybrid / Conversational の 4 サブカテゴリに、汎用 vs 視覚グラウンディングで 2 分割。Sec. 2 で 4 種アーキテクチャ・スタイル（Dual-Encoder / Fusion / Encoder-Decoder / Adapter LLM）を定義。本 wiki の VL 基盤モデルすべて（CLIP / SigLIP / GLIP / Grounding-DINO / Qwen-VL 系 / InternVL 系 / Gemma 3 / DeepSeek-OCR / SAM 系等）に「鳥瞰図」を与える。**スコープ外**: 純粋画像 SSL（DINOv2/DINOv3/MAE 等）と画像生成系（拡散モデル等）は対象外（明示的に除外）。
 - [[sources/internvl-3-5]] — InternVL 3.5（Wang et al., InternVL Team Shanghai AI Lab, 2025 Aug, technical report）。**「InternVL シリーズ第 8 世代、商用 GPT-5 との差をオープンソース最小に縮める」**: GPT-5（2025 Aug 7）直後の発表で **GPT-5 との Aggregate 差 3.9%** という当時オープンソース最小。**3 つの中核イノベーション**: (1) **Cascade Reinforcement Learning**（offline RL = [[entities/mpo\|MPO]] で warm-up + online RL = **GSPO（Geometric mean Sequence-level PPO、reference model 制約なし、トークン単位の geometric mean importance ratio）** で精緻化、coarse-to-fine 戦略、**GSPO 単独の半分の GPU 時間で +2.1 ポイント上回る**）、(2) **Visual Resolution Router (ViR) + Visual Consistency Learning (ViCO)**（patch ごとに 1/4 or 1/16 圧縮率を semantic richness で動的選択、視覚トークン 50% 削減で性能 99% 維持）、(3) **Decoupled Vision-Language Deployment (DvD)**（ViT/MLP/ViR を vision server、LLM を language server に分離、BF16 視覚特徴を TCP/RDMA で転送、**非同期 3 段階パイプライン** で 896 解像度時 **4.05× 推論加速**）。**MoE スケーリング初導入**: **20B-A4B（GPT-OSS-20B、OpenAI 公開モデル統合）/ 30B-A3B（Qwen3）/ 241B-A28B（最大）**。**9 サイズ × dense + MoE × Flash 効率版**で合計 18+ モデルのスイート。**LLM が Qwen3 系に統一**（InternVL 3 の Qwen2.5 から更新）。**主要結果**: MMMU **77.7（オープンソース新 SOTA、Claude-3.7-Sonnet 75.0 / Gemini-2.5-Pro 74.7 / GPT-5-nano 72.6 全部超え、GPT-5 84.2 に -6.5）**、MathVista **82.7（GPT-5 81.9 +0.8、Claude-3.7-Sonnet 66.8 / Gemini-2.5-Pro 80.9 超え）**、**VSI-Bench 69.5（GPT-5 37.5 を +32 圧倒、空間推論の新水準）**、WildVision **82.8（GPT-4o 80.6 +2.2）**、WindowsAgentArena でも GPT-4o 3.5 を圧倒、WebArena-Lite-v2 **11.7（GPT-4o 1.9 の 6×）**。**Cascade RL が全モデルサイズで SFT 単独から +6-12 ポイント改善**（2B モデルで +12.2 最大、241B-A28B で +6.5）。**Parallel Thinking（Best-of-N + VisualPRM-v1.1）でさらに +1-9 ポイント**。**マルチモーダル化で言語強化を [[entities/internvl-3\|InternVL 3]] から継続実証**（Qwen3-base 比で 1B が +6.7、241B が +2.3、16/16 ベンチで Qwen3 超え）。**全モデルとコード公開**。**弱点**: Reasoning Overall で GPT-5 に -7.2、Text Overall で -6.0、241B 全 load にエンタープライズ級 GPU 必要。**InternVL シリーズ現時点最新版**。
 
+- [[sources/convnext]] — ConvNeXt「A ConvNet for the 2020s」（Liu et al., FAIR + UC Berkeley, CVPR 2022）。**「ViT が CNN を置き換えた」という物語への最も影響力のある反証**。ResNet-50 を出発点に、訓練レシピと設計選択を 1 つずつ Transformer 流に「近代化」する対照実験を行い、**attention を一切使わない純粋 ConvNet で Swin Transformer を上回る**ことを示した。**近代化 13 段階**（Appendix C 表10 に全数値）: 76.13 →（**訓練レシピ強化のみで 78.82、+2.7**）→ stage ratio 3:4:6:3→**3:3:9:3** 79.36 → **patchify stem** 4×4 s4 79.51 → depthwise conv 78.28（一旦低下）→ **幅 64→96** 80.50 → **inverted bottleneck** 80.64 → depthwise を上に移動 79.92（一時低下）→ **カーネル 7×7**（7 で飽和、9/11 は不採用）80.57 → ReLU→GELU 80.62（**ほぼ無効 +0.05**）→ **活性化を 1 個に 81.27（+0.65、Swin-T 81.30 に並ぶ）** → 正規化を 1 個に 81.41（Swin-T 超え）→ **BN→LN** 81.47 → **独立ダウンサンプリング層 + LN 81.97 = ConvNeXt-T**。**最大の発見: 性能差の最大の単一要因は帰納バイアスではなく訓練レシピ**（総改善幅 5.84 のうち約 46%）で、「ViT が CNN より強い」とされた差の多くは**比較対象の ResNet が 2015 年のレシピの古い数字だった**ことに由来する。**主要結果**: IN-1K **87.8%**（XL, IN-22K, 384²）/ COCO Cascade Mask R-CNN **55.2 AP^box / 47.7 AP^mask** / ADE20K UperNet **54.0 mIoU** / **A100 で Swin 比最大 +49% スループット**（Appendix E、V100 では僅差 — 新しいハードほど ConvNeXt 有利）/ isotropic 版も ViT と互角（ConvNeXt-B iso 82.0 vs ViT-B 81.8、訓練メモリは少ない）/ 頑健性 IN-A 69.3・IN-R 68.2・Sketch 55.0・mCE 38.8（Appendix B）。**Appendix C の非自明な知見**: 近代化の効き方は**モデル規模に依存**（ResNet-200 領域では inverted bottleneck が **+0.79 vs +0.14**、カーネルは **7 でなく 5 で飽和**、正規化削減が +0.46 vs +0.14）。**BN を持つモデルでは EMA が性能を著しく害する**（Appendix A.1）。**限界**: 検証が分類・検出・セグの「認識」タスクに閉じ、言語接続や SSL スケールは射程外（Appendix F で著者自身がマルチモーダルの cross-attention を弱点と明記）。実際その後主流は ViT に収束したが、**[[entities/dinov3]] の ConvNeXt 蒸留版**として量子化・エッジ用途に定着した。
+
+- [[sources/convnext-v2]] — ConvNeXt V2「Co-designing and Scaling ConvNets with Masked Autoencoders」（Woo et al., FAIR + NYU + KAIST, CVPR 2023）。**[[sources/convnext|ConvNeXt V1]] に MAE を素直に組み合わせると失敗する**（教師あり 300ep 83.8 に対し V1+FCMAE 83.7）ところから出発し、**FCMAE と GRN の *co-design*（共設計）**で解決した論文。**「CNN は MIM と相性が悪い」という V1 時点の制約を CNN 側から正面突破した**。**FCMAE**: マスク画像を「2D の疎な画素配列」とみなし **submanifold sparse convolution で可視画素のみ処理**して情報漏洩（コピー＆ペーストのショートカット学習）を遮断。**この 1 点で 79.3 → 83.7（+4.4）**。マスク率 0.6（MAE の 75% より低い）、マスク単位 32×32、デコーダは**単一 ConvNeXt ブロック**（UNet 比 1.7× 高速）、FT 時は密畳み込みへ復帰可。**GRN（Global Response Normalization）**: FCMAE 訓練時に起きる**特徴崩壊**（チャネル間で活性化が冗長化）を、各チャネルの空間 L2 ノルム → 除法正規化 $||X_i||/\sum_j||X_j||$ → 較正、で解決。ゼロ初期化 γ/β + 残差で恒等写像から始まり、**実装 3 行・追加パラメータ実質ゼロ**。**co-design の実証（表3）**: FCMAE だけ 83.7 / GRN だけ 84.3 / **両方 84.6**、しかも**モデルが大きいほど差が開く**（L で +1.3）。GRN は**事前学習と FT の両方に入っていないと壊滅**（片方だけで 78.8 / 80.6）。**主要結果**: IN-1K **88.9%**（H @512², IN-22K 中間 FT、**公開データのみで当時 SOTA**、MViTV2-H 88.8 / MaxViT-XL 88.7 超え）/ COCO Mask R-CNN **55.7 AP^box / 48.9 AP^mask** / ADE20K **55.0 mIoU（22K ft 640² で 57.0）**/ **8 サイズ全てで V1 教師ありを +0.8〜+1.5**（MIM の恩恵が 3.7M〜660M という広範囲で実証されたのは初）。**Appendix の知見**: 疎符号化で**スループット 1.3×・メモリ 1/2**、**クラス選択性指標で V2 は深層が二峰性**（よりクラス汎用的 → 転移しやすい）、**MoCo v3（対比学習）に勝つ**（84.9 vs 83.7）。**弱点**: Huge で ViT-H MAE に負ける（86.3 vs 86.9）、ADE20K Base で Swin-B SimMIM に負ける（52.1 vs 52.8）、疎畳み込みライブラリ依存で V1 の「標準モジュールのみ」の単純さから後退、**線形プロービング/k-NN の評価が皆無**（凍結特徴量の質が不明）、言語との接続性は射程外のまま。
+
+- [[sources/swin-transformer]] — Swin Transformer（Liu et al., Microsoft Research Asia, **ICCV 2021 最優秀論文賞 / Marr Prize**）。**「局所窓の中だけで self-attention し、次の層で窓を半分ずらす」だけで ViT を汎用視覚バックボーンに変えた論文**。ViT が検出・セグメンテーションに使えなかった 2 つの原因（**視覚的実体のスケール変動**と、self-attention が画像サイズに対して**二次の計算量**を持つこと）を、**CNN が元から持っていた階層性と局所性を Transformer に輸入する**ことで解決した。**3 つの中核技法**: (1) **W-MSA**（窓サイズ M=7 固定の窓内 attention、$\Omega=4hwC^2+2M^2hwC$ で**画像サイズに線形**）、(2) **SW-MSA**（次のブロックで窓を M/2 ずらし窓間結合を作る。**sliding window 比 4.1×（naive）/ 1.5×（カーネル最適化）高速で精度は同等** — 同じ窓内の query が key 集合を共有しメモリアクセスが効率的なため）、(3) **cyclic shift + マスク**（窓をずらすと窓数が増える問題を特徴マップの巡回シフトで回避、13-18% 高速化）。さらに **patch merging**（2×2 連結 → 線形）で **CNN と同じ解像度系列 H/4→H/8→H/16→H/32** を作り、FPN / UperNet にそのまま差し込める。**[CLS] トークンなし**（大域平均プーリング）、**絶対位置埋め込みなし**（窓内**相対位置バイアス** $(2M-1)^2$ の表）。**主要結果**: IN-1K Swin-T **81.3**（DeiT-S +1.5）/ Swin-L ‡ 384² **87.3** / **COCO test-dev 58.7 box AP・51.1 mask AP**（従来 SOTA を +2.7 / +2.6 更新）/ **ADE20K 53.5 mIoU**（SETR +3.2）。4 つの検出フレームワークすべてで ResNet-50 → Swin-T の差し替えだけで **+3.4〜+4.2 box AP**。**アブレーション**: シフト窓が分類 +1.1 / 検出 +2.8 AP / セグ +2.8 mIoU（**密予測ほど効く**）、**絶対位置埋め込みは分類 +0.4 だが検出 -0.2 AP・セグ -0.6 mIoU と害**。著者は「**ある種の平行移動不変性を促す帰納バイアスは汎用視覚モデル化に依然望ましい**」と ViT/DeiT に反論。**Appendix の知見**: 入力 224²→384² で 81.3→82.2（スループットは 1/3.4）、ResNe(X)t 比較は**オプティマイザを AdamW に揃えて公正化**（R50 が SGD 45.0 → AdamW 46.3）、**Swin-Mixer**（階層 + シフト窓を MLP-Mixer に移植）で **MLP-Mixer 76.4 → 81.3**・shift を外すと -1.0 → **シフト窓は self-attention 固有ではない**。**弱点**: 実装が複雑（cyclic shift + マスク + RPB + W/SW ペア制約でブロック数が偶数必須）、**MIM と相性が悪い**（窓構造がマスクと干渉、SimMIM が必要）、可変解像度に弱い（RPB が窓サイズに紐づき bi-cubic 補間が要る）、速度比較は実装成熟度の差を含む（著者自ら「ResNe(X)t は最適化された cuDNN、我々は PyTorch 組み込み」と明記）。後に [[entities/convnext]] と [[entities/hiera]] の双方から簡素化の批判を受ける。
+
 ### Articles
 
 （まだありません）
@@ -71,6 +78,7 @@
 - [[translations/dinov3]] — DINOv3 原論文（§1-10 + Abstract）の全文和訳。Appendix と References は除外。
 - [[translations/mae]] — MAE 原論文の全文和訳。**Appendix A〜C を含む**（References のみ除外）。
 - [[translations/ibot]] — iBOT 原論文の全文和訳。**Appendix A〜G を含む**（References のみ除外）。
+- [[translations/i-jepa]] — I-JEPA 原論文の全文和訳。Abstract + §1-10 + **Appendix A〜E を含む**（References と Acknowledgments のみ除外、ユーザー指示で Appendix 含む）。図 1-8 + 付録の図 7-8 を `<figure>` で埋め込み（図 2 は EBM の (a)JEA / (b)Generative / (c)JEPA を x2/x3/x4 で 3 分割）、表 1-15 を含む。multi-block マスキング詳細、3 ViT 構成、L2 損失式、EMA 更新、全アブレーション（ターゲット出力マスク / 表現空間予測 / マスキング戦略 / ターゲット・コンテキストスケール / ターゲット数 / 予測器の深さ・幅 / weight decay）、RCDM 可視化を含む。
 - [[translations/clip]] — CLIP 原論文の全文和訳。**Appendix A〜F を含む**（References のみ除外）。
 - [[translations/segment-anything]] — SAM 原論文の全文和訳。**Appendix A〜G を含む**（References のみ除外）。
 - [[translations/sam-2]] — SAM 2 原論文の全文和訳。**Appendix A〜G を含む**（References のみ除外）。
@@ -112,6 +120,12 @@
 - [[translations/foundational-models-vision-survey]] — Foundational Models in Vision Survey の本文和訳。Abstract + §1-9（References §後を除外、Appendix なし）。図 1（進化タイムライン）/ 図 2（4 アーキテクチャ・スタイル）/ 図 3（taxonomy 全体図）/ 図 4（CLIP 変種）/ 図 5（CLIP の局所化失敗例）/ 図 13（SAM）/ 図 14（SAM 医療適応）/ 図 15（PaLM-E）を `<figure>` で埋め込み、表 II（テキスト・プロンプト型モデル一覧）を含む。CL（CLIP, ALIGN, FILIP, FLIP, EVA-CLIP, OpenCLIP 等）/ Visual Grounding CL（GLIP, Grounding-DINO, RegionCLIP, OWL-ViT, OpenSeg, GroupViT）/ Generative（Frozen, Flamingo, KOSMOS, SimVLM, PaLI）/ Hybrid（FLAVA, BLIP, BLIP-2, InstructBLIP, CoCa, UNITER）/ Conversational VLM（GPT-4, MiniGPT-4, LLaVA, Video-ChatGPT, LLaMA-Adapter V2）/ Visually Prompted（SAM, SegGPT, SEEM, CLIPSeg, MedSAM, AutoSAM, MobileSAM 等）/ Generalist（Painter, VisionLLM, Prismer）/ Heterogeneous（CLIP2Video, AudioCLIP, ImageBind, MACAW-LLM, COSA, Valley）/ Embodied（PaLM-E, ViMA, MineDojo, VOYAGER, LM-Nav）/ Open Challenges 8 項（Multimodal Open-source, Evaluation, Hallucination, Multimodal Alignment, Data/Compute, FM Adaptation, Adversarial, Bias, Interpretability, Contextual Understanding, Real-world Understanding）を網羅。
 - [[translations/internvl-3-5]] — InternVL 3.5 原論文の本文和訳。Abstract + §1-4（References は除外）。図 1-5 を `<figure>` で埋め込み、表 1-18 を含む（9 サイズモデルカタログ、全 35 ベンチマーク比較、Reasoning + Math、OCR/Chart/Document、Multi-Image + Real-World、Comprehensive + Hallucination、Grounding、Multilingual、Video、GUI、Embodied、SVG、LLM 16 ベンチ、Cascade RL アブレーション、Cascade RL vs MPO vs GSPO 効率、ViR Flash 性能維持、DvD + ViR 加速）。Cascade RL（MPO + GSPO）、ViR + ViCO の数式、DvD、MoE モデル設計を含む。
 
+- [[translations/convnext]] — ConvNeXt 原論文の全文和訳。Abstract + §1-6 + **Appendix A〜G を全訳**（References と Acknowledgments のみ除外、ユーザー指示で Appendix 含む）。図 1-4 を `<figure>` で埋め込み（**原典 markdown に画像がなく ar5iv にもホストされていなかったため、arXiv e-print ソース同梱の PDF から生成**）、表 1-12 を markdown 化して収録（表9 の ResNet-50 / ConvNeXt-T / Swin-T 層別仕様は MathML から平易記法に再構成）。近代化 13 段階の全数値（表10/11、ResNet-50 と ResNet-200 の両領域）、訓練・ファインチューニング設定（表5/6）、頑健性評価（表8）、A100 スループット（表12）、限界（Appendix F）と社会的影響（Appendix G）を含む。
+
+- [[translations/convnext-v2]] — ConvNeXt V2 原論文の全文和訳。Abstract + §1-7 + **Appendix A〜D を全訳**（References と Acknowledgments のみ除外、ユーザー指示で Appendix 含む）。図 1-8 を `<figure>` で埋め込み（**原典 markdown には図 2・3・5 のみ画像があったため、残り 5 点は arXiv e-print ソースから生成**）、表 1-16 を markdown 化して収録。FCMAE の疎畳み込み設計、GRN の数式と PyTorch 擬似コード、デコーダ・GRN の全アブレーション（表1・表2 各 6 サブテーブル）、8 サイズのモデル構成（Appendix A.1）、事前学習・FT の全ハイパーパラメータ（表8-13）、V1 との完全比較（表14/15）、疎符号化効率とクラス選択性指標（Appendix C）、GRN 構成要素分析・マスク率・MoCo v3 比較（Appendix D）を含む。
+
+- [[translations/swin-transformer]] — Swin Transformer 原論文の全文和訳。Abstract + §1-5 + **Appendix A1〜A3 を全訳**（References のみ除外、ユーザー指示で Appendix 含む）。図 1-4 を `<figure>` で埋め込み（**原典 markdown には図 1・2 のみ画像があったため、図 3・4 は arXiv e-print ソースから生成**）、表 1-10 を markdown 化して収録。W-MSA / SW-MSA の計算量の式、連続ブロックの 4 本の更新式、相対位置バイアスの式、cyclic shift の説明、4 バリアント構成、ImageNet / COCO（3 表）/ ADE20K の全結果、シフト窓と位置符号化のアブレーション（表4）、自己注意手法の実速度比較（表5/6）、詳細アーキテクチャ仕様（表7）、全実験設定（Appendix A2）、入力サイズ別性能（表8）、ResNe(X)t のオプティマイザ比較（表9）、Swin-Mixer（表10）を含む。
+
 ## Concepts
 
 - [[concepts/self-supervised-learning]] — SSL（自己教師あり学習）の全体像。対比型・非対比型・クラスタリング型・マスク再構成型・ハイブリッド型、momentum encoder と multi-crop の解説を含む。
@@ -119,6 +133,7 @@
 - [[concepts/knowledge-distillation]] — 知識蒸留の基礎（dark knowledge, soft target, 温度付き softmax）と DINO 流 self-distillation との対比。
 - [[concepts/knn-evaluation-protocol]] — SSL の表現品質を測る k-NN 評価。なぜ DINO で特に注目されたか。
 - [[concepts/masked-image-modeling]] — MIM（BERT 流マスク予測の画像版）。BEiT, MAE, iBOT, SimMIM の系譜。
+- [[concepts/joint-embedding-predictive-architecture]] — JEPA（結合埋め込み予測アーキテクチャ）。Yann LeCun 提唱の世界モデル構想。「マスク → 画素ではなく**抽象表現空間**で予測」。対比型（JEA）でも生成型（MAE）でもない SSL の第 3 系統。EBM での 3 アーキテクチャ対比、崩壊回避（EMA）、I-JEPA → V-JEPA 系譜を解説。
 - [[concepts/denoising-autoencoder]] — DAE。MAE / BERT MLM / 拡散モデルなど現代 SSL の理論的祖先。「破損 → 再構成」枠組み。
 - [[concepts/foundation-model]] — 基盤モデルの定義と歴史。NLP（BERT/GPT）から CV（CLIP, DINOv2, DINOv3）への系譜、必要要件と批判。
 - [[concepts/weakly-supervised-pretraining]] — 弱教師あり事前学習（CLIP, ALIGN, OpenCLIP, SigLIP, PE）。SSL との対比、長所と弱点。
@@ -134,6 +149,8 @@
 - [[concepts/alignment-tuning]] — Perception Encoder が定義したファインチューニング戦略。「事前学習済みエンコーダの中間層にすでに眠っている特徴を、短い alignment 段階で最終層に引き出す」。PE では言語アラインメント（PElang）と空間アラインメント（PEspatial、SAM 2.1 mask logits + 自己層 41 の 2 教師）の 2 種で具体化。
 - [[concepts/object-detection]] — 物体検出タスク全体の俯瞰。R-CNN ファミリー（Two-stage）→ YOLO/SSD/RetinaNet（Single-stage anchor-based）→ CenterNet/FCOS（Anchor-free）→ **DETR（集合予測パラダイム）** → Promptable/Foundation model 時代（SAM/SAM 3/PE）という系譜整理。DETR ファミリー（Deformable DETR, DINO-detector, DETA, CoDETR）も網羅。
 
+- [[concepts/convolutional-neural-network]] — CNN / ConvNet の解説。**局所性・重み共有・平行移動同変性**という 3 つの帰納バイアス（**同変性と不変性の違い**も整理）、計算共有がなぜ高解像度で効くか、系譜（LeNet → AlexNet → VGG → Inception → ResNet → ResNeXt → MobileNetV2 → EfficientNet → RegNet → ConvNeXt）、主要部品（stem / stage 構成 / bottleneck と inverted bottleneck / grouped・depthwise conv / カーネルサイズ / **BN vs LN** / 「部品を減らす」設計）を [[sources/convnext]] の対照実験データ付きで解説。「CNN は終わったのか」節で 2020 ViT → 2021 Swin → 2022 ConvNeXt → 2023〜 ViT 収束という現在地を整理。
+
 ## Entities
 
 ### Models
@@ -143,6 +160,7 @@
 - [[entities/dinov3]] — DINOv3 モデル群（ViT-S〜7B + ConvNeXt + dino.txt, LVD-1689M で学習, Gram anchoring, RoPE）
 - [[entities/ibot]] — iBOT（Zhou et al., 2021/ICLR 2022）。DINO + MIM の online tokenizer 統合。DINOv2/DINOv3 の損失関数の直接の源。
 - [[entities/mae]] — MAE（He et al., 2021）。マスクオートエンコーダ。CV MIM の中核手法、iBOT/DINOv2/DINOv3 の MIM 損失の源流。
+- [[entities/i-jepa]] — I-JEPA（Meta AI / FAIR, **Yann LeCun** ら, CVPR 2023）。3 ViT 構成（コンテキストエンコーダ + EMA ターゲットエンコーダ + 狭い予測器 384ch、[cls] なし）+ multi-block マスキング + L2 損失。バリアント ViT-B/L/H/14・H/16₄₄₈・G/16。IN-1K linear 最大 81.1、Clevr 深度で DINO/iBOT 圧倒、ViT-H/14 を 16× A100 72h 未満。**MAE の対照群**（画素再構成 vs 表現予測）、**JEPA（[[concepts/joint-embedding-predictive-architecture]]）の画像実装**、V-JEPA / V-JEPA 2 の起点。`github.com/facebookresearch/ijepa`。
 - [[entities/clip]] — CLIP（OpenAI, 2021）と OpenCLIP（LAION）。弱教師あり代表、DINOv2 の主要ベースライン。
 - [[entities/dfn]] — Apple の **DFN（Data Filtering Networks、2023、ICLR 2024）**。**Qwen2-VL / Qwen2.5-VL の 675M ViT 初期化に DFN-CLIP が採用された、MLLM 視覚エンコーダの直接原典**。**手法 = DFN（小さな CLIP モデルでデータ選別）+ 誘導データセット = DFN-2B（2B サンプル、DataComp 12.8B から 15%）/ DFN-5B（5B、42B プールから）**。**最高モデル DFN5B-CLIP-ViT-H-14-378 が ImageNet ZS 84.4%**（当時の SOTA、LAION-2B/DataComp-1B/WIT/MetaCLIP/WebLI 凌駕）。**HQITP-350M（Apple 内部の 357M 人間検証済みキャプション、非公開）で DFN を訓練、OAI-Init + COCO/Flickr/IN ファインチューン + 重みアンサンブル**。**3 つの非自明発見**: (1) フィルタ性能 ≠ IN 性能、(2) データ品質が決定的（汚染で即座崩壊）、(3) CLIP フィルタ > バイナリ分類器。**Apple HF**: apple/DFN5B-CLIP-ViT-H-14-{224,378} / apple/DFN2B-CLIP-ViT-L-14 / apple/DFN2B-CLIP-ViT-B-16、DFN-2B データセット公開。**[[entities/qwen2-vl|Qwen2-VL]] / [[entities/qwen2-5-vl|Qwen2.5-VL]] で採用**、[[entities/qwen3-vl|Qwen3-VL]] では SigLIP-2 に切り替え。データ中心 AI ムーブメントの代表。
 - [[entities/perception-encoder]] — Meta の Perception Encoder（NeurIPS 2025）。**PEcore / PElang / PEspatial の 3 バリアント**。対比学習をスケールするだけで中間層に多目的特徴が育つことを発見、alignment tuning（[[concepts/alignment-tuning]]）で末端に引き出す。MLLM・検出・dense 予測すべてで SOTA。
@@ -176,6 +194,9 @@
 - [[entities/sam-2]] — SAM 2（Meta, 2024）。SAM の動画拡張版。Hiera 画像エンコーダ + streaming memory、Hiera-T/S/B+/L 4 種、Apache 2.0。画像でも SAM v1 比 6× 高速。
 - [[entities/sam-3]] — SAM 3（Meta Superintelligence Labs, 2025）。PCS タスクを導入、PE backbone + DETR detector + presence head + SAM 2 tracker。Apache 2.0 想定。SA-Co/Gold で人間性能の 74% 達成。
 - [[entities/hiera]] — Hiera（Meta, 2023）。MAE 互換の階層型 ViT、shifted window や RPB を削除したシンプル設計。SAM 2 の画像エンコーダ。
+- [[entities/swin-transformer]] — Swin Transformer（Microsoft Research Asia, **ICCV 2021 最優秀論文賞**）。**階層型 ViT の元祖にして、2021-2023 年の検出・セグメンテーション系の事実上の標準バックボーン**。名前は **S**hifted **win**dows の略。4 段階（H/4→H/8→H/16→H/32、patch merging でダウンサンプリング）+ **W-MSA / SW-MSA を必ずペアで使う**ブロック（ゆえに各段階のブロック数は偶数）+ 窓内**相対位置バイアス**。パッチ 4×4、窓 M=7、head 次元 32、[CLS] なし（GAP）。**T (29M, {2,2,6,2}) / S (50M, {2,2,18,2}) / B (88M, C=128) / L (197M, C=192)**、Swin-L は IN-22K 事前学習のみ。IN-1K 81.3/83.0/83.5、Swin-L ‡ 384² **87.3** / COCO **58.7 box AP** / ADE20K **53.5 mIoU**。**採用先**: [[entities/glip]]（GLIP-L = Swin-L）/ [[entities/grounding-dino]]（-T 172M / -L 341M）/ [[entities/dino-detector]]（**DINO-SwinL で COCO 63.3 AP**）/ [[entities/grounding-dino-1-5]] / [[entities/dino-x]]。**批判**: [[entities/convnext]] が「ConvNet の性質を輸入するくらいなら ConvNet を近代化せよ」（ConvNeXt-T 82.1 > Swin-T 81.3、A100 で最大 +49% 高速）、[[entities/hiera]] が「MAE で事前学習すれば shifted window も RPB も要らない」（Hiera-B 51M 84.3 > Swin-B 88M 83.5）。**MIM と相性が悪く** SimMIM が必要だったことが両者を生む動機になった。MIT ライセンス、`github.com/microsoft/Swin-Transformer`、`timm` / `mmdetection` / `mmsegmentation` 収録。後続の **Swin V2** は本 wiki 未取り込み（SwinV2-G として [[entities/dino-detector]] 等で言及）。
+- [[entities/convnext]] — ConvNeXt（FAIR + UC Berkeley, CVPR 2022）。**attention を持たない純粋 ConvNet**。ブロックは `d7×7 → LN → 1×1(C→4C) → GELU → 1×1(4C→C)` の一直線で、**正規化 1 個・活性化 1 個**しか持たない（ResNet ブロックの BN×3 + ReLU×3 より少ない）。patchify stem（4×4 s4）+ stage ratio 3:3:9:3 or 3:3:27:3 + 独立ダウンサンプリング層。**T (29M) / S (50M) / B (89M) / L (198M) / XL (350M)** の 5 バリアント + isotropic 版。IN-1K **87.8%**（XL, 22K, 384²）/ COCO **55.2 AP^box** / ADE20K **54.0 mIoU** / A100 で Swin 比 **最大 +49%** スループット。**完全畳み込みゆえ位置埋め込みの補間が不要**で解像度変更が容易な一方、**マスクトークンを扱えず MIM と相性が悪い**（[[entities/hiera]] が MAE 互換を選んだのと対照的）。MIT ライセンス、`github.com/facebookresearch/ConvNeXt`、`timm` 収録。**[[entities/dinov3]] が ViT-7B から ConvNeXt-T/S/B/L を蒸留**し量子化・エッジ向けに配布。後継は [[entities/convnext-v2]]（FCMAE + GRN で MIM 非互換を解決）。
+- [[entities/convnext-v2]] — ConvNeXt V2（FAIR + NYU + KAIST, CVPR 2023）。**V1 ブロックに GRN 層を 1 つ足し LayerScale を消しただけ**の最小変更 + **疎畳み込みベースの MIM 事前学習（FCMAE）**。**8 サイズ: Atto 3.7M / Femto 5.2M / Pico 9.1M / Nano 15.6M / Tiny 28.6M / Base 89M / Large 198M / Huge 659M**（V1 の XL は廃止、超軽量帯と Huge を新設）。**FCMAE**: マスク画像を 2D 疎配列とみなし submanifold sparse conv で可視画素のみ処理（**疎畳み込みなし 79.3 → あり 83.7**）、マスク率 0.6、デコーダは単一 ConvNeXt ブロック（UNet 比 1.7× 高速）、FT 時は密畳み込みに戻せる。**GRN**: 各チャネルの空間 L2 ノルム → 除法正規化 → 較正、ゼロ初期化 γ/β + 残差、**実装 3 行・追加パラメータ実質ゼロ**。**IN-1K 88.9%**（H @512², IN-22K 中間 FT、公開データのみで当時 SOTA）/ COCO **55.7 AP^box** / ADE20K **55.0 mIoU（22K ft 640² で 57.0）**。**全 8 サイズで V1 教師ありを +0.8〜+1.5 上回る**。**V2-Base が V1-Large を、V2-Large が V1-XLarge を上回る**。MAE(ViT) とは Large まで互角（198M で 85.8 vs 307M で 85.9）だが **Huge では負ける**（86.3 vs 86.9）、SimMIM(Swin) は全サイズで上回る、MoCo v3 にも勝つ（84.9 vs 83.7）。`github.com/facebookresearch/ConvNeXt-V2`、`timm` 収録。**弱点**: 疎畳み込みライブラリ依存、**線形プロービング/k-NN の評価が一切ない**（end-to-end FT のみ）、言語接続は射程外。
 - [[entities/simclr]] — SimCLR（Google Brain, 2020）。対比 SSL の標準フレームワーク。4 コンポーネント設計と体系的アブレーションで 2020 年 SOTA を確立。
 - [[entities/moco]] — MoCo（FAIR, CVPR 2020）。**Momentum encoder（EMA 更新の target network）+ queue（FIFO メモリバンク、65k 負例）** で対比 SSL を大バッチ依存から解放した先駆け。v1 (2019) → v2 (SimCLR の MLP head 統合、ImageNet linear 71.1%) → v3 (2021、ViT 対応、76.7%)。**[[entities/byol]] / [[entities/dino]] の momentum target / teacher の直接の源流**。本 wiki では source ページ未取り込み（ingest 候補）、概要ページのみ。
 - [[entities/byol]] — BYOL（DeepMind, 2020）。オンライン×ターゲット 2 ネットワーク構造 + predictor で負例なし SSL。ResNet-200(2×) で 79.6% top-1、SimSiam/DINO 系の源流。
@@ -227,6 +248,11 @@
 | MAE | Masked Autoencoder | [[entities/mae]] |
 | DAE | Denoising Autoencoder | [[concepts/denoising-autoencoder]] |
 | MLM | Masked Language Modeling | [[concepts/denoising-autoencoder]] |
+| JEPA | Joint-Embedding Predictive Architecture | [[concepts/joint-embedding-predictive-architecture]] |
+| I-JEPA | Image-based JEPA | [[entities/i-jepa]] / [[sources/i-jepa]] |
+| JEA | Joint-Embedding Architecture（対比型・自己蒸留型の総称） | [[concepts/joint-embedding-predictive-architecture]] |
+| EBM | Energy-Based Model | [[sources/i-jepa]] |
+| RCDM | Representation-Conditioned Diffusion Model（表現可視化用デコーダ） | [[sources/i-jepa]] |
 | online tokenizer | オンライントークナイザ | [[concepts/online-tokenizer]] |
 | dVAE | discrete VAE | [[concepts/online-tokenizer]]（BEiT の文脈で言及） |
 | InfoNCE | Information Noise Contrastive Estimation | [[concepts/contrastive-learning]] |
@@ -287,7 +313,15 @@
 | query selection | encoder の top-K 特徴で decoder queries を初期化（Deformable DETR の two-stage） | [[sources/dino-detector]] |
 | ATD(k) | Average Top-K Distance（DINO 検出器が導入した anchor-GT 距離指標） | [[sources/dino-detector]] |
 | Objects365 / O365 | 365 クラスの大規模物体検出データセット（1.7M アノテーション画像） | [[sources/dino-detector]] |
-| SwinL / SwinV2-G | Swin Transformer Large / V2-Giant（DINO 検出器の主要 backbone 比較） | [[sources/dino-detector]] |
+| Swin | Shifted windows（Swin Transformer の名の由来） | [[entities/swin-transformer]] / [[sources/swin-transformer]] |
+| SwinL / SwinV2-G | Swin Transformer Large / V2-Giant（DINO 検出器の主要 backbone 比較） | [[entities/swin-transformer]] / [[sources/dino-detector]] |
+| W-MSA / SW-MSA | Window-based MSA / Shifted Window-based MSA（必ずペアで使う） | [[sources/swin-transformer]] |
+| patch merging | 隣接 2×2 パッチを連結し線形層で次元を半減する Swin のダウンサンプリング | [[sources/swin-transformer]] |
+| cyclic shift | 特徴マップを巡回シフトし、窓数を増やさずにシフト窓を実現する実装技法 | [[sources/swin-transformer]] |
+| RPB / relative position bias | 相対位置バイアス。窓内の相対位置に応じた値を attention ロジットに加算 | [[sources/swin-transformer]] / [[concepts/rotary-position-embeddings]] |
+| HTC++ | Hybrid Task Cascade 改良版（instaboost + 強い多スケール訓練 + 6x + soft-NMS） | [[sources/swin-transformer]] |
+| SimMIM | Swin 向けの MIM 手法（窓構造と MIM の干渉を回避する専用設計） | [[sources/convnext-v2]] / [[concepts/masked-image-modeling]] |
+| Marr Prize | ICCV の最優秀論文賞。Swin Transformer が 2021 年に受賞 | [[sources/swin-transformer]] |
 | Florence | Microsoft の VLM foundation model（900M 画像-テキスト事前学習） | [[sources/dino-detector]] |
 | Grounding DINO | DINO 検出器の open-vocab 拡張（[Liu et al., ECCV 2024]）、GLIP × DINO 検出器 | [[sources/grounding-dino]] / [[entities/grounding-dino]] |
 | tight fusion | 浅い late-fusion ではなく複数フェーズで早期から深く融合する戦略（Grounding DINO の核） | [[sources/grounding-dino]] |
@@ -987,14 +1021,36 @@
 | GLDv2 | Google Landmarks Dataset v2 | [[sources/dino-emerging-properties-in-self-supervised-vit]] |
 | TTA | Test-Time Augmentation | [[sources/dinov3]] |
 | OOD | Out-Of-Distribution | [[sources/dinov3]] |
-| CNX / ConvNeXt | Convolutional Next | [[entities/dinov3]] |
+| CNX / ConvNeXt | Convolutional Next | [[entities/convnext]] / [[sources/convnext]] |
 | WRI | World Resources Institute | [[sources/dinov3]] |
 | AIMv2 | Autoregressive Image Models v2 | [[sources/dinov3]] |
 | LiT | Locked-image Tuning | [[entities/dinov3]] |
 | dino.txt | DINO + text alignment | [[entities/dinov3]] |
-| CNN / convnet | Convolutional Neural Network | （未作成） |
+| CNN / convnet | Convolutional Neural Network | [[concepts/convolutional-neural-network]] |
 | MLP | Multi-Layer Perceptron | （未作成） |
-| BN | Batch Normalization | （未作成） |
+| BN | Batch Normalization | [[concepts/convolutional-neural-network]]（BN vs LN 節） |
+| LN | Layer Normalization | [[concepts/convolutional-neural-network]]（BN vs LN 節） |
+| depthwise conv | チャネルを混ぜず空間方向だけ混合する畳み込み（グループ数 = チャネル数） | [[concepts/convolutional-neural-network]] |
+| grouped conv | フィルタをグループに分けて適用する畳み込み（ResNeXt が普及） | [[concepts/convolutional-neural-network]] |
+| inverted bottleneck | 中間層を入出力より広くする構造（MobileNetV2 由来、Transformer の MLP と同形） | [[concepts/convolutional-neural-network]] |
+| patchify stem | 非重複の大カーネル畳み込みによる入口（ViT のパッチ分割と等価） | [[sources/convnext]] |
+| FCMAE | Fully Convolutional Masked AutoEncoder（疎畳み込みによる ConvNet 版 MAE） | [[sources/convnext-v2]] / [[entities/convnext-v2]] |
+| GRN | Global Response Normalization（チャネル間競合を生む正規化層） | [[sources/convnext-v2]] / [[entities/convnext-v2]] |
+| co-design | アーキテクチャと学習枠組みを固定せず一緒に設計すること | [[sources/convnext-v2]] |
+| feature collapse | 特徴崩壊。チャネル間で活性化が冗長化する現象（SSL の「表現崩壊」とは別概念） | [[sources/convnext-v2]] |
+| sparse convolution | 疎畳み込み。有効なデータ点のみで演算（元は 3D 点群処理の技法） | [[sources/convnext-v2]] |
+| divisive normalization | 除法正規化。値を全体の総和で割る（神経科学由来） | [[sources/convnext-v2]] |
+| LayerScale | 残差ブロック出力に学習可能な小スカラーを掛ける安定化手法（V2 では GRN により削除） | [[sources/convnext]] / [[sources/convnext-v2]] |
+| SE / CBAM | Squeeze-and-Excitation / Convolutional Block Attention Module（特徴ゲーティング手法） | [[sources/convnext-v2]] |
+| class selectivity index | クラス選択性指標。フィルタが特定クラスにのみ反応する度合い（0〜1、低いほど転移しやすい） | [[sources/convnext-v2]] |
+| Atto / Femto / Pico / Nano | SI 接頭辞（10⁻¹⁸/10⁻¹⁵/10⁻¹²/10⁻⁹）に由来する超軽量モデルの呼称 | [[entities/convnext-v2]] |
+| isotropic | ダウンサンプリングを持たず全深さで解像度一定の構成（素の ViT がこれ） | [[sources/convnext]] |
+| stage compute ratio | 各解像度段階へのブロック数の配分（ResNet-50 は 3:4:6:3、ConvNeXt-T は 3:3:9:3） | [[sources/convnext]] |
+| GELU | Gaussian Error Linear Unit（ReLU の滑らかな変種） | [[sources/convnext]] |
+| stochastic depth | 訓練時にブロックを確率的にスキップする正則化 | [[sources/convnext]] |
+| layer scale | 残差ブロック出力に学習可能な小スカラーを掛ける安定化手法 | [[sources/convnext]] |
+| mCE | mean Corruption Error（ImageNet-C の平均劣化誤差、低いほど頑健） | [[sources/convnext]] |
+| UperNet | セマンティックセグメンテーションのデコーダヘッド | [[sources/convnext]] |
 | CE | Cross Entropy | （未作成） |
 | BYOL | Bootstrap Your Own Latent | （未作成） |
 | MoCo | Momentum Contrast | （未作成） |

@@ -1679,3 +1679,100 @@
   - **「Vision Transformers Need Registers」(Darcet et al., ICLR 2024) は wiki 未取り込み**: 影響大きい論文だが ingest していない。今後の候補
   - **Swin Transformer も wiki 未取り込み**: 階層型 ViT の代表だが [[entities/hiera|Hiera]] からの言及のみ。これも候補
   - **次の関連 query 候補**: (1) **GELU vs SwiGLU の性能差と理論的根拠**、(2) **register tokens の最適個数の経験則**（Darcet et al. の知見）、(3) **LayerNorm vs RMSNorm の数値的安定性と計算効率の定量比較**
+
+## [2026-06-17] ingest | Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)
+
+- 取り込み: `raw/papers/Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture.md`（Assran et al., Yann LeCun ら, Meta AI / FAIR, CVPR 2023, arXiv:2301.08243）
+- 作成:
+  - [[translations/i-jepa]]: 全文和訳。Abstract + §1-10 + **Appendix A〜E**（ユーザー指示「appendix 含め」に従う、References と Acknowledgments のみ除外）。図 1-8 + 付録図 7-8 を `<figure>` で埋め込み、表 1-15 を含む
+  - [[sources/i-jepa]]: 要約ページ。EBM での 3 アーキテクチャ対比、2 大設計判断（ターゲット出力マスク / 表現空間予測）、multi-block マスキング、全結果・全アブレーション、限界（DINOv2 に凍結性能で及ばず）
+  - [[concepts/joint-embedding-predictive-architecture]]: **新規概念ページ**。JEPA パラダイム（LeCun の世界モデル構想）。JEA / Generative / JEPA の EBM 対比表、崩壊回避（EMA）、I-JEPA → V-JEPA 系譜
+  - [[entities/i-jepa]]: **新規エンティティ（model）**。3 ViT 構成・バリアント・主要結果・系譜
+- 更新:
+  - [[concepts/self-supervised-learning]]: 「6. 予測型（JEPA）」を新系統として追加（対比型・MIM と並ぶ第 3 の道）、frontmatter sources/related + 参考節
+  - [[concepts/masked-image-modeling]]: 「I-JEPA — MIM を表現空間予測へ拡張」節を追加（MAE との対比、MIM 3 系統整理）、frontmatter + 関連節
+  - [[entities/mae]]: 直接の対照群として I-JEPA への相互参照を追加（画素再構成 vs 表現予測）
+  - [[overview]]: SSL 系譜の「予測型（JEPA）」行を実リンク化 + マイルストーン表に 2023 I-JEPA を追加
+  - [[index]]: Sources / Translations / Concepts / Entities(Models) / 略称対応表（JEPA, I-JEPA, JEA, EBM, RCDM）に追記
+- 画像: `raw/assets/i-jepa/x1-x10.png` をダウンロード（x11/x12 は「NO IMAGE AVAILABLE」プレースホルダのため削除）
+- メモ:
+  - **核心の区別**: MAE が「マスク → **画素**を再構成」なのに対し、I-JEPA は「マスク → ターゲットエンコーダ出力（**表現**）を予測」。損失を画素空間に戻すと IN-1% が 66.9 → 40.7 に激減（表7）し、この設計が生命線であることを実証
+  - **既存 wiki との接続**: 構造の対照群は [[entities/mae]]、EMA ターゲットの仕掛けは [[entities/byol]] / [[entities/dino]] 由来、比較対象は [[entities/ibot]]。後の [[entities/dinov2]] が凍結特徴量の絶対性能では I-JEPA を上回るため、I-JEPA の価値は計算効率・低レベル汎用性・データ拡張不要にあると整理
+  - **dangling link（今後の ingest 候補）**: **data2vec**（I-JEPA に最も近い先行研究）、**V-JEPA / V-JEPA 2**（動画版、LeCun 世界モデル構想の本命）、CAE（Context Autoencoders）
+
+## [2026-06-17] ingest | A ConvNet for the 2020s (ConvNeXt)
+
+- 取り込み: `raw/papers/A ConvNet for the 2020s.md`（Liu, Mao, Wu, Feichtenhofer, Darrell, Xie / FAIR + UC Berkeley, arXiv:2201.03545 → CVPR 2022）
+- 作成:
+  - [[translations/convnext]]: 全文和訳。Abstract + §1-6 + **Appendix A〜G**（ユーザー指示「appendix 含め」に従う、References と Acknowledgments のみ除外）。図 1-4 + 表 1-12 を収録
+  - [[sources/convnext]]: 要約ページ。近代化 13 段階の全数値表（Appendix C 表10）、3 つの読み取りポイント、Appendix 由来の非自明な知見、限界
+  - [[concepts/convolutional-neural-network]]: **新規概念ページ**。CNN の 3 帰納バイアス（同変性 vs 不変性の区別を含む）、系譜、主要部品を ConvNeXt のアブレーションデータ付きで解説
+  - [[entities/convnext]]: **新規エンティティ（model）**。ブロック構造・T/S/B/L/XL 構成表・主要結果・系譜
+- 更新:
+  - [[overview]]: 「CNN 系」セクションを 2 行から拡張。系譜を wikilink 化（従来 CNN 系は wikilink ゼロで Transformer 系と非対称だった）、ConvNeXt の反証と「それでも ViT に収束した理由」を追加
+  - [[concepts/vision-transformer]]: 「CNN との比較」節に **ConvNeXt による反論**を追加。「パッチ分割 = stride N の畳み込み」が ConvNeXt の patchify stem として逆輸入された点も明記。frontmatter 更新
+  - [[entities/dinov3]]: ConvNeXt 蒸留版の表に [[entities/convnext]] へのリンクと選定理由を追加、frontmatter 更新
+  - [[entities/hiera]]: 階層型 ViT 比較表に ConvNeXt 行を追加 + 「同じ simplicity 論の反対側」の解説を追加
+  - [[questions/vit-architecture-evolution]]: 「CNN 風階層性への部分回帰」節に ConvNeXt を接続、系統図に「脱 attention 路線」を追加
+  - [[index]]: Sources / Translations / Concepts / Entities(Models) に追記。**略語表の `CNN / convnet`「（未作成）」を [[concepts/convolutional-neural-network]] に解消**、`CNX / ConvNeXt` を [[entities/dinov3]] から [[entities/convnext]] に張り替え、BN/LN/depthwise conv/inverted bottleneck 等 12 語を追加
+- 画像: 原典 markdown に画像リンクがなく、**ar5iv も arXiv HTML も図をホストしていなかった**（ar5iv の `assets/xN.png` は全て 20498B のプレースホルダ）。**arXiv e-print ソース tarball（`https://arxiv.org/e-print/2201.03545`）に figs/*.pdf として同梱されていた**ため、これを取得し pymupdf で content bbox にクロップしつつ 300dpi で PNG 化 → `raw/assets/convnext/fig{1,2,3,4}.png`。4 点とも目視確認済み
+- メモ:
+  - **[[log]] L127（2026-05-24 iBOT ingest メモ）の「後続候補: … Swin Transformer / ConvNeXt 等のアーキテクチャ系」という予告の消化**にあたる
+  - **本論文最大の発見は「性能差の最大の単一要因が帰納バイアスではなく訓練レシピだった」**こと。レシピ変更だけで ResNet-50 が 76.13 → 78.82（総改善幅 5.84 のうち約 46%）。「ViT が CNN より強い」とされた差の多くは、比較対象の ResNet が 2015 年のレシピで訓練された古い数字だったことに由来する
+  - **既存 wiki との接続**: [[concepts/vision-transformer]] の「帰納バイアスとデータ要求量」という説明に対する直接の反証として位置づけた。同ページの「平行移動不変性」という記述は厳密には「同変性」なので、[[concepts/convolutional-neural-network]] で両者の区別を整理し、ViT ページからそこへ誘導する形で解消
+  - **[[entities/hiera]] との対比が思わぬ収穫**: Hiera（階層型 ViT から飾りを削ぐ）と ConvNeXt（ConvNet 側から Transformer に追いつく）は「**Swin の特殊モジュールは性能の源泉ではなかった**」という同じ結論に別方向から到達している。決定的な違いは MAE 互換性
+  - **ConvNeXt が主流にならなかった理由**を、論文が扱わなかった軸（言語トークンとの接続性・MIM 適性）として明示的に書いた。論文の主張を過大評価しないための批判的視点
+  - **dangling link（今後の ingest 候補）**: **ConvNeXt V2**（`raw/papers/ConvNeXt V2_ Co-designing and Scaling ConvNets with Masked Autoencoders.md` に**原典が既に置かれている**、FCMAE + GRN で MIM 非互換問題に挑む）、**Swin Transformer**（今回もページを作らず「独立ページなし」表記で通した。多数のページが backbone として言及しており依然として最大の未作成ページ）、ResNet / ResNeXt / MobileNetV2
+
+## [2026-06-17] ingest | ConvNeXt V2: Co-designing and Scaling ConvNets with Masked Autoencoders
+
+- 取り込み: `raw/papers/ConvNeXt V2_ Co-designing and Scaling ConvNets with Masked Autoencoders.md`（Woo, Debnath, Hu, Chen, Liu, Kweon, Xie / Meta AI FAIR + NYU + KAIST, arXiv:2301.00808 → CVPR 2023）
+- 作成:
+  - [[translations/convnext-v2]]: 全文和訳。Abstract + §1-7 + **Appendix A〜D**（ユーザー指示「appendix 含め」に従う、References と Acknowledgments のみ除外）。図 1-8 + 表 1-16 を収録
+  - [[sources/convnext-v2]]: 要約ページ。FCMAE と GRN の解説、co-design の実証表、8 サイズ比較、Appendix 由来の知見、限界
+  - [[entities/convnext-v2]]: **新規エンティティ（model）**。ブロック差分・8 サイズ構成表・主要結果・系譜
+- 更新:
+  - [[concepts/masked-image-modeling]]: **FCMAE / ConvNeXt V2 節を新設**。冒頭「CNN ではマスキングが扱いにくい」に「2023 年に覆される」旨の但し書きを追加。**「MIM とアーキテクチャの相性」表を新設**（plain ViT / 階層型 ViT 2 種 / ConvNet 素朴 / ConvNet 疎畳み込み）
+  - [[concepts/convolutional-neural-network]]: 系譜表の ConvNeXt V2 行を実リンク化、「CNN は終わったのか」節を 5 段階 → 6 段階に再構成（V2 の位置づけを追加し、「MIM 非互換」を現在の理由から外した）
+  - [[entities/convnext]] / [[sources/convnext]]: 「MIM と相性が悪い」という断定を「V1 の設計上の制約であり CNN の本質的限界ではない（翌年 V2 が解決）」に精緻化。後継リンクを実リンク化
+  - [[entities/hiera]]: 比較表に ConvNeXt V2 行を追加 + 「Hiera と ConvNeXt V2 は同年に Transformer 側と ConvNet 側から同一の結論（MAE 互換性を設計目標に据える）に到達」という接続を追記
+  - [[entities/mae]]: FCMAE を派生として追記（疎畳み込みで「可視部分だけ処理」を実現、マスク率 60%、デコーダは単一 ConvNeXt ブロック）
+  - [[concepts/self-supervised-learning]]: MIM 系統に FCMAE / ConvNeXt V2 を追加
+  - [[overview]]: CNN 系譜の V2 を実リンク化 + V2 の説明行を追加、SSL 系譜の MIM 行に FCMAE を追加、「ViT に収束した理由」から MIM 適性を外した
+  - [[index]]: Sources / Translations / Entities(Models) に追記、略語表に **FCMAE / GRN / co-design / feature collapse / sparse convolution / divisive normalization / LayerScale / SE・CBAM / class selectivity index / Atto-Nano** の 10 語を追加
+- 画像: 原典 markdown には図 2・3・5 のみ ar5iv 画像リンクあり（実体あり）。**残り 5 点（図 1, 4, 6, 7, 8）は arXiv e-print tarball から取得**し、pymupdf で content bbox クロップ + 300dpi PNG 化 → `raw/assets/convnext-v2/fig{1..8}.png`。**fig2/fig3 は透過 PNG だったため白背景に合成**、**fig7 は 22724px と巨大だったため幅 4200px に縮小**。8 点とも目視確認済み
+- メモ:
+  - **前回 ingest（[[sources/convnext|ConvNeXt V1]]）の log で「ConvNeXt V2 が未 ingest で残っている」と記録した候補の消化**。V1 → V2 が連続で入り、**ConvNeXt 系譜が原典ベースで閉じた**
+  - **本論文最大の主張は方法論**: 「自己教師あり手法は既存アーキテクチャに後から載せるもの」という業界の慣行を疑い、**アーキテクチャと学習枠組みを一緒に設計する（co-design）**。実証は表3 が明快で、**FCMAE だけ（83.7）でも GRN だけ（84.3）でもだめで、両方揃って初めて効く（84.6、L では +1.3）**
+  - **wiki 全体への波及が大きかった**: 本 wiki は V1 の ingest 時に「ConvNeXt は MIM と相性が悪い」「CNN は『あるパッチを取り除く』操作が自然に書けない」と複数ページに書いていたが、**V2 がまさにそれを解決する論文**だった。[[concepts/masked-image-modeling]] / [[concepts/convolutional-neural-network]] / [[entities/convnext]] / [[sources/convnext]] / [[entities/hiera]] / [[overview]] の 6 ページで該当記述を精緻化した。**「CNN が ViT に負けた理由」から MIM 適性が外れ、残るのは言語との接続性のみ**、という整理に更新
+  - **[[entities/hiera]] との同年対比が収穫**: Hiera（ICML 2023）と ConvNeXt V2（CVPR 2023）は、Transformer 側と ConvNet 側から**同じ「MAE 互換性を設計目標に据える」という結論**に別々に到達している。これを [[concepts/masked-image-modeling]] の「MIM とアーキテクチャの相性」表として一般化した
+  - **原典の瑕疵 2 点**を要約ページに記録: Appendix D 冒頭で GRN が "Global **Relation Network**" と誤記されている（正しくは Global Response Normalization）。本文 §4 の V2-B 84.6（800ep）と Appendix B 表14 の 84.9（1600ep）は矛盾ではなくエポック数の違い
+  - **本論文の評価上の空白**: 線形プロービング / k-NN（[[concepts/knn-evaluation-protocol]]）の結果が皆無で、end-to-end FT のみ。凍結特徴量の質が不明なため [[entities/dinov2]] のような「凍結して使う基盤モデル」との比較はできない
+  - **dangling link（今後の ingest 候補）**: **Swin Transformer**（依然として最大の未作成ページ。SimMIM とセットで本論文の主要比較対象でもある）、**SimMIM**、ResNet / ResNeXt / MobileNetV2、MoCo v3 の原典
+
+## [2026-06-17] ingest | Swin Transformer: Hierarchical Vision Transformer using Shifted Windows
+
+- 取り込み: `raw/papers/Swin Transformer_ Hierarchical Vision Transformer using Shifted Windows.md`（Liu, Lin, Cao, Hu, Wei, Zhang, Lin, Guo / Microsoft Research Asia, arXiv:2103.14030 → **ICCV 2021 最優秀論文賞 / Marr Prize**）
+- 作成:
+  - [[translations/swin-transformer]]: 全文和訳。Abstract + §1-5 + **Appendix A1〜A3**（ユーザー指示「appendix 含め」に従う、References のみ除外）。図 1-4 + 表 1-10 を収録
+  - [[sources/swin-transformer]]: 要約ページ。4 つの中核技法、アブレーションの読みどころ、後年の批判（ConvNeXt / Hiera）を含む
+  - [[entities/swin-transformer]]: **新規エンティティ（model）**。バリアント表 + **「本 wiki における Swin の位置づけ」表**（12 ページの参照元を一覧化）
+- 更新（**wiki 全体で最も波及が大きい ingest**）:
+  - [[overview]]: Transformer 系に **Swin の説明行を新設**（「ViT を分類専用から汎用バックボーンに変えた転換点」）+ 系譜行を実リンク化、RoPE 行に「Swin の RPB は RoPE 以前の主流」を追記
+  - [[concepts/vision-transformer]]: 「空間的階層性の欠如」の Swin 言及を実リンク化 + 解決方法を説明、frontmatter / 関連ページ更新
+  - [[concepts/rotary-position-embeddings]]: 相対位置バイアスの採用例を実リンク化（$(2M-1)^2$ の表という具体を追記）
+  - [[concepts/object-detection]]: Grounding DINO の Swin-L を実リンク化
+  - [[entities/hiera]]: **「比較: Swin Transformer（独立ページなし）」を実リンクに置換**、frontmatter 更新
+  - [[entities/convnext]] / [[sources/convnext]]: **「本 wiki に独立ページなし」「Swin の独立ページは未作成」を実リンクに置換**、frontmatter / 関連ページ更新
+  - [[questions/vit-architecture-evolution]]: **「Swin Transformer (2021): （wiki 未取り込み）」を実リンク + 説明に置換**
+  - [[entities/glip]] / [[entities/grounding-dino]] / [[entities/dino-detector]] / [[entities/yolo-world]]: frontmatter `related` と関連ページ節に Swin を追加（backbone としての参照元）
+  - [[index]]: Sources / Translations / Entities(Models) に追記、略語表に **Swin / W-MSA・SW-MSA / patch merging / cyclic shift / RPB / HTC++ / SimMIM / Marr Prize** を追加し、既存の `SwinL / SwinV2-G` 行を [[entities/swin-transformer]] へ張り替え
+- 画像: 原典 markdown には図 1・2 のみ ar5iv リンクあり（実体あり、ただし透過 PNG）。**図 3・4 は arXiv e-print tarball から取得**（`HiT-arch-v2.pdf` / `HiT-layer2.pdf`）し pymupdf で content bbox クロップ + 300dpi PNG 化。**図 1・2 は透過を白背景に合成**。4 点とも目視確認済み → `raw/assets/swin-transformer/fig{1..4}.png`
+- メモ:
+  - **wiki 最大の未作成ページがついに埋まった**。[[log]] L1680（2026-06-10 query メモ）と L1725（ConvNeXt ingest メモ）の 2 回にわたり「Swin Transformer は wiki 未取り込み、最大の穴」と記録していた候補の消化。**14 ページが backbone として言及しながら原典ページが存在しない**状態が解消された
+  - **本論文の核心は「CNN の性質を Transformer に輸入した」こと**。階層性（patch merging で H/4→H/8→H/16→H/32）と局所性（窓内 attention）はいずれも ConvNet が元から持っていたもので、**これが翌年 [[sources/convnext|ConvNeXt]] に「ならば元から全部持っている ConvNet は何が足りなかったのか」という反問を書かせた**。今回の ingest で **ViT → Swin → ConvNeXt → ConvNeXt V2 / Hiera という論争の連鎖が、すべて原典ベースで閉じた**
+  - **shifted window を選んだ理由が精度ではなく速度**だった点が重要（sliding window と精度はほぼ同じ 81.3 vs 81.4 だが 4.1×/1.5× 高速）。「同じ窓内の query が key 集合を共有するのでメモリアクセスが効率的」という**工学的判断**であり、この種の理由は後年の批判（ConvNeXt / Hiera）で「本質ではなかった」とされる部分でもある
+  - **アブレーション表4 の「絶対位置埋め込みは分類 +0.4 だが検出 -0.2 AP / セグ -0.6 mIoU と害」**は、[[concepts/vision-transformer]] の「ViT は帰納バイアスをほぼ持たない」という説明に対する当時最も明確な反論。著者の「ある種の平行移動不変性を促す帰納バイアスは汎用視覚モデル化に依然望ましい」という一文を要約ページに引用した
+  - **Appendix A3.3 の Swin-Mixer が面白い**: 階層設計 + シフト窓を MLP-Mixer に移植すると MLP-Mixer 76.4 → 81.3、shift を外すと -1.0。**「シフトウィンドウは self-attention 固有の工夫ではなくトークン混合一般に効く」**という一般化可能性の実証で、appendix 込み ingest の価値が出た部分
+  - **著者自身が速度比較に留保をつけている**（「ResNe(X)t は高度に最適化された cuDNN 関数、我々は必ずしも最適化されていない PyTorch 組み込み関数」）。また ResNe(X)t 比較では**オプティマイザを AdamW に揃えて相手を強くしている**（Appendix A3.2）。比較の公正さへの配慮として要約ページに記録
+  - **dangling link（今後の ingest 候補）**: **Swin V2**（[[entities/dino-detector]] の SwinV2-G、[[entities/convnext-v2]] の Swin V2-H として言及あり）、**SimMIM**（Swin 向け MIM、ConvNeXt V2 の主要比較対象）、**DeiT**（Swin/ConvNeXt 双方の主要ベースラインだが未取り込み）、ResNet / ResNeXt / MobileNetV2、MoCo v3

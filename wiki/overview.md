@@ -34,14 +34,21 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 ## 主要アーキテクチャの系譜
 
 ### CNN 系
-- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → DenseNet → EfficientNet → ConvNeXt(2022) → **DINOv3 ConvNeXt 蒸留版（2025）**
-- CV における長年の主役。局所性・平行移動不変性という強い帰納バイアスを持つ。
+
+詳細: [[concepts/convolutional-neural-network]]
+
+- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → ResNeXt（2017）→ DenseNet → MobileNetV2（2018）→ EfficientNet → RegNet → **ConvNeXt（2022, [[entities/convnext]]）** → **ConvNeXt V2（2023, [[entities/convnext-v2]]）** → **DINOv3 ConvNeXt 蒸留版（2025, [[entities/dinov3]]）**
+- CV における長年の主役。**局所性・重み共有・平行移動同変性**という強い帰納バイアスを構造として持ち、計算共有により高解像度入力に強い。
+- **[[entities/convnext]]（CVPR 2022, [[sources/convnext]]）が「ViT が CNN を置き換えた」という物語に反証**: ResNet-50 を訓練レシピと設計選択の面で Transformer 流に近代化すると、attention なしで Swin Transformer を上回る（IN-1K 87.8%、COCO 55.2 AP、ADE20K 54.0 mIoU）。**性能差の最大の単一要因は帰納バイアスではなく訓練レシピ**（レシピ変更だけで 76.1% → 78.8%）。
+- **[[entities/convnext-v2]]（CVPR 2023, [[sources/convnext-v2]]）が残った弱点「CNN は MIM に向かない」も解決**: 疎畳み込みで情報漏洩を遮断する **FCMAE** と特徴崩壊を防ぐ **GRN** を*共設計*し、IN-1K **88.9%**（公開データのみで当時 SOTA）。3.7M〜659M の全 8 サイズで教師ありを +0.8〜+1.5 上回った。
+- **それでも主流は ViT に収束した**。**V2 以後に残る決定的な理由は「パッチ列表現と言語トークンの接続性」**（CLIP/MLLM）であり、MIM 適性はもはや理由ではない。CNN は「効率が要る場所」（量子化・エッジ）に定着し、DINOv3 の蒸留先として生存している。
 
 ### Transformer 系
 - **DETR（2020 May, [[entities/detr]]）** ＝ **CNN backbone + Transformer encoder-decoder で物体検出を end-to-end 化**（CV における Transformer の最初の本格的成功）
-- **ViT（2020 Oct, [[concepts/vision-transformer]]）** → DeiT（2021）→ Swin Transformer（2021）→ MAE（2022）→ **iBOT（2022, [[entities/ibot]]）** → **DINOv2（2023, [[entities/dinov2]]）** → **DINOv3（2025, [[entities/dinov3]]）**
+- **ViT（2020 Oct, [[concepts/vision-transformer]]）** → DeiT（2021）→ **Swin Transformer（2021, [[entities/swin-transformer]]）** → MAE（2022）→ **iBOT（2022, [[entities/ibot]]）** → **DINOv2（2023, [[entities/dinov2]]）** → **DINOv3（2025, [[entities/dinov3]]）**
 - 帰納バイアスが弱い分、データと事前学習が肝。
-- 位置埋め込みは learnable → RoPE（[[concepts/rotary-position-embeddings]]）へ移行が進行中（DINOv3, RoPE-ViT, EVA-02 等）
+- **[[entities/swin-transformer]]（ICCV 2021 最優秀論文賞, [[sources/swin-transformer]]）が ViT を「分類専用」から「汎用視覚バックボーン」に変えた転換点**: 窓内 attention で計算量を**二次 → 線形**にし、パッチ統合で **CNN と同じ解像度系列**（H/4→H/8→H/16→H/32）を作ることで FPN / UperNet にそのまま差し込めるようにした。COCO 58.7 box AP / ADE20K 53.5 mIoU で当時の SOTA を大差更新。**2021-2023 年の検出・グラウンディング系（GLIP / Grounding DINO / DINO 検出器）の事実上の標準バックボーン**。ただし後に [[entities/convnext]]（「ConvNet の性質を輸入するくらいなら ConvNet を近代化せよ」）と [[entities/hiera]]（「MAE で事前学習すれば工夫は全部要らない」）の双方から簡素化の批判を受ける
+- 位置埋め込みは learnable → RoPE（[[concepts/rotary-position-embeddings]]）へ移行が進行中（DINOv3, RoPE-ViT, EVA-02 等）。**Swin の相対位置バイアスは RoPE 以前の主流**だった
 - **DETR ファミリー**: [[entities/detr]]（2020）→ Deformable DETR（2020 Oct）→ DAB-DETR / DN-DETR（2022）→ **[[entities/dino-detector]]（ICLR 2023、COCO 63.3 AP で初の end-to-end Transformer SOTA）** → DETA / CoDETR / Grounding DINO、現代の検出ヘッド標準
 - **GLIP / Grounding DINO ファミリー（open-vocabulary 検出、精度志向）**: ViLD（2021）→ MDETR（2021）→ **[[entities/glip]]（CVPR 2022、検出 = phrase grounding 統一）** → OWL-ViT → **[[entities/grounding-dino]]（ECCV 2024、GLIP × DINO 検出器、tight 3-phase fusion）** → **[[entities/grounding-dino-1-5]]（2024 May、ViT-L + Grounding-20M で COCO ZS 54.3 / LVIS-mv 55.7 SOTA、Pro/Edge スイート）** → **[[entities/dino-x]]（2024 Nov、3 プロンプト + 4 ヘッド + Grounding-100M で LVIS-mv 59.8 / rare APr 63.3 SOTA、unified perception model）** → [[entities/sam-3]]（2025、PCS、SAM 3 と並行進化する unified perception）。**「テキストプロンプトで任意のクラスを検出」** という新パラダイム
 - **YOLO-World 系 / Grounding DINO 1.5/1.6/DINO-X Edge（real-time open-vocabulary 検出、実用志向）**: **[[entities/yolo-world]]（CVPR 2024、YOLOv8 + CLIP + RepVL-PAN）** が登場。**52 FPS V100 で LVIS 35.4 AP**（GLIP-T の 433× / Grounding-DINO-T の 35× 速度）。Prompt-Then-Detect でテキスト encoder を推論時に削除、テキスト埋め込みをモデル重みに re-parameterize。**エッジデバイスでの open-vocab 検出を初めて現実的に**。同時期に **[[entities/grounding-dino-1-5]] Edge（2024 May、EfficientViT-L1 + Efficient Feature Enhancer）が Orin NX 10.7 FPS で LVIS-mv 36.2 AP**（YOLO-Worldv2-L 32.9 超え）を達成、**Transformer 系のリアルタイム open-vocab 路線**を確立。**[[entities/dino-x]] Edge（2024 Nov、EfficientViT-L2 + Knowledge Distillation + FP16）が Orin NX 20.1 FPS で LVIS-mv 48.3 AP**（YOLO-Worldv2-L を +15.3 AP 凌駕）、実用志向 open-vocab 検出の新 SOTA
@@ -75,9 +82,9 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 - **対比型**: SimCLR (2020) → MoCo v1/v2/v3 (2019-2021)
 - **非対比型（蒸留系）**: BYOL (2020) → SimSiam (2021) → **DINO (2021, [[entities/dino]])** → DINOv2 (2023, [[entities/dinov2]]) → **DINOv3 (2025, [[entities/dinov3]])**
 - **クラスタリング型**: DeepCluster → SeLa → SwAV (2020)
-- **マスク再構成型 (MIM, [[concepts/masked-image-modeling]])**: BEiT (2021) → **MAE (2021, [[entities/mae]])** → SimMIM (2022)。MIM の理論的祖先は [[concepts/denoising-autoencoder]]（DAE, Vincent 2008）
+- **マスク再構成型 (MIM, [[concepts/masked-image-modeling]])**: BEiT (2021) → **MAE (2021, [[entities/mae]])** → SimMIM (2022) → **FCMAE / ConvNeXt V2 (2023, [[entities/convnext-v2]])** で **ConvNet へ拡張**（疎畳み込みで情報漏洩を遮断 + GRN で特徴崩壊を防ぐ *co-design*）。MIM の理論的祖先は [[concepts/denoising-autoencoder]]（DAE, Vincent 2008）
 - **ハイブリッド**: **iBOT (2022, [[entities/ibot]])** = DINO + MIM → DINOv2 → **DINOv3** がこの路線を完成形に
-- **JEPA 系**: I-JEPA → V-JEPA → V-JEPA 2 (LeCun 提唱の latent 予測パラダイム)
+- **予測型（JEPA, [[concepts/joint-embedding-predictive-architecture]]）**: **I-JEPA (2023, [[entities/i-jepa]])** → V-JEPA (2024) → V-JEPA 2 (2025)。Yann LeCun 提唱の世界モデル構想。「マスク → 画素ではなく**表現空間**で予測」。対比型・MIM のどちらでもない第 3 の系統
 
 「**CV における BERT**」探しの本流は、ViT × SSL という組み合わせを軸に進展してきた。
 
@@ -85,6 +92,7 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 |---|---|
 | 2021 | DINO が「SSL で ViT は emergent properties を持つ」と示す |
 | 2022 | iBOT が DINO + MIM のハイブリッドを実現 |
+| 2023 | **I-JEPA（[[entities/i-jepa]]）が「画素ではなく表現空間で予測する」JEPA パラダイムを画像で実装**、データ拡張なしで意味的な凍結特徴量を MAE 比 10× 効率で獲得、低レベル・密予測で対比型を上回る |
 | 2023 | **DINOv2 が iBOT を 1B param × 142M 画像にスケールし、凍結特徴量で OpenCLIP に勝つ** |
 | 2025 | **DINOv3 が ViT-7B × LVD-1689M、Gram anchoring で dense feature 劣化を解決、PE/SigLIP 2 に対し dense で広く優位**（ただし PE の PEspatial が後に SAM 2.1 蒸留＋自己蒸留で dense SOTA を一部奪還、最大スケール ADE20k 等では DINOv3 7B が依然優位） |
 | 2025 | **Perception Encoder が「対比学習をスケールすると中間層に多目的な一般特徴量が育つ」を発見、alignment tuning で PEcore / PElang / PEspatial の 3 バリアントを構築、検出 SOTA を含む多領域で再リード** |

@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [YOLO-World, YOLOWorld, YOLO World]
 tags: [yolo, real-time, open-vocabulary, object-detection, tencent, clip-text-encoder, repvl-pan]
-related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]"]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[entities/swin-transformer]]"]
 sources: ["[[sources/yolo-world]]"]
 updated: 2026-05-28
 ---
@@ -302,3 +302,4 @@ GLIP-T (teacher) → CC4M に疑似ラベル → GLIP-L 訓練（[[sources/glip]
 - [[entities/dino-x]] / [[sources/dino-x]] — Grounding DINO 系統の到達点（2024 Nov）、Edge モデルが YOLO-Worldv2-L を精度・速度両方で凌駕
 - [[entities/sam-3]] / [[sources/sam-3]] — 高精度・大型路線との対照
 - [[entities/perception-encoder]] / [[sources/perception-encoder]] — 同じく対照的な大型路線
+- [[entities/swin-transformer]] / [[sources/swin-transformer]] — 速度比較対象の GLIP / Grounding DINO が採用するバックボーン（ICCV 2021 最優秀論文賞）

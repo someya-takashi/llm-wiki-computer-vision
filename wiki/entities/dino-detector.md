@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [DINO (detector), DINO detector, DINO-DETR, DETR with Improved DeNoising Anchor boxes]
 tags: [object-detection, transformer, detr-family, denoising, contrastive-denoising, idea, hkust]
-related: ["[[concepts/object-detection]]", "[[concepts/foundation-model]]"]
+related: ["[[concepts/object-detection]]", "[[concepts/foundation-model]]", "[[entities/swin-transformer]]"]
 sources: ["[[sources/dino-detector]]"]
 updated: 2026-05-28
 ---
@@ -265,3 +265,4 @@ DETR の 300 epoch を 12 epoch に短縮。
 - [[sources/perception-encoder]] / [[entities/perception-encoder]] — DETA decoder で COCO 66.0 box AP、DINO 系統の後継
 - [[sources/sam-3]] / [[entities/sam-3]] — DETR + DAC-DETR + Deformable DETR の DETR ファミリー技術を採用
 - [[concepts/vision-transformer]] — Transformer の物体検出への適用
+- [[entities/swin-transformer]] / [[sources/swin-transformer]] — DINO-SwinL のバックボーン（COCO test-dev 63.3 AP）（ICCV 2021 最優秀論文賞）

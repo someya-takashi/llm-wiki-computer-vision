@@ -2,7 +2,7 @@
 type: question
 asked: 2026-06-10
 question: "DINOv3 や SigLIP 2 に至るまで、学習やデータの工夫は大幅に改善されてきたが、アーキテクチャの本質的な部分は初期の Vision Transformer モデルからあまり変化ないように思う。これは正しいか？アーキテクチャにおける変化を教えてほしい。"
-sources_used: ["[[concepts/vision-transformer]]", "[[sources/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[sources/roformer]]", "[[sources/yarn]]", "[[concepts/alignment-tuning]]", "[[entities/dino]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[entities/dinov2]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[entities/dinov3]]", "[[sources/dinov3]]", "[[entities/siglip]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[entities/perception-encoder]]", "[[sources/perception-encoder]]", "[[entities/sam-2]]", "[[entities/hiera]]", "[[entities/qwen-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen2-5-vl]]", "[[entities/qwen3-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3-5]]", "[[entities/gemma-3]]", "[[entities/deepseek-ocr]]", "[[questions/vit-dynamic-resolution-evolution]]", "[[questions/rope-extrapolation-mechanism]]", "[[questions/vlm-vision-encoder-continued-pretraining]]", "[[questions/large-scale-pretraining-series]]"]
+sources_used: ["[[concepts/vision-transformer]]", "[[sources/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[sources/roformer]]", "[[sources/yarn]]", "[[concepts/alignment-tuning]]", "[[entities/dino]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[entities/dinov2]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[entities/dinov3]]", "[[sources/dinov3]]", "[[entities/siglip]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[entities/perception-encoder]]", "[[sources/perception-encoder]]", "[[entities/sam-2]]", "[[entities/hiera]]", "[[entities/qwen-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen2-5-vl]]", "[[entities/qwen3-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-2-5]]", "[[entities/internvl-3-5]]", "[[entities/gemma-3]]", "[[entities/deepseek-ocr]]", "[[questions/vit-dynamic-resolution-evolution]]", "[[questions/rope-extrapolation-mechanism]]", "[[questions/vlm-vision-encoder-continued-pretraining]]", "[[questions/large-scale-pretraining-series]]", "[[entities/convnext]]", "[[sources/convnext]]", "[[concepts/convolutional-neural-network]]"]
 ---
 
 # ViT (2020) から DINOv3 / SigLIP 2 までのアーキテクチャ進化 — 8 軸の変化
@@ -202,7 +202,7 @@ DINOv3 など:      [CLS] | reg_1 | reg_2 | reg_3 | reg_4 | patch_1 | patch_2 | 
 
 #### Window Attention の採用
 
-- **Swin Transformer** (2021): 階層型 + シフトウィンドウ（wiki 未取り込み）
+- **[[entities/swin-transformer|Swin Transformer]]** (2021, [[sources/swin-transformer]]): 階層型 + シフトウィンドウ。**窓内 attention で計算量を二次 → 線形化**し、次の層で窓を M/2 ずらして窓間結合を作る。ICCV 2021 最優秀論文賞
 - **[[entities/hiera|Hiera]]** ([[entities/sam-2|SAM 2]] のバックボーン): Swin の単純化版、マルチスケール
 - **[[entities/qwen2-5-vl|Qwen2.5-VL]]**: **32 層中 4 層のみ完全 SA、残り 28 層は 112² Window Attention** — 計算量 2 次 → 線形化
 
@@ -215,6 +215,10 @@ DINOv3 など:      [CLS] | reg_1 | reg_2 | reg_3 | reg_4 | patch_1 | patch_2 | 
 - [[entities/hiera|Hiera]]: マルチスケール特徴抽出
 - ViT の「平坦」設計から **CNN 風階層性への部分回帰**
 
+> **回帰の極限: ConvNeXt（2022）** — この「CNN 風階層性への部分回帰」を最後まで押し切ると、**attention を全部捨てる**ところに行き着く。**[[entities/convnext|ConvNeXt]]**（[[sources/convnext]]）は ResNet-50 を Transformer 流の訓練レシピ + マクロ/ミクロ設計で近代化し、attention なしで Swin を上回った（IN-1K 87.8%、COCO 55.2 AP、A100 で Swin 比最大 +49% スループット）。**重要なのは、性能差の最大要因が帰納バイアスではなく訓練レシピだった**という発見（レシピ変更だけで 76.1% → 78.8%）。この論文は本ページの「変化」群のうち **①パッチ分割**（ConvNeXt の patchify stem = 4×4 stride 4 conv）、**③正規化**（BN → LN）、**④活性化**（ReLU → GELU、ただし効果はほぼゼロ）を ConvNet 側に逆輸入した対照実験としても読める。
+>
+> **それでも主流が ViT に残った理由は、本ページが扱う軸の外側にある**: パッチ列表現が言語トークンと素直に接続できること（MLLM の視覚エンコーダ採用状況）と、マスクトークンを扱う MIM との相性。ConvNeXt は畳み込みゆえ「あるパッチを取り除く」操作が自然に書けず、[[entities/mae|MAE]] 前提のパイプラインに乗らなかった。
+
 #### 純粋 ViT の保持
 
 注: **純粋 ViT（[[entities/dinov3|DINOv3]] 等）は依然完全 SA を保持**。**「効率化が必要なタスクで階層型/Window 化を選ぶ」** という分岐が出てきた。
@@ -222,9 +226,13 @@ DINOv3 など:      [CLS] | reg_1 | reg_2 | reg_3 | reg_4 | patch_1 | patch_2 | 
 ```
               ┌── 純粋 ViT 路線（DINOv3, SigLIP 2, CLIP 系統）
               │   完全 SA + RoPE で頑張る
-ViT (2020)  ──┤
-              └── 階層型路線（Hiera, Swin, Qwen2.5-VL ViT）
-                  Window/階層化で計算効率優先
+ViT (2020)  ──┼── 階層型路線（Hiera, Swin, Qwen2.5-VL ViT）
+              │   Window/階層化で計算効率優先
+              │
+              └── 脱 attention 路線（ConvNeXt, ConvNeXt V2）
+                  畳み込みに回帰。分類/検出/セグでは互角だが
+                  言語接続・MIM 適性で主流から外れ、
+                  量子化・エッジ用途（DINOv3 蒸留先）に定着
 ```
 
 ---

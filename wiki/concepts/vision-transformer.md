@@ -2,9 +2,9 @@
 type: concept
 aliases: [ViT, Vision Transformer]
 tags: [architecture, transformer, image-classification]
-related: ["[[self-supervised-learning]]", "[[knowledge-distillation]]", "[[rotary-position-embeddings]]"]
-sources: ["[[sources/vision-transformer]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]"]
-updated: 2026-06-03
+related: ["[[self-supervised-learning]]", "[[knowledge-distillation]]", "[[rotary-position-embeddings]]", "[[convolutional-neural-network]]", "[[entities/swin-transformer]]"]
+sources: ["[[sources/vision-transformer]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/convnext]]", "[[sources/swin-transformer]]"]
+updated: 2026-06-17
 ---
 
 # Vision Transformer（ViT）
@@ -37,7 +37,7 @@ updated: 2026-06-03
 
 ### 各構成要素の補足
 
-- **パッチ分割（patchify）**: 画像 $H \times W \times 3$ を $N \times N$ のグリッド（$N=16$ なら 14×14=196 個）に切る。実装は stride $N$ の畳み込み 1 層と等価。
+- **パッチ分割（patchify）**: 画像 $H \times W \times 3$ を $N \times N$ のグリッド（$N=16$ なら 14×14=196 個）に切る。実装は stride $N$ の畳み込み 1 層と等価。**この等価性は後に ConvNeXt が「patchify stem」として ConvNet 側に逆輸入した**（4×4・stride 4 の非重複畳み込み、[[sources/convnext]] §2.2）。
 - **[CLS] トークン**: BERT 由来の特殊トークン。系列全体の情報を集約させる「読み出し口」として学習されるベクトル。最終層の [CLS] トークンの出力を分類ヘッドに入れる。
 - **位置埋め込み（positional embedding）**: Transformer は系列の順序情報を持たないので、各位置に学習可能なベクトルを足す。1D（パッチを並べた順）でも 2D（縦横の座標）でも経験的にあまり差はないと報告されている。
 - **Multi-Head Self-Attention（MHSA, 多頭自己注意）**: トークン同士の関連度（attention）を計算して情報を混ぜる。複数の「ヘッド」を並列に持ち、それぞれ異なる関係性に着目できる。
@@ -68,12 +68,16 @@ updated: 2026-06-03
 | ピクセル間相互作用 | 局所の畳み込みカーネル | 全トークン間の attention |
 
 > **補足: 帰納バイアスとデータ要求量** — CNN は「画像の近くのピクセルが関係する」という仮定（局所性）と「位置がずれても物体は同じ」という仮定（平行移動不変性）を**構造として持っている**。ViT はそれらをほぼ持たないので、その仮定を**データから学ぶ**必要があり、結果として大量のデータが必要になる。これが「ViT は事前学習が肝心」となる理由。
+>
+> なお厳密には、畳み込み演算そのものが持つのは**平行移動同変性**（入力がずれれば出力も同じだけずれる）であり、上表の「不変性」はプーリングを重ねて近似的に得られる性質である。詳細: [[convolutional-neural-network]]。
+
+> **CNN 側からの反論（2022）** — この「帰納バイアスの差」という説明には後年に強い反証が出た。**ConvNeXt**（[[sources/convnext]] / [[entities/convnext]]）は、ResNet-50 を訓練レシピと設計選択の面で Transformer 流に「近代化」していくと、attention を一切使わずに Swin Transformer を上回ることを示した。決定的なのは、**性能差の最大の単一要因が帰納バイアスではなく訓練レシピだった**という発見である（レシピ変更だけで 76.1% → 78.8%、総改善幅の約 46%）。つまり「ViT が CNN より強い」とされた差のかなりの部分は、**比較対象の ResNet が 2015 年当時のレシピで訓練された古い数字だった**ことに由来する。それでも主流が ViT に収束したのは、精度ではなく**言語との接続性とトークン操作の柔軟性**（下記「SSL との相性」と MLLM の視覚エンコーダ採用状況）による。
 
 ## ViT の弱点と工夫
 
 - **データ飢餓**: ImageNet 単独学習では CNN に劣る。JFT-300M（Google 内部の 3 億枚データセット）級で事前学習するか、強い拡張・蒸留（DeiT）、あるいは SSL（DINO, MAE）で補う。
 - **計算量**: トークン数 $n$ に対し self-attention は $O(n^2)$。高解像度や小パッチで急速に重くなる。
-- **空間的階層性の欠如**: CNN のような U-Net 的階層を持たないので、密予測（セグメンテーション・検出）には Swin Transformer 等の派生が好まれる。
+- **空間的階層性の欠如**: CNN のような U-Net 的階層を持たないので、密予測（セグメンテーション・検出）には **[[entities/swin-transformer|Swin Transformer]]**（[[sources/swin-transformer]]）等の派生が好まれる。Swin は「窓内 attention で計算量を線形化」＋「パッチ統合で CNN と同じ解像度系列を作る」ことでこれを解決し、ICCV 2021 最優秀論文賞を受賞した。
 
 ## なぜ ViT が SSL とこんなに相性が良いのか
 
@@ -91,3 +95,6 @@ DINO 論文 [[sources/dino-emerging-properties-in-self-supervised-vit]] の最�
 - [[concepts/self-supervised-learning]]: SSL の枠組み全般
 - [[concepts/rotary-position-embeddings]]: ViT の学習可能 1D 位置埋め込みを置き換える RoPE（CV では DINOv3 / SAM 2 / Qwen2-VL 系で採用）
 - [[entities/dino]]: DINO 手法のスペック
+- [[concepts/convolutional-neural-network]]: 対比されるアーキテクチャ。帰納バイアス・部品・系譜の詳細
+- [[sources/convnext]] / [[entities/convnext]]: 「純粋 ConvNet でも Swin を上回れる」という CNN 側からの反論（CVPR 2022）
+- [[sources/swin-transformer]] / [[entities/swin-transformer]]: ViT を汎用視覚バックボーンに変えた階層型派生（ICCV 2021 最優秀論文賞）

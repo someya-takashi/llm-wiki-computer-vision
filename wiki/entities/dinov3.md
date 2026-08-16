@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [DINOv3, DINO v3]
 tags: [self-supervised, vision-transformer, foundation-model, meta-ai, convnext]
-related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/vision-transformer]]", "[[concepts/gram-anchoring]]", "[[concepts/rotary-position-embeddings]]"]
-sources: ["[[sources/dinov3]]"]
-updated: 2026-05-24
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/vision-transformer]]", "[[concepts/gram-anchoring]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/convolutional-neural-network]]", "[[entities/convnext]]"]
+sources: ["[[sources/dinov3]]", "[[sources/convnext]]"]
+updated: 2026-06-17
 ---
 
 # DINOv3（モデルファミリ）
@@ -38,6 +38,8 @@ updated: 2026-05-24
 | **ViT-7B/16** | 6.7B | 16 | scratch | フラッグシップ、teacher |
 
 ### ConvNeXt 系（量子化向け）
+
+アーキテクチャの詳細は [[entities/convnext]] / [[sources/convnext]] を参照（Liu et al., CVPR 2022）。**純粋 ConvNet でありながら同 FLOPs の Swin Transformer を上回り、A100 では最大 +49% のスループットを持つ**という性質が、量子化・エッジ展開向けの蒸留先として選ばれた理由。
 
 | Model | Params | 蒸留元 |
 |---|---|---|

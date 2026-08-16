@@ -2,9 +2,9 @@
 type: concept
 aliases: [SSL, 自己教師あり学習, Self-Supervised Learning]
 tags: [paradigm, pretraining, representation-learning]
-related: ["[[knowledge-distillation]]", "[[vision-transformer]]", "[[knn-evaluation-protocol]]", "[[masked-image-modeling]]", "[[foundation-model]]", "[[weakly-supervised-pretraining]]", "[[gram-anchoring]]", "[[semi-supervised-learning]]", "[[semi-supervised-learning]]", "[[diffusion-model]]"]
-sources: ["[[sources/simclr]]", "[[sources/byol]]", "[[sources/simclr]]", "[[sources/byol]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/dinov3]]", "[[sources/siglip-2]]", "[[sources/i-synmed]]", "[[sources/eva-x]]"]
-updated: 2026-05-28
+related: ["[[knowledge-distillation]]", "[[vision-transformer]]", "[[knn-evaluation-protocol]]", "[[masked-image-modeling]]", "[[joint-embedding-predictive-architecture]]", "[[foundation-model]]", "[[weakly-supervised-pretraining]]", "[[gram-anchoring]]", "[[semi-supervised-learning]]", "[[diffusion-model]]"]
+sources: ["[[sources/simclr]]", "[[sources/byol]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/dinov3]]", "[[sources/siglip-2]]", "[[sources/i-synmed]]", "[[sources/eva-x]]", "[[sources/i-jepa]]", "[[sources/convnext-v2]]"]
+updated: 2026-06-17
 ---
 
 # Self-Supervised Learning（SSL, 自己教師あり学習）
@@ -52,6 +52,7 @@ BERT の流儀を画像に持ち込む系統。入力の一部を隠し、隠し
 - **BEiT** (Bao et al., 2021): 事前学習済み dVAE が出力する離散トークンを予測。
 - **MAE** (He et al., 2021, [[entities/mae]]): **画素を 75% マスク**し、軽量 decoder で再構成。非対称設計で大規模化を実現、CV MIM の中核手法に。
 - **SimMIM** (Xie et al., 2022): MAE の単純化版。
+- **FCMAE / ConvNeXt V2** (Woo et al., 2023, [[sources/convnext-v2]] / [[entities/convnext-v2]]): **MIM を ViT から ConvNet へ開いた**。疎畳み込みで可視画素のみ処理して情報漏洩を遮断し、**GRN 層**で特徴崩壊を防ぐ *co-design*。IN-1K 88.9%（公開データのみで当時 SOTA）。**「MIM は ViT 専用」という前提を崩した**。
 - **iBOT** (Zhou et al., 2022, [[entities/ibot]]): **DINO + MIM のハイブリッド**。マスクされたパッチを画素ではなく teacher 出力で予測（"online tokenizer"）。
 - **DINOv2** (Oquab et al., 2023, [[entities/dinov2]]): iBOT を 1B param × 142M 画像に scale、汎用基盤モデルへ。
 
@@ -61,7 +62,16 @@ iBOT が代表。「**画像レベル目的（DINO 由来）+ パッチレベル
 
 > **2025 年の逆流: WSL が SSL 技法を借用** — [[sources/siglip-2]] は CLIP/SigLIP 系統（WSL）でありながら、**SILC（Naeem et al., ECCV 2024）の local-to-global 自己蒸留** と **TIPS（Maninis et al., ICLR 2025）のマスク予測** を借用して dense feature を強化。これは SSL → WSL への技法逆流の代表例。「対比 vs 自己蒸留 vs MIM」という区分は、2025 年時点で **実用モデルでは融合** している（SigLIP 2 は対比＋自己蒸留＋MIM＋decoder＋蒸留の 5 系統融合）。
 
-DINO はこの分類では「非対比型」に属し、知識蒸留の枠組みで再解釈した点に独自性がある。iBOT/DINOv2/DINOv3 はそれを更にハイブリッド化したもの。
+### 6. 予測型（JEPA, joint-embedding predictive）
+
+「マスクした領域を **画素ではなく抽象表現空間で予測する**」系統。MIM（再構成）と対比型（不変性）のどちらでもない「第 3 の道」。詳細: [[joint-embedding-predictive-architecture]]。
+
+- **I-JEPA** (Assran et al., CVPR 2023, [[sources/i-jepa]] / [[entities/i-jepa]]): 1 つのコンテキストブロックから、同じ画像の複数ターゲットブロックの**ターゲットエンコーダ出力（表現）**を予測。手作業データ拡張なし、EMA ターゲットで崩壊回避。MAE より意味的な凍結特徴量を、対比型より圧倒的に少ない計算で獲得。Clevr 深度などの低レベル・密予測で DINO/iBOT を大差で上回る。
+- **V-JEPA / V-JEPA 2** (2024–2025): 動画への拡張。Yann LeCun の**世界モデル（world model）構想**の中核で、時間方向の予測へ踏み込む。
+
+> **MIM との違い**: MAE が「マスク → **画素**を再構成」なのに対し、I-JEPA は「マスク → **相手の表現**を予測」。予測ターゲットを学習されたエンコーダ出力にすることで、無関係な低レベル詳細を捨て意味性を上げる。損失を画素空間にすると性能が激減する（[[sources/i-jepa]] 表7、66.9 → 40.7）ことが、この区別の重要性を裏づける。
+
+DINO はこの分類では「非対比型」に属し、知識蒸留の枠組みで再解釈した点に独自性がある。iBOT/DINOv2/DINOv3 はそれを更にハイブリッド化したもの。**I-JEPA はこのいずれとも異なり、「表現空間での予測」を SSL の独立した軸として確立した**（[[joint-embedding-predictive-architecture]]）。
 
 ## SSL の基本構造（多くの手法に共通）
 
@@ -120,6 +130,8 @@ SwAV で導入されたデータ拡張戦略。
 
 ## 参考
 
+- [[concepts/joint-embedding-predictive-architecture]]: I-JEPA に代表される「表現空間で予測する」SSL の第 3 系統（LeCun の世界モデル構想）
+- [[sources/i-jepa]]: I-JEPA 論文（拡張なしで意味的、低レベルタスクに強い、計算効率が高い）
 - [[concepts/semi-supervised-learning]]: 半教師あり学習（少量ラベルあき + 大量ラベルなし）— 当 wiki の SSL（自己教師あり学習）とは別概念。文献によっては "SSL" と同じ略称を使うため注意
 - [[sources/byol]]: BYOL 論文（「負例なし SSL」の先駆け、非対比型の代表）
 - [[sources/dino-emerging-properties-in-self-supervised-vit]]: DINO 論文（本概念の主要文献の一つ）

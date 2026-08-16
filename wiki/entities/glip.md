@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [GLIP, Grounded Language-Image Pre-training, GLIP-T, GLIP-L]
 tags: [object-detection, phrase-grounding, open-vocabulary, microsoft, vision-language, foundation-model]
-related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]"]
+related: ["[[concepts/object-detection]]", "[[concepts/zero-shot-transfer]]", "[[concepts/promptable-concept-segmentation]]", "[[concepts/foundation-model]]", "[[entities/swin-transformer]]"]
 sources: ["[[sources/glip]]"]
 updated: 2026-05-28
 ---
@@ -241,3 +241,4 @@ GLIP-T → CC4M に擬似ラベル → GLIP-L 訓練（GLIP 自体の self-train
 - [[entities/detr]] / [[sources/detr]] — DETR ベース後継（Grounding DINO）への流れ
 - [[entities/dino-detector]] / [[sources/dino-detector]] — Grounding DINO は GLIP × DINO 検出器
 - [[entities/yolo-world]] / [[sources/yolo-world]] — GLIP-L を疑似ラベル teacher として活用、real-time open-vocab 路線
+- [[entities/swin-transformer]] / [[sources/swin-transformer]] — GLIP-T/L のバックボーン（ICCV 2021 最優秀論文賞）
