@@ -9,7 +9,7 @@ venue: "arXiv:2301.00808 → CVPR 2023"
 ingested: 2026-06-17
 tags: [convnext-v2, fcmae, grn, masked-image-modeling, self-supervised-learning, convolutional-neural-network, fair]
 translation: "[[translations/convnext-v2]]"
-related: ["[[sources/convnext]]", "[[entities/convnext-v2]]", "[[concepts/masked-image-modeling]]", "[[concepts/convolutional-neural-network]]", "[[entities/mae]]"]
+related: ["[[sources/convnext]]", "[[entities/convnext-v2]]", "[[concepts/masked-image-modeling]]", "[[concepts/convolutional-neural-network]]", "[[entities/mae]]", "[[entities/maxvit]]"]
 ---
 
 # ConvNeXt V2: マスクオートエンコーダによる ConvNet の共設計とスケーリング
@@ -235,7 +235,7 @@ Appendix D の構成要素分析（表16）も同じ方向を指す: 集約だ�
 
 ### IN-22K 中間ファインチューニング（表5）— 論文の看板数字
 
-3 段階（FCMAE 事前学習 → IN-22K FT → IN-1K FT）で **ConvNeXt V2-H @512² が 88.9%**。**公開データのみを使う手法として当時の SOTA**で、MViTV2-H（88.8）、MaxViT-XL（88.7）、CoAtNet-4（88.1）を上回る。
+3 段階（FCMAE 事前学習 → IN-22K FT → IN-1K FT）で **ConvNeXt V2-H @512² が 88.9%**。**公開データのみを使う手法として当時の SOTA**で、MViTV2-H（88.8）、**[[entities/maxvit|MaxViT]]-XL（88.7、[[sources/maxvit]]）**、CoAtNet-4（88.1）を上回る。
 
 Appendix B 表15 の指摘も鋭い: **V2-Base（86.8/87.7）が V1-Large（86.6/87.5）を、V2-Large（87.3/88.2）が V1-XLarge（87.0/87.8）を上回る**——つまり **1 段階上のモデルサイズに相当する性能が、共設計だけで手に入る**。
 
@@ -297,3 +297,4 @@ Appendix B 表15 の指摘も鋭い: **V2-Base（86.8/87.7）が V1-Large（86.6
 - [[concepts/convolutional-neural-network]] — CNN の帰納バイアスと部品。BN がマスク入力と相性が悪い理由の背景
 - [[concepts/self-supervised-learning]] — SSL 全体の中での位置づけ。「特徴崩壊」と「表現崩壊」の区別に注意
 - [[entities/moco]] — Appendix D で比較された対比学習型 SSL
+- [[sources/nfnet]] / [[entities/nfnet]] — 「BN はマスク入力と相性が悪い」の背景。BN の欠点を体系的に整理した論文

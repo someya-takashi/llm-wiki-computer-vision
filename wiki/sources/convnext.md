@@ -192,6 +192,7 @@ ConvNeXt-XL ‡ が **ImageNet-A 69.3 / ImageNet-R 68.2 / Sketch 55.0、mCE 38.8
 - [[concepts/vision-transformer]] — 本論文の比較対象。「CNN との比較」節と対で読む
 - [[sources/vision-transformer]] — ViT 原論文。「大規模訓練は帰納バイアスに勝る」という主張の出所
 - [[entities/hiera]] — 階層型 ViT から特殊モジュールを削ぐ研究。ConvNeXt と同じ *simplicity* 論の Transformer 側
+- [[sources/nfnet]] / [[entities/nfnet]] — 前年に **BN を LN に替えるのではなく完全排除**した別解（ICML 2021）
 - [[entities/dinov3]] — ViT-7B から ConvNeXt-T/S/B/L を蒸留し、量子化・エッジ向けに配布
 - [[concepts/masked-image-modeling]] — ConvNeXt が主流バックボーンになれなかった理由の一つ（MIM との相性）
 - [[concepts/object-detection]] — COCO 評価で用いた Mask R-CNN / Cascade Mask R-CNN の位置づけ

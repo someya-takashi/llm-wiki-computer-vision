@@ -37,9 +37,10 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 
 詳細: [[concepts/convolutional-neural-network]]
 
-- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → ResNeXt（2017）→ DenseNet → MobileNetV2（2018）→ EfficientNet → RegNet → **ConvNeXt（2022, [[entities/convnext]]）** → **ConvNeXt V2（2023, [[entities/convnext-v2]]）** → **DINOv3 ConvNeXt 蒸留版（2025, [[entities/dinov3]]）**
+- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → ResNeXt（2017）→ DenseNet → MobileNetV2（2018）→ EfficientNet → RegNet → **NFNet（2021, [[entities/nfnet]]）** → **ConvNeXt（2022, [[entities/convnext]]）** → **ConvNeXt V2（2023, [[entities/convnext-v2]]）** → **DINOv3 ConvNeXt 蒸留版（2025, [[entities/dinov3]]）**
 - CV における長年の主役。**局所性・重み共有・平行移動同変性**という強い帰納バイアスを構造として持ち、計算共有により高解像度入力に強い。
 - **[[entities/convnext]]（CVPR 2022, [[sources/convnext]]）が「ViT が CNN を置き換えた」という物語に反証**: ResNet-50 を訓練レシピと設計選択の面で Transformer 流に近代化すると、attention なしで Swin Transformer を上回る（IN-1K 87.8%、COCO 55.2 AP、ADE20K 54.0 mIoU）。**性能差の最大の単一要因は帰納バイアスではなく訓練レシピ**（レシピ変更だけで 76.1% → 78.8%）。
+- **[[entities/nfnet]]（ICML 2021, [[sources/nfnet]]）は「正規化層そのものを捨てる」という別方向の解**: BN の 4 役割を分散の解析的予測 + Scaled Weight Standardization + **AGC（勾配ノルム/重みノルム比でクリップ）** で代替。追加データなし IN-1K **86.5%**（当時 SOTA）、JFT-300M で **89.2%**、**EffNet-B7 と同精度を 8.7× 速い訓練で**。ただし BN 排除は主流にならず、翌年の ConvNeXt は **LN への置換**という単純な解を採った
 - **[[entities/convnext-v2]]（CVPR 2023, [[sources/convnext-v2]]）が残った弱点「CNN は MIM に向かない」も解決**: 疎畳み込みで情報漏洩を遮断する **FCMAE** と特徴崩壊を防ぐ **GRN** を*共設計*し、IN-1K **88.9%**（公開データのみで当時 SOTA）。3.7M〜659M の全 8 サイズで教師ありを +0.8〜+1.5 上回った。
 - **それでも主流は ViT に収束した**。**V2 以後に残る決定的な理由は「パッチ列表現と言語トークンの接続性」**（CLIP/MLLM）であり、MIM 適性はもはや理由ではない。CNN は「効率が要る場所」（量子化・エッジ）に定着し、DINOv3 の蒸留先として生存している。
 
@@ -48,6 +49,7 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 - **ViT（2020 Oct, [[concepts/vision-transformer]]）** → DeiT（2021）→ **Swin Transformer（2021, [[entities/swin-transformer]]）** → MAE（2022）→ **iBOT（2022, [[entities/ibot]]）** → **DINOv2（2023, [[entities/dinov2]]）** → **DINOv3（2025, [[entities/dinov3]]）**
 - 帰納バイアスが弱い分、データと事前学習が肝。
 - **[[entities/swin-transformer]]（ICCV 2021 最優秀論文賞, [[sources/swin-transformer]]）が ViT を「分類専用」から「汎用視覚バックボーン」に変えた転換点**: 窓内 attention で計算量を**二次 → 線形**にし、パッチ統合で **CNN と同じ解像度系列**（H/4→H/8→H/16→H/32）を作ることで FPN / UperNet にそのまま差し込めるようにした。COCO 58.7 box AP / ADE20K 53.5 mIoU で当時の SOTA を大差更新。**2021-2023 年の検出・グラウンディング系（GLIP / Grounding DINO / DINO 検出器）の事実上の標準バックボーン**。ただし後に [[entities/convnext]]（「ConvNet の性質を輸入するくらいなら ConvNet を近代化せよ」）と [[entities/hiera]]（「MAE で事前学習すれば工夫は全部要らない」）の双方から簡素化の批判を受ける
+- **ハイブリッド路線（畳み込み × attention）**: CoAtNet（2021）→ **[[entities/maxvit]]（ECCV 2022, [[sources/maxvit]]）**。MaxViT は **block attention（局所）+ grid attention（等間隔に間引いた大域）+ MBConv** を 1 ブロックに統合し、**線形計算量のまま第 1 層から大域視野**を得た。Swin の attention と**同パラメータ・同 FLOPs の drop-in 置換**でありながら cyclic shift もマスクも不要。IN-1K 86.7 / IN-21K 88.7 / JFT 89.53。ただし**スループットは Swin/ConvNeXt の半分以下**で、その後の主流にはならなかった
 - 位置埋め込みは learnable → RoPE（[[concepts/rotary-position-embeddings]]）へ移行が進行中（DINOv3, RoPE-ViT, EVA-02 等）。**Swin の相対位置バイアスは RoPE 以前の主流**だった
 - **DETR ファミリー**: [[entities/detr]]（2020）→ Deformable DETR（2020 Oct）→ DAB-DETR / DN-DETR（2022）→ **[[entities/dino-detector]]（ICLR 2023、COCO 63.3 AP で初の end-to-end Transformer SOTA）** → DETA / CoDETR / Grounding DINO、現代の検出ヘッド標準
 - **GLIP / Grounding DINO ファミリー（open-vocabulary 検出、精度志向）**: ViLD（2021）→ MDETR（2021）→ **[[entities/glip]]（CVPR 2022、検出 = phrase grounding 統一）** → OWL-ViT → **[[entities/grounding-dino]]（ECCV 2024、GLIP × DINO 検出器、tight 3-phase fusion）** → **[[entities/grounding-dino-1-5]]（2024 May、ViT-L + Grounding-20M で COCO ZS 54.3 / LVIS-mv 55.7 SOTA、Pro/Edge スイート）** → **[[entities/dino-x]]（2024 Nov、3 プロンプト + 4 ヘッド + Grounding-100M で LVIS-mv 59.8 / rare APr 63.3 SOTA、unified perception model）** → [[entities/sam-3]]（2025、PCS、SAM 3 と並行進化する unified perception）。**「テキストプロンプトで任意のクラスを検出」** という新パラダイム

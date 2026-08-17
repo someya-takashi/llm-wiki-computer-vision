@@ -1776,3 +1776,89 @@
   - **Appendix A3.3 の Swin-Mixer が面白い**: 階層設計 + シフト窓を MLP-Mixer に移植すると MLP-Mixer 76.4 → 81.3、shift を外すと -1.0。**「シフトウィンドウは self-attention 固有の工夫ではなくトークン混合一般に効く」**という一般化可能性の実証で、appendix 込み ingest の価値が出た部分
   - **著者自身が速度比較に留保をつけている**（「ResNe(X)t は高度に最適化された cuDNN 関数、我々は必ずしも最適化されていない PyTorch 組み込み関数」）。また ResNe(X)t 比較では**オプティマイザを AdamW に揃えて相手を強くしている**（Appendix A3.2）。比較の公正さへの配慮として要約ページに記録
   - **dangling link（今後の ingest 候補）**: **Swin V2**（[[entities/dino-detector]] の SwinV2-G、[[entities/convnext-v2]] の Swin V2-H として言及あり）、**SimMIM**（Swin 向け MIM、ConvNeXt V2 の主要比較対象）、**DeiT**（Swin/ConvNeXt 双方の主要ベースラインだが未取り込み）、ResNet / ResNeXt / MobileNetV2、MoCo v3
+
+## [2026-06-17] ingest | MaxViT: Multi-Axis Vision Transformer
+
+- 取り込み: `raw/papers/MaxViT_ Multi-Axis Vision Transformer.md`（Tu, Talebi, Zhang, Yang, Milanfar, Bovik, Li / Google Research + UT Austin, arXiv:2204.01697 → ECCV 2022）
+- 作成:
+  - [[translations/maxvit]]: 全文和訳。Abstract + §1-5 + **Appendix 0.A〜0.C**（ユーザー指示「appendix 含め」に従う、References のみ除外）。図 1-7 + 表 1-14 を収録
+  - [[sources/maxvit]]: 要約ページ。Max-SA の block/grid 対称性、Swin との drop-in 互換、5 種アブレーションの読みどころ、限界
+  - [[entities/maxvit]]: **新規エンティティ（model）**。ブロック構造・5 サイズ構成表・主要結果・系譜・弱点
+- 更新:
+  - [[entities/swin-transformer]]: 「系譜・後の評価」に **2022 年の MaxViT からの置き換え提案**を追加（ConvNeXt / Hiera と並ぶ第 3 の批判軸）、関連ページ・frontmatter 更新
+  - [[entities/convnext]] / [[concepts/vision-transformer]] / [[entities/hiera]]: 関連ページと frontmatter に MaxViT を追加
+  - [[sources/convnext-v2]] / [[entities/convnext-v2]]: **比較表で「MaxViT-XL 88.7」と挙げていた箇所を実リンク化**（今回の ingest の直接の動機）
+  - [[overview]]: Transformer 系に**ハイブリッド路線の行を新設**（CoAtNet → MaxViT）
+  - [[index]]: Sources / Translations / Entities(Models) に追記、略語表に **Max-SA / block attention / grid attention / MBConv / CPE / axial attention / CoAtNet / AVA / PLCC・SRCC / FID・IS / JFT-300M** の 11 語を追加
+- 画像: 原典 markdown には図 8（GAN サンプル）のみ画像リンクあり。**図 1-7 は arXiv e-print tarball から取得**し、LaTeX の figure 環境を解析して図番号と PDF ファイルを対応付けた（`teaser`/`MaxViT_Architecture`/`Multi_axis_attention`/`imagenet_top1_21k`+`jft300m`/`ablation_layout`/`Axial_Max_compare`/`MaxVIT_GAN`）。**2 パネル構成の図 1・図 4 は左右を白背景で連結**。図 8 は 48 枚のグリッドのため省略。7 点とも目視確認済み → `raw/assets/maxvit/fig{1..7}.png`
+- メモ:
+  - **前回 ingest（[[sources/swin-transformer|Swin]]）の log で挙げた候補の消化**。`raw/papers/` に置かれていた MaxViT を取り込み、**ViT → Swin → ConvNeXt → ConvNeXt V2 / Hiera / MaxViT というアーキテクチャ論争が原典ベースでほぼ閉じた**
+  - **本論文の美点は block と grid の対称性**。同じ「空間軸を分解する」発想で、$(\frac{H}{P}\times\frac{W}{P}, P^2, C)$ に切れば局所、$(G^2, \frac{HW}{G^2}, C)$ に切れば大域になる。$P=G=7$ とすると**双方の計算量が完全に釣り合い、どちらも線形**。Swin の cyclic shift + マスクという込み入った実装が不要になる
+  - **最も鋭いアブレーションは「grid を block に置換」**（表7 Replace-S*）。**パラメータ数も FLOPs も完全に同一**にした上で -0.13〜-0.23 落ちるので、**大域性そのものの純粋な寄与**が切り出せている。「同 FLOPs で比較する」という [[sources/convnext]] 由来の作法がここでも効いている
+  - **逐次 > 並列が -0.98〜-1.63 と大差**なのも重要。HiT 等の並列設計への明確な反証で、「逐次の方が局所と大域の融合を学べる」という説明が付く
+  - **生成タスクだけブロック順序が逆（GA-BA-C）**という発見は、MaxViT ブロックが認識専用でないことの傍証。美観評価（AVA）と GAN の実験は「汎用視覚モジュール」という主張を支えるために置かれている
+  - **批判的視点**: スループットが **Swin/ConvNeXt の半分以下**（349.6 vs 755.2/774.7）という点を要約・entity 双方に明記した。[[sources/convnext]] の「A100 で Swin 比 +49%」と合わせると、**MaxViT は精度優先・効率犠牲**という位置づけが明確になる。また「単純さ」の主張は [[entities/hiera]]（pool attention だけ）や [[entities/convnext]]（LN 1 個 + GELU 1 個）と比べると相対的でしかない
+  - **原典の誤植**: Appendix 表13 の MaxViT-L @384 が 84.40（本文表2 では 86.40）。要約ページに記録
+  - **dangling link（今後の ingest 候補）**: **CoAtNet**（MaxViT の最大の比較対象、Google の先行ハイブリッド）、**Swin V2**、**SimMIM**、**DeiT**（Swin/ConvNeXt/MaxViT すべての主要ベースラインだが未取り込み）、**MobileNetV2 / EfficientNet**（MBConv・SE の原典）、ResNet / ResNeXt
+
+## [2026-06-17] query | ConvNeXt V1 と V2 のアーキテクチャの違い（「V2 = V1 + FCMAE」なのか）
+
+- 質問: 「ConvNeXt と ConvNeXt V2 にはアーキテクチャの違いはあるでしょうか？それとも単に V1 に FCMAE を行ったものを V2 としているのでしょうか？」
+- 作成: [[questions/convnext-v1-vs-v2-architecture]]
+- 更新: [[index]]（Questions セクションに追記）
+- 使用ページ: [[sources/convnext]] / [[sources/convnext-v2]] / [[entities/convnext]] / [[entities/convnext-v2]] / [[concepts/masked-image-modeling]] / [[entities/mae]] / [[entities/hiera]]
+- 回答の骨子:
+  - **アーキテクチャの違いはある**が極小 — **GRN 層を次元拡大 MLP の GELU 直後に追加 + LayerScale を削除**の 2 点のみ。stem・stage 構成・カーネルサイズ・depthwise conv の位置は V1 と完全に同一。GRN は実装 3 行で追加パラメータ・FLOPs は実質ゼロ
+  - **ただし「単に V1 に FCMAE をかけたもの」は論文が明示的に否定した仮説**。V1 + FCMAE = 83.7 で、教師あり 300ep の 83.8 にすら届かない（表3）。**これが論文の出発点**
+  - **FCMAE だけでも GRN だけでも効かず、両方揃って初めて効く**（V2-B +0.8 / V2-L +1.3、モデルが大きいほど差が開く）= **co-design**
+  - **GRN は「FCMAE 用の一時的な仕掛け」ではない** — 事前学習と FT の片方だけに入れると 78.8 / 80.6 と**ベースライン 83.7 より大幅に悪化**する（表2f）。モデルの恒久的な一部
+  - 副次的に**モデルラインナップも変化**: V2 に **Small と XLarge は存在しない**。超軽量帯（Atto 3.7M 〜 Nano 15.6M）と Huge 659M を新設。T/B/L の $C$・$B$ 構成は V1 と同一
+- メモ:
+  - **ユーザーの仮説がまさに論文の出発点だった**という構図が説明しやすかった。著者らは「V1 に MAE を載せれば強くなるのでは」を実際に試して失敗を報告し、特徴崩壊と診断し、GRN で解決する、という筋書きで論文を書いている
+  - **既存 wiki の記述を 1 つ精緻化する契機になった**: [[entities/convnext]] の「ConvNeXt は MIM と相性が悪い」は、正確には「**V1 の設計上の制約であって CNN の本質的限界ではない**」。ConvNeXt V2 ingest 時にこの精緻化は済ませていたが、query ページで改めて明示的に整理した
+  - **[[entities/hiera]] との同年対比**を再掲: Hiera は「削除して MAE 互換にする」、ConvNeXt V2 は「追加して FCMAE 互換にする」。**同じ co-design の発想に Transformer 側と ConvNet 側から到達**している
+  - 図は [[sources/convnext-v2]] の図5（V1/V2 ブロック比較）を再掲。V1→V2 の差分を一目で示せる唯一の図
+
+## [2026-06-17] query | CNN で ConvNeXt V2 の性能を超えるモデルはあるか
+
+- 質問: 「CNN で ConvNeXt V2 の性能を超えるモデルはあるでしょうか？」
+- 作成: [[questions/cnn-beyond-convnext-v2]]
+- 更新: [[index]]（Questions セクションに追記）
+- 使用ページ: [[sources/convnext-v2]] / [[sources/convnext]] / [[sources/maxvit]] / [[translations/maxvit]] / [[entities/convnext-v2]] / [[concepts/convolutional-neural-network]] / [[entities/dinov3]]
+- 回答の骨子:
+  - **wiki 内に既に反例があった**: [[translations/maxvit]] の表3 に **NFNet-F4+ 89.20%**（純粋 CNN、BatchNorm を排した Normalizer-Free Network）。ConvNeXt V2-H の 88.9% を上回る。**ただし JFT-300M（非公開、IN-22K の約 21 倍）** を使用しており同じ土俵ではない
+  - **wiki 外の本命は InternImage**（CVPR 2023, Shanghai AI Lab）。DCNv3 で **IN-1K 89.6% / COCO 65.4 AP**。公開データだが約 4 億枚規模（ConvNeXt V2 の約 30 倍）
+  - **最大の論点は「それは本当に CNN か」**: DCNv3 は入力に応じてサンプリング位置（オフセット）を学習するため、**attention の内容依存性を借りている**。「純粋 CNN が超えた」ではなく「**attention の性質を借りた畳み込みが超えた**」と読むべき。**静的カーネルに限れば ConvNeXt V2 は今も上位**
+  - **この問い自体が主戦場から外れた**: 2023 年以降、評価軸は凍結特徴量（DINOv2/v3）・言語整合性（CLIP/SigLIP）・MLLM 視覚エンコーダへ移行し、CNN はいずれでもほぼ採用されていない。CNN が現役なのは「効率が要る領域」で、[[entities/dinov3]] が **ConvNeXt を蒸留先として使う**のが代表例。**性能で competing する側から、性能を蒸留して受け取る側に回った**
+  - **比較を読むときのチェックリスト 5 項目**を付した（データ規模と公開性 / params と FLOPs / **訓練レシピ** / 解像度 / アーキテクチャの定義）
+- メモ:
+  - **wiki の蓄積が効いた query**: 直前に ingest した [[sources/maxvit]] の比較表に NFNet-F4+ が入っていたため、**wiki 内の一次情報だけで反例を 1 つ提示できた**。MaxViT を ingest していなければ InternImage の記憶ベースの記述だけになっていた
+  - **未取り込み情報の扱い**: InternImage の節には ⚠ で「本 wiki 未取り込み、他セクションより確度が落ちる」と明示した。**一次情報と記憶ベースの記述を混ぜない**という原則を可視化する書き方
+  - **「相手の性質を輸入する」という wiki 横断の構図が、また 1 つ事例を得た**: Swin（Transformer ← CNN）/ ConvNeXt（CNN ← Transformer）/ MaxViT（統合）/ ConvNeXt V2（CNN ← MIM）に **InternImage（CNN ← attention の適応性）** が加わる。この表は [[concepts/convolutional-neural-network]] や [[questions/vit-architecture-evolution]] へ将来移設・統合してもよい
+  - **今後の ingest 候補を question ページ末尾に明記**: InternImage（本ページ最大の未検証部分）/ NFNet / EfficientNet(V2) / CoAtNet。いずれも比較表に頻出するが未取り込み
+
+## [2026-06-17] ingest | High-Performance Large-Scale Image Recognition Without Normalization (NFNet)
+
+- 取り込み: `raw/papers/High-Performance Large-Scale Image Recognition Without Normalization.md`（Brock, De, Smith, Simonyan / DeepMind, arXiv:2102.06171 → ICML 2021）
+- 作成:
+  - [[translations/nfnet]]: 全文和訳。Abstract + §1-6 + Conclusion + **Appendix A〜E**（ユーザー指示「appendix 含め」に従う、References のみ除外）。図 1-8 + 表 1-6 を収録
+  - [[sources/nfnet]]: 要約ページ。BN の 3 欠点と 4 恩恵の分解、AGC の定式化と直観、アーキテクチャ 4 変更、転移での NF > BN、限界
+  - [[entities/nfnet]]: **新規エンティティ（model）**。3 構成要素・F0〜F6 + F4+ の構成表・主要結果・系譜・弱点
+- 更新:
+  - [[questions/cnn-beyond-convnext-v2]]: **NFNet の記述を実リンクに格上げ**。「今後の ingest 候補」から NFNet を消化済みに変更、関連ページと frontmatter に追加
+  - [[concepts/convolutional-neural-network]]: **系譜表に 2021 NFNet を追加**、「BN vs LN」節に **「第 3 の道: 正規化層を置かない」** と **BN の欠点の整理（対比学習での情報漏洩）** を追記、frontmatter 更新
+  - [[sources/convnext]]: 「前年に BN を LN に替えるのではなく完全排除した別解」として関連ページに追加
+  - [[sources/convnext-v2]]: 「BN はマスク入力と相性が悪い」の背景として関連ページに追加
+  - [[sources/maxvit]]: 比較表の NFNet-F0/F1/F4+ の原典として関連ページに追加
+  - [[overview]]: CNN 系譜に NFNet を挿入 + 「正規化層そのものを捨てる別方向の解」の説明行を追加
+  - [[index]]: Sources / Translations / Entities(Models) に追記、略語表に **NFNet / AGC / Scaled Weight Standardization / mean shift / SkipInit / SAM / LARS / SE-ResNeXt-D** の 8 語を追加、BN 行に出典追加
+- 画像: 原典 markdown に画像リンクなし。**arXiv e-print tarball から 8 点すべて取得**し、LaTeX の figure 環境を解析して図番号と PDF を対応付けた。**図 2 は 2 パネル（batchsize_scaling_averaged + clipping_batchsize_ResNet50）を白背景で連結**。→ `raw/assets/nfnet/fig{1..8}.png`
+- メモ:
+  - **直前の query（[[questions/cnn-beyond-convnext-v2]]）で「未取り込み」と注記していた NFNet の原典**。**89.2% という数字が一次情報に格上げされた**。query → ingest → query ページの格上げ、という流れが機能した好例
+  - **BN の欠点の整理（§1-2）が本論文の最も引用価値の高い部分**。特に「**ミニバッチ内の事例の独立性を壊す**」→ 対比学習での情報漏洩（SimCLR の cross-replica BN、MoCo のデバイス間シャッフル）という指摘は、本 wiki の [[concepts/self-supervised-learning]] / [[entities/moco]] の文脈と直接つながる。Appendix B では Keras の長年のバグや DCGAN/SAGAN がテスト時に訓練モードで BN を動かしていた実例まで列挙している
+  - **AGC の直観が綺麗**: 勾配ノルムそのものではなく「勾配ノルム / 重みノルム」= **1 ステップで重みがどれだけ相対的に変わるか**でクリップする。LARS 等の正規化オプティマイザの「緩和版」（上限のみ課し下限は課さない）という位置づけも明快
+  - **アブレーションが率直**: 表2 を読むと**アーキテクチャ変更の寄与（+0.9/+0.4）よりデータ拡張の寄与（+2.3/+3.0）の方がはるかに大きい**。翌年の [[sources/convnext]] が「性能差の最大の単一要因は訓練レシピ」と示したのと**同じ構図が既にここにある**
+  - **BN 排除は主流にならなかった**という後日談を限界セクションに明記した。翌年の ConvNeXt は BN を捨てたが採用したのは **LayerNorm** であり、NFNet の Scaled WS + AGC + SkipInit は調整項目が多い（$\alpha,\beta,\lambda,\epsilon,\gamma$）。**「単純な解が勝った」**という整理
+  - **著者自ら「attention を一切試していない、採用すれば改善しうる」と Appendix E の最後で述べている**のが印象的。実際その後 CV は attention 側へ大きく動いた
+  - **Appendix A.5 の助言が実務的**: 「大規模事前学習では **weight decay をゼロから始めて軽く増やせ**」（ViT 論文と正反対）、「Adam より SGD」。自分たちの BN-ResNet ベースラインが先行研究より大幅に強い（77.54 → 79.9）ことを根拠に挙げている
+  - **dangling link（今後の ingest 候補）**: **InternImage**（[[questions/cnn-beyond-convnext-v2]] 最大の未検証部分）、**EfficientNet / EfficientNetV2**（NFNet の主要比較対象、比較表に頻出）、**CoAtNet**、**Swin V2**、**SimMIM**、**DeiT**、ResNet / ResNeXt

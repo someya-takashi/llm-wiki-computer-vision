@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [Swin, Swin Transformer, Swin-T, Swin-S, Swin-B, Swin-L, SwinL]
 tags: [swin-transformer, vision-transformer, hierarchical, window-attention, backbone, microsoft]
-related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]"]
+related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]", "[[entities/maxvit]]"]
 sources: ["[[sources/swin-transformer]]"]
 updated: 2026-06-17
 ---
@@ -96,6 +96,7 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 
 - **出発点は [[concepts/vision-transformer]]**（ViT, 2020）。Swin はそこに **CNN の階層性と局所性を輸入**した。
 - **2022: [[sources/convnext|ConvNeXt]] からの反論** — 「ConvNet の性質を苦労して輸入するくらいなら ConvNet を近代化せよ」。実際 ConvNeXt-T 82.1 > Swin-T 81.3 で、A100 では最大 +49% 高速。**「Swin の特殊モジュールは性能の源泉ではなかった」**という主張。
+- **2022: [[entities/maxvit]] からの置き換え提案** — 「窓をずらして間接的に大域性を得るより、**grid attention で直接得た方が良い**」。Max-SA は **Swin の attention と同パラメータ・同 FLOPs の drop-in 置換**でありながら cyclic shift もマスクも不要で、IN-21K 以降で大きく上回る（[[sources/maxvit]]）。
 - **2023: [[entities/hiera]] からの簡素化** — 「MAE で適切に事前学習すれば shifted window も相対位置バイアスも全部要らない」。Hiera-B 51M で 84.3 > Swin-B 88M で 83.5。
 - **MIM との相性の悪さ**が弱点として残り、SimMIM という専用手法が必要だった。この制約が [[entities/hiera]] と [[entities/convnext-v2]] を生む動機になった（[[concepts/masked-image-modeling]] の「MIM とアーキテクチャの相性」表を参照）。
 - **それでも検出・グラウンディング領域では長く標準**であり続けた。[[entities/glip]]（2022）→ [[entities/grounding-dino]]（2024）と、open-vocabulary 検出の主要系譜が Swin バックボーンの上に築かれている。
@@ -114,4 +115,5 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 - [[sources/convnext]] / [[entities/convnext]] — 直接の反論（CVPR 2022）
 - [[entities/hiera]] — Swin の工夫を削ぎ落とした簡素化版（ICML 2023）
 - [[concepts/object-detection]] — Swin が塗り替えた検出バックボーン事情
+- [[entities/maxvit]] / [[sources/maxvit]] — Swin の attention の drop-in 置換を提案したハイブリッド系（ECCV 2022）
 - [[concepts/convolutional-neural-network]] — Swin が輸入した階層性・局所性の出どころ

@@ -2,7 +2,7 @@
 type: concept
 aliases: [ViT, Vision Transformer]
 tags: [architecture, transformer, image-classification]
-related: ["[[self-supervised-learning]]", "[[knowledge-distillation]]", "[[rotary-position-embeddings]]", "[[convolutional-neural-network]]", "[[entities/swin-transformer]]"]
+related: ["[[self-supervised-learning]]", "[[knowledge-distillation]]", "[[rotary-position-embeddings]]", "[[convolutional-neural-network]]", "[[entities/swin-transformer]]", "[[entities/maxvit]]"]
 sources: ["[[sources/vision-transformer]]", "[[sources/dino-emerging-properties-in-self-supervised-vit]]", "[[sources/convnext]]", "[[sources/swin-transformer]]"]
 updated: 2026-06-17
 ---
@@ -98,3 +98,4 @@ DINO 論文 [[sources/dino-emerging-properties-in-self-supervised-vit]] の最�
 - [[concepts/convolutional-neural-network]]: 対比されるアーキテクチャ。帰納バイアス・部品・系譜の詳細
 - [[sources/convnext]] / [[entities/convnext]]: 「純粋 ConvNet でも Swin を上回れる」という CNN 側からの反論（CVPR 2022）
 - [[sources/swin-transformer]] / [[entities/swin-transformer]]: ViT を汎用視覚バックボーンに変えた階層型派生（ICCV 2021 最優秀論文賞）
+- [[sources/maxvit]] / [[entities/maxvit]]: 局所 attention と疎な大域 attention を統合し、線形計算量のまま第 1 層から大域視野を得るハイブリッド（ECCV 2022）

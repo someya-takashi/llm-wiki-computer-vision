@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [ConvNeXt, CNX, Convolutional Next]
 tags: [convnext, convolutional-neural-network, architecture, backbone, fair, meta-ai]
-related: ["[[concepts/convolutional-neural-network]]", "[[concepts/vision-transformer]]", "[[entities/dinov3]]", "[[entities/hiera]]", "[[entities/mae]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]"]
+related: ["[[concepts/convolutional-neural-network]]", "[[concepts/vision-transformer]]", "[[entities/dinov3]]", "[[entities/hiera]]", "[[entities/mae]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]", "[[entities/maxvit]]"]
 sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]"]
 updated: 2026-06-17
 ---
@@ -89,5 +89,6 @@ $C$ = 各段階のチャネル数、$B$ = 各段階のブロック数。
 - [[entities/dinov3]] — ConvNeXt バリアントを蒸留で提供している後年の基盤モデル
 - [[entities/hiera]] — 「特殊モジュールを削ぐ」simplicity 論の Transformer 側
 - [[entities/swin-transformer]] / [[sources/swin-transformer]] — 近代化の到達目標かつ最大の比較対象
+- [[entities/maxvit]] / [[sources/maxvit]] — 同時期のハイブリッド路線（畳み込みと attention を 1 ブロックに統合）
 - [[entities/convnext-v2]] / [[sources/convnext-v2]] — 後継。GRN + FCMAE で自己教師あり学習と共設計（CVPR 2023）
 - [[entities/mae]] — ConvNeXt V2 が取り込んだマスク再構成の源流

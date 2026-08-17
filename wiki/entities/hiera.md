@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [Hiera, Hierarchical Vision Transformer]
 tags: [model, architecture, vision-transformer, hierarchical, mae, meta-fair]
-related: ["[[concepts/vision-transformer]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]", "[[entities/convnext]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]"]
+related: ["[[concepts/vision-transformer]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]", "[[entities/convnext]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]", "[[entities/maxvit]]"]
 sources: ["[[sources/sam-2]]"]
 updated: 2026-06-17
 ---
@@ -150,6 +150,7 @@ Hiera は MViT v2 の発展形と見るのが正確。「**MViT v2 から余計�
 - [[entities/mae]] — Hiera の事前学習に使用
 - [[entities/convnext]] / [[sources/convnext]] — 同じ「特殊モジュールを削ぐ」simplicity 論を ConvNet 側から実行した研究（CVPR 2022）
 - [[entities/convnext-v2]] / [[sources/convnext-v2]] — 同じ「MAE 互換性を設計目標に据える」co-design を ConvNet 側で実行（CVPR 2023、Hiera と同年）
+- [[entities/maxvit]] / [[sources/maxvit]] — 設計思想が対極（Hiera は工夫を削ぐ、MaxViT は工夫を足して 1 ブロックに統合する）
 - [[concepts/convolutional-neural-network]] — ConvNeXt 側の背景となる CNN の帰納バイアスと部品
 - [[entities/swin-transformer]] / [[sources/swin-transformer]] — Hiera が「工夫を削ぎ落とす」対象そのもの（ICCV 2021 最優秀論文賞）
 - 比較: MViT v2 / PVTv2（独立ページなし）

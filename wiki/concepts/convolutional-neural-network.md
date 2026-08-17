@@ -3,7 +3,7 @@ type: concept
 aliases: [CNN, ConvNet, Convolutional Neural Network, 畳み込みニューラルネットワーク]
 tags: [architecture, cnn, backbone]
 related: ["[[vision-transformer]]", "[[masked-image-modeling]]", "[[object-detection]]", "[[self-supervised-learning]]"]
-sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]"]
+sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]", "[[sources/nfnet]]"]
 updated: 2026-06-17
 ---
 
@@ -46,6 +46,7 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 | 2018 | **MobileNetV2** | **inverted bottleneck** を普及させる |
 | 2019 | EfficientNet | 深さ・幅・解像度の複合スケーリング則 |
 | 2020 | RegNet | 設計空間そのものを探索する方法論 |
+| 2021 | **NFNet**（[[entities/nfnet]]） | **BatchNorm を完全に排除**。AGC + Scaled Weight Standardization で代替し IN-1K 86.5%（追加データなし SOTA）/ JFT で 89.2% |
 | 2022 | **ConvNeXt**（[[entities/convnext]]） | Transformer 流の訓練レシピと設計を取り込み、Swin を上回る |
 | 2023 | **ConvNeXt V2**（[[entities/convnext-v2]]） | **FCMAE（疎畳み込み MIM）+ GRN** と共設計。CNN でも MIM が効くことを実証、IN-1K 88.9% |
 
@@ -94,6 +95,8 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 - **LayerNorm（LN）**: 特徴次元方向に正規化。バッチに依存しない。Transformer の標準
 - 素の ResNet で BN を LN に置き換えると性能が落ちるが、**他の近代化をすべて済ませた後なら LN の方がわずかに良い**（81.41 → 81.47）
 - **落とし穴**: BN を持つモデルでは **EMA（重みの指数移動平均）が性能を著しく害する**（[[sources/convnext]] Appendix A.1）
+- **第 3 の道: 正規化層を置かない** — [[entities/nfnet|NFNet]]（[[sources/nfnet]]）は **BN を LN に置き換えるのではなく完全に排除**した。BN の 4 つの役割（残差分岐のダウンスケール / 平均シフト除去 / 正則化 / 大バッチ訓練）を、**分散の解析的予測 + Scaled Weight Standardization + 強いデータ拡張 + AGC** で個別に代替する。**同一アーキテクチャの BN 版より精度がわずかに高く、訓練は 20-40% 速い**
+- **BN の欠点の整理としても NFNet は重要**: バッチサイズ依存 / 訓練・推論の乖離 / **ミニバッチ内の事例の独立性を壊す**（→ 対比学習での情報漏洩、[[concepts/self-supervised-learning]] / [[entities/moco]]）という 3 点は広く引用される
 
 ### 活性化関数と「部品を減らす」という発想
 

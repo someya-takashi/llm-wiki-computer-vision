@@ -3,7 +3,7 @@ type: entity
 entity_kind: model
 aliases: [ConvNeXt V2, ConvNeXtV2, FCMAE, GRN]
 tags: [convnext-v2, fcmae, grn, convolutional-neural-network, masked-image-modeling, self-supervised, fair, meta-ai]
-related: ["[[entities/convnext]]", "[[concepts/convolutional-neural-network]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]", "[[entities/hiera]]"]
+related: ["[[entities/convnext]]", "[[concepts/convolutional-neural-network]]", "[[concepts/masked-image-modeling]]", "[[entities/mae]]", "[[entities/hiera]]", "[[entities/maxvit]]"]
 sources: ["[[sources/convnext-v2]]"]
 updated: 2026-06-17
 ---
@@ -78,7 +78,7 @@ $$X_{i}=\gamma*X_{i}*\mathcal{N}(\mathcal{G}(X)_{i})+\beta+X_{i}$$
 
 ## 主要結果
 
-- **ImageNet-1K**: ConvNeXt V2-H @512² で **88.9%**（IN-22K 中間 FT、**公開データのみで当時 SOTA**）。MViTV2-H 88.8 / MaxViT-XL 88.7 / CoAtNet-4 88.1 を上回る
+- **ImageNet-1K**: ConvNeXt V2-H @512² で **88.9%**（IN-22K 中間 FT、**公開データのみで当時 SOTA**）。MViTV2-H 88.8 / **[[entities/maxvit|MaxViT]]-XL 88.7** / CoAtNet-4 88.1 を上回る
 - **COCO**（Mask R-CNN）: V2-H で **55.7 AP^box / 48.9 AP^mask**（Swin V2-H SimMIM 54.4）
 - **ADE20K**（UPerNet）: V2-H で **55.0 mIoU**、IN-22K FT + 640² で **57.0**（Swin V2-H SimMIM 54.2）
 - **他 MIM との比較**: SimMIM（Swin）は全サイズで上回る。MAE（ViT）は Large まで互角（**198M で 85.8 vs ViT-L 307M で 85.9**）だが、**Huge では 86.3 vs ViT-H 86.9 と負ける**
