@@ -1862,3 +1862,21 @@
   - **著者自ら「attention を一切試していない、採用すれば改善しうる」と Appendix E の最後で述べている**のが印象的。実際その後 CV は attention 側へ大きく動いた
   - **Appendix A.5 の助言が実務的**: 「大規模事前学習では **weight decay をゼロから始めて軽く増やせ**」（ViT 論文と正反対）、「Adam より SGD」。自分たちの BN-ResNet ベースラインが先行研究より大幅に強い（77.54 → 79.9）ことを根拠に挙げている
   - **dangling link（今後の ingest 候補）**: **InternImage**（[[questions/cnn-beyond-convnext-v2]] 最大の未検証部分）、**EfficientNet / EfficientNetV2**（NFNet の主要比較対象、比較表に頻出）、**CoAtNet**、**Swin V2**、**SimMIM**、**DeiT**、ResNet / ResNeXt
+
+## [2026-08-21] ingest | Deep High-Resolution Representation Learning for Visual Recognition (HRNet)
+
+- 取り込み: `raw/papers/Deep High-Resolution Representation Learning for Visual Recognition.md`（Wang et al., Microsoft Research Asia ほか, arXiv:1908.07919 → **IEEE TPAMI 2021**、CVPR 2019 会議版の大幅拡張）
+- 作成: [[sources/hrnet]], [[translations/hrnet]], [[entities/hrnet]]
+- 更新: [[concepts/convolutional-neural-network]], [[concepts/object-detection]], [[entities/swin-transformer]], [[overview]], [[index]]
+- 図: `raw/assets/hrnet/fig{1,2,3,4,5,9,10,11}.png`（8 点）
+- メモ:
+  - **ユーザー指示により Appendix A〜E も全訳**（CLAUDE.md §4 の標準ルールからの逸脱。翻訳ファイル冒頭にその旨を明記）。References のみ除外。
+  - **図の取得**: 原典 markdown（ar5iv 由来）には定性例の画像 3 点しか埋め込まれておらず、アーキテクチャ図が一切なかった。**`https://arxiv.org/e-print/1908.07919` の tarball（1.55MB）から LaTeX の figure 環境 11 個をパースし、対応する PDF を pymupdf でレンダリング**して 8 点を生成。複数パネルの図（図4 の V1/V2/V2p、図5 の (a)(b)(c)、図10 の (a)(b)）は個別 PDF を横に連結した。**定性例の図6/7/8（姿勢・セグメンテーション・検出の出力例写真）は情報価値が低いため意図的に省略**し、その旨を翻訳メモに記録。
+  - **wiki 内の「解像度」軸が初めて一次情報で埋まった**。これまで CNN 系のページは ResNet → ConvNeXt → ConvNeXt V2 という「分類ベンチマークの系譜」だけで書かれており、密 prediction 向けの CNN 設計（encoder-decoder / dilated conv / 解像度維持）の整理がなかった。[[concepts/convolutional-neural-network]] の「stage 構成」節に**3 系統の比較表**を追加してこの穴を埋めた。
+  - **既存ページとの接続が想定より多かった**。ingest 前の grep では [[translations/swin-transformer]] の ADE20K 表（OCRNet + HRNet-w48 = 45.7）だけを把握していたが、実際には [[translations/segment-anything]]（対話的セグメンテーション比較の RITM が HRNet32 ベース）と [[translations/dino-x]]（姿勢推定比較表）にも登場していた。**2019 年のアーキテクチャが 2023〜2025 年の論文でまだ比較対象として生きている**ことの確認になった。
+  - **[[entities/swin-transformer]] との関係が本 ingest の最大の収穫**。Swin（2021）と HRNet（2019）は「密 prediction には高解像度が要る」という**同じ問題意識に対する両側からの回答**である。Swin は CNN の階層性を Transformer に輸入し、HRNet は CNN の階層性を並列化した。**Swin が乗り越えるべき当時の CNN 側 SOTA がまさに HRNet だった**（ADE20K 45.7 → Swin-L 53.5）。[[questions/cnn-beyond-convnext-v2]] で整理した「相手の性質を輸入する」という構図に対して、**HRNet はその直前に位置する「輸入せずに自前で解いた」例**として位置づけた。
+  - **理論的な議論が面白い（§III-E、TPAMI 版の新規追加）**: 「並列多解像度畳み込み ≒ group convolution」「多解像度融合 ≒ 通常の畳み込みの多分岐全結合形式」という等価性を示し、そこから「**高解像度だけ使う V1 は畳み込みの出力チャネルの一部を捨てている**」→ だから V2 で全部使うべき、という**予測を立てて実験で検証している**。しかも次元数という交絡変数を除くために **HRNetV1h**（V1 に $1\times1$ を足して次元だけ V2 に揃えた変種）という対照実験を用意しており、実験設計が丁寧。
+  - **アブレーションの示唆が強い**: 融合回数 1 → 3 → 8 で 70.8 → 71.9 → 73.4 AP（**「並列にする」だけでは不十分**）/ 融合を乗算にすると **54.7 AP と壊滅** / **4 本を最初から並走させると逆に下がる**（72.5 < 73.4）。最後の点は「高解像度を維持する = 全部を最初から持つ」ではないことを意味しており、非自明。
+  - **ImageNet 分類での優位が小さい（ResNet-152 21.2% → HRNet-W96 21.0% err.）ことを、論文の弱点ではなく主張の裏付けとして読んだ**。位置に敏感なタスクでの差（+1.4〜6.5）との非対称性が「解像度維持は分類のための工夫ではない」ことを示している。逆に言えば、**HRNet を [[entities/convnext]] や [[entities/nfnet]] と ImageNet top-1 で比較するのは筋が悪い**。
+  - **本 wiki 視点での限界を追記**: SSL（[[concepts/masked-image-modeling]]）との接続が未検証で、[[entities/convnext-v2]] が CNN 側で行ったような作業に相当するものがない。言語接続もない。多分岐構造の最適化コストが高く、[[entities/convnext]] の「部品を減らす」方向と対照的。
+  - **dangling link（今後の ingest 候補）**: **U-Net**（復元型の代表、本 wiki 未取り込み）、**DeepLab v3/v3+ / PSPNet**（dilated 型の代表、HRNet の主要比較対象）、**SimpleBaseline**（姿勢推定のベースライン）、**OCRNet / OCR**（HRNet の最高値を支える文脈モジュール）、**FPN**（検出の標準部品）、**ResNet**（依然として専用ページなし）。加えて既存の候補（InternImage、EfficientNet 系、CoAtNet、Swin V2、SimMIM、DeiT）は未消化のまま。

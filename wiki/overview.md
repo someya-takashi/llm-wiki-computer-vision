@@ -37,9 +37,10 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 
 詳細: [[concepts/convolutional-neural-network]]
 
-- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → ResNeXt（2017）→ DenseNet → MobileNetV2（2018）→ EfficientNet → RegNet → **NFNet（2021, [[entities/nfnet]]）** → **ConvNeXt（2022, [[entities/convnext]]）** → **ConvNeXt V2（2023, [[entities/convnext-v2]]）** → **DINOv3 ConvNeXt 蒸留版（2025, [[entities/dinov3]]）**
+- LeNet → AlexNet（2012, 深層学習革命の起点）→ VGG → GoogLeNet/Inception → **ResNet（2015）** → ResNeXt（2017）→ DenseNet → MobileNetV2（2018）→ EfficientNet → **HRNet（2019, [[entities/hrnet]]）** → RegNet → **NFNet（2021, [[entities/nfnet]]）** → **ConvNeXt（2022, [[entities/convnext]]）** → **ConvNeXt V2（2023, [[entities/convnext-v2]]）** → **DINOv3 ConvNeXt 蒸留版（2025, [[entities/dinov3]]）**
 - CV における長年の主役。**局所性・重み共有・平行移動同変性**という強い帰納バイアスを構造として持ち、計算共有により高解像度入力に強い。
 - **[[entities/convnext]]（CVPR 2022, [[sources/convnext]]）が「ViT が CNN を置き換えた」という物語に反証**: ResNet-50 を訓練レシピと設計選択の面で Transformer 流に近代化すると、attention なしで Swin Transformer を上回る（IN-1K 87.8%、COCO 55.2 AP、ADE20K 54.0 mIoU）。**性能差の最大の単一要因は帰納バイアスではなく訓練レシピ**（レシピ変更だけで 76.1% → 78.8%）。
+- **[[entities/hrnet]]（TPAMI 2021 / CVPR 2019, [[sources/hrnet]]）は「解像度を落とさない」という別軸の解**: LeNet-5 以来の「解像度を落として復元する」規則を捨て、$1/4$〜$1/32$ の 4 ストリームを**並列に維持**して**双方向融合を 8 回繰り返す**。**分類ではなく position-sensitive（位置に敏感な）タスクのための設計**で、COCO pose test-dev **75.5 AP**、Cityscapes val **81.1 mIoU** を **PSPNet と同パラメータ・約 1/3 の GFLOPs** で達成。ImageNet 分類での優位はごく小さく（ResNet-152 21.2% → HRNet-W96 21.0% err.）、**この非対称性自体が主張の裏付け**になっている。[[entities/swin-transformer]] が「CNN の階層性を Transformer に輸入」したのに対し、HRNet は**同じ密 prediction 問題を CNN の階層性を並列化することで解いた**。姿勢推定・顔ランドマーク検出の標準として現在も生存。
 - **[[entities/nfnet]]（ICML 2021, [[sources/nfnet]]）は「正規化層そのものを捨てる」という別方向の解**: BN の 4 役割を分散の解析的予測 + Scaled Weight Standardization + **AGC（勾配ノルム/重みノルム比でクリップ）** で代替。追加データなし IN-1K **86.5%**（当時 SOTA）、JFT-300M で **89.2%**、**EffNet-B7 と同精度を 8.7× 速い訓練で**。ただし BN 排除は主流にならず、翌年の ConvNeXt は **LN への置換**という単純な解を採った
 - **[[entities/convnext-v2]]（CVPR 2023, [[sources/convnext-v2]]）が残った弱点「CNN は MIM に向かない」も解決**: 疎畳み込みで情報漏洩を遮断する **FCMAE** と特徴崩壊を防ぐ **GRN** を*共設計*し、IN-1K **88.9%**（公開データのみで当時 SOTA）。3.7M〜659M の全 8 サイズで教師ありを +0.8〜+1.5 上回った。
 - **それでも主流は ViT に収束した**。**V2 以後に残る決定的な理由は「パッチ列表現と言語トークンの接続性」**（CLIP/MLLM）であり、MIM 適性はもはや理由ではない。CNN は「効率が要る場所」（量子化・エッジ）に定着し、DINOv3 の蒸留先として生存している。

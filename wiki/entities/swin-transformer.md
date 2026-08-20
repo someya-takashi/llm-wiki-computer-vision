@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [Swin, Swin Transformer, Swin-T, Swin-S, Swin-B, Swin-L, SwinL]
 tags: [swin-transformer, vision-transformer, hierarchical, window-attention, backbone, microsoft]
-related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]", "[[entities/maxvit]]"]
+related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]", "[[entities/maxvit]]", "[[entities/hrnet]]"]
 sources: ["[[sources/swin-transformer]]"]
-updated: 2026-06-17
+updated: 2026-08-21
 ---
 
 # Swin Transformer
@@ -95,6 +95,7 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 ## 系譜・後の評価
 
 - **出発点は [[concepts/vision-transformer]]**（ViT, 2020）。Swin はそこに **CNN の階層性と局所性を輸入**した。
+- **2019: [[entities/hrnet|HRNet]] が同じ問題に CNN 側から答えていた** — 「密 prediction には高解像度が要る」という問題意識は Swin と共通で、HRNet の解は**解像度を落とさず並列ストリームを維持する**ことだった（[[sources/hrnet]]）。Swin が乗り越えるべき当時の CNN 側 SOTA がまさにこれで、[[translations/swin-transformer]] の ADE20K 比較表には **OCRNet + HRNet-w48 が 45.7 mIoU** で載っている（Swin-L ‡ は 53.5）。**階層性を輸入した Swin と、階層性を並列化した HRNet** という対比で読むと分かりやすい。
 - **2022: [[sources/convnext|ConvNeXt]] からの反論** — 「ConvNet の性質を苦労して輸入するくらいなら ConvNet を近代化せよ」。実際 ConvNeXt-T 82.1 > Swin-T 81.3 で、A100 では最大 +49% 高速。**「Swin の特殊モジュールは性能の源泉ではなかった」**という主張。
 - **2022: [[entities/maxvit]] からの置き換え提案** — 「窓をずらして間接的に大域性を得るより、**grid attention で直接得た方が良い**」。Max-SA は **Swin の attention と同パラメータ・同 FLOPs の drop-in 置換**でありながら cyclic shift もマスクも不要で、IN-21K 以降で大きく上回る（[[sources/maxvit]]）。
 - **2023: [[entities/hiera]] からの簡素化** — 「MAE で適切に事前学習すれば shifted window も相対位置バイアスも全部要らない」。Hiera-B 51M で 84.3 > Swin-B 88M で 83.5。
@@ -117,3 +118,4 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 - [[concepts/object-detection]] — Swin が塗り替えた検出バックボーン事情
 - [[entities/maxvit]] / [[sources/maxvit]] — Swin の attention の drop-in 置換を提案したハイブリッド系（ECCV 2022）
 - [[concepts/convolutional-neural-network]] — Swin が輸入した階層性・局所性の出どころ
+- [[entities/hrnet]] / [[sources/hrnet]] — 同じ密 prediction 問題への CNN 側からの回答（2019）。ADE20K の比較対象

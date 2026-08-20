@@ -3,8 +3,8 @@ type: concept
 aliases: [CNN, ConvNet, Convolutional Neural Network, 畳み込みニューラルネットワーク]
 tags: [architecture, cnn, backbone]
 related: ["[[vision-transformer]]", "[[masked-image-modeling]]", "[[object-detection]]", "[[self-supervised-learning]]"]
-sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]", "[[sources/nfnet]]"]
-updated: 2026-06-17
+sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]", "[[sources/nfnet]]", "[[sources/hrnet]]"]
+updated: 2026-08-21
 ---
 
 # Convolutional Neural Network（CNN / ConvNet, 畳み込みニューラルネットワーク）
@@ -45,6 +45,7 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 | 2017 | MobileNet / Xception | **depthwise separable convolution** を普及させる |
 | 2018 | **MobileNetV2** | **inverted bottleneck** を普及させる |
 | 2019 | EfficientNet | 深さ・幅・解像度の複合スケーリング則 |
+| 2019 | **HRNet**（[[entities/hrnet]]） | **解像度を落とさない**。高→低の並列ストリームを維持し双方向融合を反復。位置に敏感なタスク用の設計 |
 | 2020 | RegNet | 設計空間そのものを探索する方法論 |
 | 2021 | **NFNet**（[[entities/nfnet]]） | **BatchNorm を完全に排除**。AGC + Scaled Weight Standardization で代替し IN-1K 86.5%（追加データなし SOTA）/ JFT で 89.2% |
 | 2022 | **ConvNeXt**（[[entities/convnext]]） | Transformer 流の訓練レシピと設計を取り込み、Swin を上回る |
@@ -68,6 +69,18 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 
 - 各段階へのブロック配分（stage compute ratio）は ResNet-50 で 3:4:6:3、Swin-T / ConvNeXt-T では **3:3:9:3**
 - 実験: 配分変更で 78.8 → 79.4（+0.6）
+
+**この階層構造は「分類のための設計」でもある。** 最終出力を 1 個のラベルにするなら空間情報は捨ててよいが、姿勢推定・セグメンテーション・検出のように**出力が空間位置と結びつくタスク（position-sensitive task）**では、落とした解像度をどこかで取り戻さねばならない。この問題への回答は歴史的に 3 系統に分かれる。
+
+| 系統 | 代表 | やり方 |
+|---|---|---|
+| **復元型（encoder-decoder）** | U-Net / Hourglass / SegNet / SimpleBaseline | 落としてからアップサンプルで戻す。skip connection で細部を補う |
+| **拡張畳み込み型** | DeepLab 系 / PSPNet | ダウンサンプル層を削り dilated convolution で受容野だけ稼ぐ。$1/8$ 程度で止める。**全解像度で畳み込むため計算量が爆発** |
+| **維持型** | **[[entities/hrnet\|HRNet]]**（[[sources/hrnet]]） | **そもそも落とさない**。$1/4$〜$1/32$ の 4 ストリームを並列に走らせ、その間で双方向の融合を 8 回繰り返す |
+
+HRNet の効き方は明快で、Cityscapes val において **PSPNet と同じパラメータ数（65.9M）で GFLOPs 約 1/3（696 vs 2018）、mIoU +1.4** を達成する。**高解像度で走らせるチャネル数を絞り、低解像度ほどチャネルを増やす**（$C, 2C, 4C, 8C$）ことで、解像度とチャネル数のトレードオフを解像度ごとに最適化しているためである。
+
+なお HRNet の ImageNet 分類での優位はごく小さい（ResNet-152 21.2% → HRNet-W96 21.0% err.）。**解像度の維持は分類のための工夫ではない**ことが、この非対称性にそのまま現れている。
 
 ### bottleneck と inverted bottleneck
 
@@ -131,4 +144,5 @@ ConvNeXt の近代化で**終盤に最も効いたのは、部品を足すこと
 - [[masked-image-modeling]] — かつて CNN の弱点だった領域。ConvNeXt V2 が疎畳み込みで解決した
 - [[object-detection]] — R-CNN ファミリー / YOLO など CNN 時代の検出器の系譜
 - [[entities/hiera]] — 階層型 ViT から特殊モジュールを削ぐ研究。ConvNeXt と同じ *simplicity* 論の Transformer 側
+- [[sources/hrnet]] / [[entities/hrnet]] — 「解像度を落とさない」という別軸の設計。位置に敏感なタスクでの CNN の到達点
 - [[entities/dinov3]] — ConvNeXt バリアントを蒸留で提供する後年の基盤モデル

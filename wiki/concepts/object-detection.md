@@ -3,8 +3,8 @@ type: concept
 aliases: [Object Detection, 物体検出, 物体検知]
 tags: [task, dense-prediction, localization]
 related: ["[[vision-transformer]]", "[[foundation-model]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]"]
-sources: ["[[sources/detr]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/perception-encoder]]"]
-updated: 2026-05-28
+sources: ["[[sources/detr]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/perception-encoder]]", "[[sources/hrnet]]"]
+updated: 2026-08-21
 ---
 
 # Object Detection（物体検出）
@@ -199,6 +199,8 @@ DETR が他のすべての手法と決定的に異なる点：
 - **Hungarian アルゴリズム**: 二部マッチングを O(N³) で最適解、DETR の損失計算
 - **Focal Loss** [Lin et al., 2017]: クラス不均衡対応。RetinaNet の核、SAM でも採用
 - **Soft-NMS** [Bodla et al., 2017]: NMS の confidence を IoU に応じて減衰
+- **FPN（Feature Pyramid Network）** [Lin et al., 2017]: 多スケールの特徴マップを作り、大きい物体と小さい物体を別の階層で検出する。以後ほぼすべての検出器の標準部品
+- **バックボーンの解像度**: 小物体検出（AP_S）はバックボーンが保つ空間解像度に強く依存する。[[entities/hrnet|HRNet]]（[[sources/hrnet]]）は $1/4$ 解像度を最後まで維持することで、Faster/Cascade R-CNN・FCOS・CenterNet・Mask R-CNN・HTC のいずれの枠組みでも ResNet / ResNeXt を上回り、**特に AP_S での改善が顕著**だった。HRNetV2p は V2 の高解像度出力をダウンサンプルして FPN 互換の特徴ピラミッドを作る
 
 ## 関連ページ
 
@@ -210,3 +212,5 @@ DETR が他のすべての手法と決定的に異なる点：
 - [[sources/segment-anything]] / [[entities/sam]] — Mask R-CNN 系統の現代的後継
 - [[sources/sam-3]] / [[entities/sam-3]] — DETR スタイル detector + PCS
 - [[sources/perception-encoder]] / [[entities/perception-encoder]] — PEspatial + DETA で COCO 66.0 SOTA
+- [[sources/hrnet]] / [[entities/hrnet]] — 高解像度を維持するバックボーン。小物体検出（AP_S）と解像度の関係
+- [[concepts/convolutional-neural-network]] — 検出バックボーンの系譜と設計部品
