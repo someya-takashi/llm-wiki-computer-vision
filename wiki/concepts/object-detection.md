@@ -2,9 +2,9 @@
 type: concept
 aliases: [Object Detection, 物体検出, 物体検知]
 tags: [task, dense-prediction, localization]
-related: ["[[vision-transformer]]", "[[foundation-model]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]"]
-sources: ["[[sources/detr]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/perception-encoder]]", "[[sources/hrnet]]"]
-updated: 2026-08-21
+related: ["[[vision-transformer]]", "[[foundation-model]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]", "[[concepts/example-reweighting]]"]
+sources: ["[[sources/detr]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/perception-encoder]]", "[[sources/hrnet]]", "[[sources/l2rw]]"]
+updated: 2026-08-23
 ---
 
 # Object Detection（物体検出）
@@ -198,6 +198,7 @@ DETR が他のすべての手法と決定的に異なる点：
 - **DIoU / CIoU**: GIoU の派生（中心距離・アスペクト比も考慮）
 - **Hungarian アルゴリズム**: 二部マッチングを O(N³) で最適解、DETR の損失計算
 - **Focal Loss** [Lin et al., 2017]: クラス不均衡対応。RetinaNet の核、SAM でも採用
+  - **ただしこれは「hard 優先」という片側の処方箋である**。損失の大きい事例を重視するのはクラス不均衡には効くが、**ラベルにノイズがある設定では逆効果**になる（損失が大きい事例＝誤ラベルの可能性が高い）。検出で hard 優先が標準になっているのは、検出のラベルが比較的きれいだからだと読める。この対立の整理と、勾配方向で重みを決める第三の道については [[concepts/example-reweighting]] / [[sources/l2rw]] を参照
 - **Soft-NMS** [Bodla et al., 2017]: NMS の confidence を IoU に応じて減衰
 - **FPN（Feature Pyramid Network）** [Lin et al., 2017]: 多スケールの特徴マップを作り、大きい物体と小さい物体を別の階層で検出する。以後ほぼすべての検出器の標準部品
 - **バックボーンの解像度**: 小物体検出（AP_S）はバックボーンが保つ空間解像度に強く依存する。[[entities/hrnet|HRNet]]（[[sources/hrnet]]）は $1/4$ 解像度を最後まで維持することで、Faster/Cascade R-CNN・FCOS・CenterNet・Mask R-CNN・HTC のいずれの枠組みでも ResNet / ResNeXt を上回り、**特に AP_S での改善が顕著**だった。HRNetV2p は V2 の高解像度出力をダウンサンプルして FPN 互換の特徴ピラミッドを作る
@@ -214,3 +215,4 @@ DETR が他のすべての手法と決定的に異なる点：
 - [[sources/perception-encoder]] / [[entities/perception-encoder]] — PEspatial + DETA で COCO 66.0 SOTA
 - [[sources/hrnet]] / [[entities/hrnet]] — 高解像度を維持するバックボーン。小物体検出（AP_S）と解像度の関係
 - [[concepts/convolutional-neural-network]] — 検出バックボーンの系譜と設計部品
+- [[concepts/example-reweighting]] / [[sources/l2rw]] — Focal Loss / hard negative mining が属する「事例の重み付け」の全体像と、その前提の限界

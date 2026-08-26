@@ -4,7 +4,7 @@ entity_kind: model
 aliases: [DFN, Data Filtering Networks, DFN-CLIP, DFN-2B, DFN-5B]
 related: ["[[entities/clip]]", "[[entities/siglip]]", "[[entities/qwen2-vl]]", "[[entities/qwen2-5-vl]]", "[[entities/qwen3-vl]]", "[[entities/perception-encoder]]"]
 sources: ["[[sources/dfn]]"]
-updated: 2026-06-03
+updated: 2026-08-23
 ---
 
 # DFN（Data Filtering Networks）
@@ -187,3 +187,7 @@ DFN-2B / DFN-5B は SOTA：
 ### 関連 question
 
 - [[questions/large-scale-pretraining-series]] — 大規模事前学習 5 系列、DFN の位置付け
+
+### 発想上の兄弟
+
+- [[concepts/example-reweighting]] / [[sources/l2rw]] — 「**小さな高品質データを基準にして、大量の粗いデータの使い方を決める**」という骨格は DFN と同じ。違いは粒度（事例ごとの連続的な重み vs サンプルの二値の採否）とタイミング（訓練中に毎ステップ vs 訓練前に一括）

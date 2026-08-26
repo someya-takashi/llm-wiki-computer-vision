@@ -142,6 +142,7 @@ ingest が進んだら、各タスクごとに該当する sources / concepts �
 - **RoPE** ([[concepts/rotary-position-embeddings]]): NLP 由来の回転位置埋め込み、可変解像度対応に必須
 - **Multi-student distillation**: DINOv3 で実装、1 teacher の forward を複数 student で共有する効率化
 - **Register tokens**: Darcet et al. 2023 → DINOv2 with registers / DINOv3 で標準採用
+- **Example Reweighting** ([[concepts/example-reweighting]] / [[sources/l2rw]]): 訓練事例ごとに重みを付けて訓練データのバイアス（クラス不均衡・ラベルノイズ）を補正する枠組み。従来は「hard 優先」（AdaBoost / hard negative mining / **Focal Loss**）と「easy 優先」（self-paced learning / robust loss）という**相矛盾する 2 つの流儀**が併存していたが、**L2RW（ICML 2018）は損失値ではなく「小さなクリーンな検証セットの勾配方向との一致度」で重みを決める**ことで両者の二者択一を解消した。クリーンな検証は **15 枚**で足り、「データ源ではなく正則化子として働いている」。2018 年以降、重心は訓練中の事例単位の重み付けから**訓練前のデータセット規模の選別**（[[entities/dfn]]）へ移った
 - **Progressive resolution**: 訓練中に解像度を 98 → 154 → 224 → 336 → 448 と段階的に上げる戦略。Perception Encoder の 9 段階アブレーションで COCO 検出（凍結特徴）+10 mAP という最大の効果。グローバル token への過適合を防ぐ役割と推測
 
 ## 主要データセット・ベンチマーク

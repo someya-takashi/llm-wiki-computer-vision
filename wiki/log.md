@@ -1880,3 +1880,24 @@
   - **ImageNet 分類での優位が小さい（ResNet-152 21.2% → HRNet-W96 21.0% err.）ことを、論文の弱点ではなく主張の裏付けとして読んだ**。位置に敏感なタスクでの差（+1.4〜6.5）との非対称性が「解像度維持は分類のための工夫ではない」ことを示している。逆に言えば、**HRNet を [[entities/convnext]] や [[entities/nfnet]] と ImageNet top-1 で比較するのは筋が悪い**。
   - **本 wiki 視点での限界を追記**: SSL（[[concepts/masked-image-modeling]]）との接続が未検証で、[[entities/convnext-v2]] が CNN 側で行ったような作業に相当するものがない。言語接続もない。多分岐構造の最適化コストが高く、[[entities/convnext]] の「部品を減らす」方向と対照的。
   - **dangling link（今後の ingest 候補）**: **U-Net**（復元型の代表、本 wiki 未取り込み）、**DeepLab v3/v3+ / PSPNet**（dilated 型の代表、HRNet の主要比較対象）、**SimpleBaseline**（姿勢推定のベースライン）、**OCRNet / OCR**（HRNet の最高値を支える文脈モジュール）、**FPN**（検出の標準部品）、**ResNet**（依然として専用ページなし）。加えて既存の候補（InternImage、EfficientNet 系、CoAtNet、Swin V2、SimMIM、DeiT）は未消化のまま。
+
+## [2026-08-23] ingest | Learning to Reweight Examples for Robust Deep Learning (L2RW)
+
+- 取り込み: `raw/papers/Learning to Reweight Examples for Robust Deep Learning.md`（Ren, Zeng, Yang, Urtasun / Uber ATG + University of Toronto, **ICML 2018**, arXiv:1803.09050）
+- 作成: [[sources/l2rw]], [[translations/l2rw]], [[concepts/example-reweighting]]
+- 更新: [[concepts/object-detection]], [[concepts/semi-supervised-learning]], [[entities/flexmatch]], [[entities/dfn]], [[overview]], [[index]]
+- 図: `raw/assets/l2rw/fig{1..7}.png`（7 点）
+- メモ:
+  - **ユーザー自身が「少し本プロジェクトの趣旨からずれるかもしれませんが」と留保を付けた ingest**。実際 CV アーキテクチャの系譜には乗らない訓練手法・メタ学習の論文である。ingest 前の調査で既存 wiki との接続点を洗い出し、**それを踏まえてユーザーが (a) Appendix A・B・C の全訳と (b) 概念ページ新設・entity ページなし を選択**した。
+  - **entity ページを作らないのは本 wiki で初めての判断**。L2RW は「モデル」ではなく「アルゴリズム」であり、`entity_kind` の選択肢（model / dataset / person / organization / benchmark）のいずれにも当てはまらない。代わりに [[concepts/example-reweighting]] を新設し、AdaBoost / hard negative mining / Focal Loss / self-paced learning / カリキュラム学習 / クラス不均衡 / ラベルノイズの受け皿にした。**今後、手法・アルゴリズム系の論文はこの形（sources + translations + concepts）を標準にしてよさそう**。
+  - **図の取得**: 原典 markdown（ar5iv 由来）には**画像が 1 枚も埋め込まれていなかった**（HRNet の 3 枚よりさらに少ない）。`https://arxiv.org/e-print/1803.09050`（2.87MB）の tarball から LaTeX の figure 環境をパースし、`\includegraphics` の **`trim` 値まで読み取って適用**した。特に図1（計算グラフ）は `trim={0cm 8.9cm 15cm 0}` と大きく、content-bbox の自動クロップでは不要領域を拾ってしまうため明示的な適用が必須だった。図3（重み分布 2 枚）は横に、図6（混同行列 2 枚）は縦に連結。7 点すべて目視確認済み。
+  - **Algorithm 1 は原典 markdown で改行が潰れていた**（複数ステップが 1 行に結合）。LaTeX ソース `sections/model.tex` の `\STATE` を参照して 13 ステップの正しい順序を復元した。**ar5iv 変換の欠損は図だけでなく疑似コードにも及ぶ**という教訓。
+  - **本論文の最大の面白さは「Random ベースラインが強すぎた」件**。整流ガウス乱数で重みを振っただけのベースラインが CIFAR-10 UniformFlip で **86.06** を出し、MentorNet（76.6）も Reed（69.66）も全部倒した。著者自ら「驚くべきこと」と書き、「ランダムな重みが強い正則化子として働く」という仮説を立てている。**これは論文にとって不都合に見えて、実は冒頭の「不偏なテストセットの定義なしに問題は ill-defined で、人工ノイズでは強い正則化が驚くほどうまくいく」という主張を自ら実証した形**になっている。sources ページではこれを [[sources/convnext]] の「性能差の最大の単一要因は訓練レシピだった」と同型の教訓（**強いベースラインを置かないと何が効いているか分からない**）として位置づけた。
+  - **図7 から論文本文が明示していない読みを 1 つ拾った**。本手法の訓練精度（点線）が約 60% で頭打ちになっており、これはノイズ率 40% に対するクリーンデータの割合 60% とちょうど一致する。**モデルがクリーンな事例だけを適合させ、ノイズには一切適合していない**ことの直接的な証拠になっている。Baseline の訓練精度は 90% 近くまで上がり続けていて対照的。
+  - **図6（混同行列）の BackgroundFlip も強い**。背景クラスが cat の試行で、Baseline は airplane 35% / bird 42% / dog 44% を cat に流し込み、**cat の列だけが縦に一本光る**。本手法ではこの列がほぼ消え、対角が 0.78〜0.95 に揃う。
+  - **実務的に最も価値のある発見は「クリーンな検証は 15 枚で足りる」**（図4）。同じ 15 枚でベースラインを fine-tune すると 77.5% しか出ないのに、L2RW は 84.4%。著者の解釈「**クリーンな検証セットはデータ源ではなく正則化子として働いている**」が本質を突いている。この非対称性がなければ「不偏でクリーンなデータを大量に用意せよ」となり実務では使えない手法だった。
+  - **既存 wiki との接続で最も収穫だったのは [[entities/flexmatch]] の SVHN 失敗**。CPL が SVHN で悪化した（+4.38 / +4.76）原因は「クラス別サンプル数がほぼ均等」という前提への依存で、L2RW はその 3 年前に**事例単位**の重み付けで同じ問題に当たっていた。**「クラス単位 vs 事例単位」という粒度の対比**として flexmatch / semi-supervised-learning / example-reweighting の 3 ページに相互リンクを張った。
+  - **[[entities/dfn]] との骨格の同型性**も記録した。「小さな高品質データを基準にして、大量の粗いデータの使い方を決める」という構造は同じで、違うのは粒度（事例ごとの連続的な重み vs サンプルの二値の採否）とタイミング（訓練中に毎ステップ vs 訓練前に一括）。**2018 年以降 CV の重心が後者に移った**という位置づけを overview / concepts 両方に書いた。
+  - **概念ページでは一次情報の範囲を厳密に守った**。本ページの一次情報は L2RW 1 件のみなので、その Related Work で言及されているだけの手法（AdaBoost / Focal Loss / self-paced learning / MentorNet 等）には **⚠ を付けて未取り込みであることを明示**した。[[questions/cnn-beyond-convnext-v2]] で採った作法の踏襲。
+  - **原典の誤りを 1 件記録**: Appendix B の Eq.29 で $F(\theta)=\frac{1}{M}\sum_{i=1}^{N}f_i(\theta)$ となっているが係数は $\frac{1}{N}$ であるべき。証明の後続で $F$ を使わないため結論には影響しない。翻訳では原典に忠実に訳し、sources ページに「原典の誤り（正誤）」節を設けて記載した。
+  - **dangling link（今後の ingest 候補）**: **Focal Loss**（Lin et al., ICCV 2017 — hard 優先側の最重要実装で、[[concepts/object-detection]] からも参照されている。優先度が高い）、**MentorNet**、**self-paced learning**（Kumar et al., NIPS 2010）、**MAML**（Finn et al., ICML 2017 — メタ学習の基本枠組みが本 wiki に未取り込み）、**Meta-Weight-Net**（Shu et al., NeurIPS 2019）。加えて既存の候補（InternImage、EfficientNet 系、CoAtNet、Swin V2、SimMIM、DeiT、U-Net、DeepLab v3+、PSPNet、SimpleBaseline、OCRNet、FPN、ResNet）は未消化のまま。

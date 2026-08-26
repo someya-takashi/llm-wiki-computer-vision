@@ -2,9 +2,9 @@
 type: concept
 aliases: [SeSL, 半教師あり学習, Semi-Supervised Learning]
 tags: [paradigm, semi-supervised, label-efficiency, consistency-regularization, entropy-minimization, mixup, pseudo-label, foundation-model, peft]
-related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/foundation-model]]", "[[concepts/parameter-efficient-fine-tuning]]"]
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/foundation-model]]", "[[concepts/parameter-efficient-fine-tuning]]", "[[concepts/example-reweighting]]"]
 sources: ["[[sources/mixmatch]]", "[[sources/fixmatch]]", "[[sources/flexmatch]]", "[[sources/revisiting-ssl-foundation-models]]"]
-updated: 2026-05-28
+updated: 2026-08-23
 ---
 
 # 半教師あり学習（Semi-Supervised Learning）
@@ -88,6 +88,8 @@ FixMatch が示した「**確証バイアス（confirmation bias）** を避け�
 CIFAR-10 40 ラベルで 4.97%（FixMatch: 7.47%）、CIFAR-100 400 ラベルで 39.94%（FixMatch: 46.42%）を達成し、収束速度は FixMatch の **1/5**。ただし SVHN（クラス不均衡データセット）では逆に悪化（8.19% vs 3.81%）—— CPL は「クラス別サンプル数がほぼ均等」という仮定が崩れると裏目に出る。
 
 FlexMatch が確立した「**固定閾値 → クラス別適応閾値**」という転換点は、後の FreeMatch（2 レベル自由閾値）・SoftMatch（ガウス重み付け）に直接引き継がれ、2022 年以降の SeSL 論文では「どのように閾値を適応させるか」が主要な設計軸の一つとなった。
+
+> **SVHN の失敗は「重み付けの粒度」の問題として読める。** CPL が破綻したのは、**クラス単位**で閾値を適応させたために「クラス別サンプル数がほぼ均等」という前提を暗黙に置いていたからである。同じクラス不均衡の問題に対し、[[sources/l2rw]]（Ren et al., ICML 2018）は 3 年前に**事例単位**の重み付けで当たっており、クラスという概念を経由しないためこの前提を必要としない。解いている問題は違う（ラベルが足りない vs ラベルが汚い）ので直接の優劣比較にはならないが、**均等性の前提を置くかどうかという設計上の分岐**は共通の教訓になる。詳細は [[concepts/example-reweighting]] を参照。
 
 ## 2025 年の転換点：VFM 時代の SeSL の再検討
 

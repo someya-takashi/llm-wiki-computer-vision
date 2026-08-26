@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [FlexMatch]
 tags: [semi-supervised-learning, pseudo-label, dynamic-threshold, curriculum-learning, fixmatch, cifar, svhn, stl-10, imagenet, titech, microsoft-research-asia]
-related: ["[[concepts/semi-supervised-learning]]", "[[entities/fixmatch]]", "[[entities/mixmatch]]", "[[sources/flexmatch]]"]
+related: ["[[concepts/semi-supervised-learning]]", "[[entities/fixmatch]]", "[[entities/mixmatch]]", "[[sources/flexmatch]]", "[[concepts/example-reweighting]]"]
 sources: ["[[sources/flexmatch]]"]
-updated: 2026-05-27
+updated: 2026-08-23
 ---
 
 # FlexMatch
@@ -73,6 +73,9 @@ updated: 2026-05-27
 | STL-10 | 1000 | **5.77** | 6.25 | −0.48 |
 | SVHN | 40 | 8.19 | **3.81** | +4.38（悪化） |
 | SVHN | 1000 | 6.72 | **1.96** | +4.76（悪化） |
+
+> **SVHN の悪化は「クラス単位で適応させたこと」の代償**である。CPL はクラス別に閾値を動かすため、**クラス別サンプル数がほぼ均等**という前提を暗黙に置いている。**事例単位**で重みを決める [[sources/l2rw]]（ICML 2018）はこの前提を必要としない。粒度の対比は [[concepts/example-reweighting]] に整理した。
+
 | ImageNet (100K) | — | **41.85** top-1 | 43.66 | −1.81 |
 
 **収束速度（CIFAR-100 / 400 ラベル）**
@@ -126,3 +129,4 @@ FlexMatch の CPL（クラス別動的閾値）も VFM 上では効果が薄い�
 - [[entities/mixmatch]]: FixMatch の前身
 - [[entities/v-pet]]: VFM 時代の SeSL（FlexMatch を凌駕）
 - [[sources/revisiting-ssl-foundation-models]]: VFM 時代における FlexMatch の限界を実証
+- [[concepts/example-reweighting]] / [[sources/l2rw]]: 同じクラス不均衡の問題に事例単位の重み付けで当たった先行研究
