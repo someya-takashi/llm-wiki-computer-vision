@@ -2,9 +2,9 @@
 type: concept
 aliases: [WSL, Weakly-Supervised Pretraining, Text-Guided Pretraining, 弱教師あり事前学習]
 tags: [paradigm, pretraining, vision-language]
-related: ["[[self-supervised-learning]]", "[[foundation-model]]", "[[contrastive-learning]]", "[[zero-shot-transfer]]", "[[alignment-tuning]]"]
-sources: ["[[sources/clip]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]", "[[sources/dfn]]"]
-updated: 2026-06-03
+related: ["[[self-supervised-learning]]", "[[foundation-model]]", "[[contrastive-learning]]", "[[zero-shot-transfer]]", "[[alignment-tuning]]", "[[concepts/medical-foundation-model]]"]
+sources: ["[[sources/clip]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]", "[[sources/dfn]]", "[[sources/biomedclip]]"]
+updated: 2026-08-28
 ---
 
 # Weakly-Supervised Pretraining（弱教師あり事前学習）
@@ -102,3 +102,21 @@ DINOv2 論文の主張は要するに「**ピクセルの細部や密予測が�
 - [[concepts/zero-shot-transfer]]: WSL が可能にする推論パラダイム
 - [[concepts/self-supervised-learning]]: 対比される対の概念（SigLIP 2 は両者をブレンド）
 - [[concepts/foundation-model]]: 両者を包括する上位概念
+
+## 領域を越える移植可能性 — 生物医学の場合
+
+**このパラダイムは領域を越えて移植できる**が、そのためには**「対になったデータをどこから取るか」を領域ごとに解き直す必要がある**。[[sources/biomedclip]]（Microsoft Research, 2023）はその最も明快な実例である。
+
+**着想**: 科学論文の図には必ずキャプションが付いている。それはそのまま画像–テキスト対である。PubMed Central の 440 万件の公開全文論文から機械的に抜くと **[[entities/pmc-15m|PMC-15M]]（1,528 万対）**——既存の医療画像–テキストデータセット（MIMIC-CXR 37.7 万など）より **2 桁大きく、しかも完全に公開されたもの**が手に入る。
+
+**移植にあたって取り替えた部品**は 3 つだけで、InfoNCE 損失も二塔の骨格も [[entities/clip]] のままである。
+
+| 箇所 | 汎用（CLIP） | 生物医学（[[entities/biomedclip]]） | 理由 |
+|---|---|---|---|
+| テキストエンコーダ | GPT-2（白紙から） | **PubMedBERT** | 領域の事前学習済み LM |
+| トークナイザ | Byte-Pair Encoding | **WordPiece**（領域特有 30k 語彙） | BPE は専門用語を細断する |
+| 文脈長 | **77** | **256** | 領域のキャプションが長い |
+
+**汎用モデルは領域内で壊滅する。** PMC-15M の検索で汎用 CLIP は **R@1 8.48%**（BiomedCLIP 69.60%）。**「CLIP は汎用に見えて実は Web 分布に特化していた」ことを裏側から示す結果**である。
+
+**中途半端な適応はさらに悪い。** PubMedCLIP（ROCO の放射線 8 万対で CLIP をファインチューニング）は **R@1 1.00% と汎用 CLIP の 1/8**。元の分布を壊すには十分だが新領域を覆うには足りない量、というのが最も危ない。詳細は [[concepts/medical-foundation-model]] の補論を参照。

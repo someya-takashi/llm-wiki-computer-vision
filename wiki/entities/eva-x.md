@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [EVA-X, EVA-X-Ti, EVA-X-S, EVA-X-B]
 tags: [medical-imaging, chest-x-ray, foundation-model, self-supervised-learning, masked-image-modeling, vision-transformer, eva-clip, mgca, dual-vit, hustvl, npj-digital-medicine]
-related: ["[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[entities/ibot]]", "[[entities/mae]]", "[[entities/clip]]", "[[entities/i-synmed]]", "[[entities/medgemma]]", "[[concepts/medical-foundation-model]]", "[[sources/eva-x]]"]
+related: ["[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[entities/ibot]]", "[[entities/mae]]", "[[entities/clip]]", "[[entities/i-synmed]]", "[[entities/medgemma]]", "[[entities/biomedclip]]", "[[concepts/medical-foundation-model]]", "[[sources/eva-x]]"]
 sources: ["[[sources/eva-x]]"]
-updated: 2026-08-27
+updated: 2026-08-28
 ---
 
 # EVA-X
@@ -229,3 +229,20 @@ EVA-X (npj Digital Medicine 2025) ── 医療 X 線版
 
 - [[concepts/medical-foundation-model]] — 医療基盤モデルの 3 類型（本モデルは「単一モダリティ特化 SSL」型）
 - [[entities/medgemma]] / [[entities/medsiglip]] — 対極にある「汎用ドメイン適応」型
+
+## 反例: 多様性が特化を上回る場合（BiomedCLIP）
+
+**単一モダリティ特化という戦略には、正面からの反例がある。** [[sources/biomedclip]] は RSNA 肺炎検出（胸部 X 線）において、**放射線科特化の BioViL を、ラベル付きデータのわずか 10% で完全教師ありの BioViL を上回る**形で破っている。
+
+論文はこの結果の安易な解釈を自ら潰している。
+
+> **BiomedCLIP の事前学習で用いられた放射線関連の画像は BioViL の事前学習で用いられた MIMIC-CXR より多くはなく**、画像–テキスト対はおそらくはるかにノイジーである。これは BiomedCLIP の RSNA における優れた性能が**より多くの放射線科特有の事前学習に由来する可能性を排除する**。
+
+つまり「放射線データを多く見たから勝った」のではなく、**統計図表や顕微鏡画像を含む非放射線科の画像型を含む多様性そのものが、放射線科の性能を上げた**（**正の転移**）。
+
+**ただし BiomedCLIP が万能なわけでもない。** 同じ論文のゼロショット分類では、病理特化の **PLIP が LC25000（肺）で BiomedCLIP を 16pt 上回る**。特化モデルは自分の土俵では依然として強い。
+
+> **EVA-X の立ち位置はこれで揺らぐわけではない。** EVA-X は **6M〜22M** という桁違いに小さいモデルで CXR14 mAUC 82〜83 を出す点に価値があり、エッジ配備や低計算資源の場面での優位は変わらない。**「精度で勝つための特化」から「効率で勝つための特化」へと、特化の意義が移った**と読むのが妥当である。この整理は [[concepts/medical-foundation-model]] を参照。
+
+- [[entities/biomedclip]] / [[sources/biomedclip]] — 多様性による正の転移を示した研究
+- [[entities/pmc-15m]] — その訓練データ（30 の画像型、1,528 万対）

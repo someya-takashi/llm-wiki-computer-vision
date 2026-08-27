@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [MedSigLIP, MedSigLIP-400M]
 tags: [medsiglip, medical-imaging, vision-encoder, siglip, foundation-model, zero-shot, linear-probe, google, hai-def]
-related: ["[[entities/siglip]]", "[[entities/medgemma]]", "[[entities/medgemma-1-5]]", "[[entities/internvit-300m]]", "[[concepts/medical-foundation-model]]", "[[concepts/zero-shot-transfer]]", "[[concepts/weakly-supervised-pretraining]]"]
+related: ["[[entities/siglip]]", "[[entities/medgemma]]", "[[entities/medgemma-1-5]]", "[[entities/internvit-300m]]", "[[concepts/medical-foundation-model]]", "[[concepts/zero-shot-transfer]]", "[[concepts/weakly-supervised-pretraining]]", "[[entities/biomedclip]]"]
 sources: ["[[sources/medgemma]]"]
-updated: 2026-08-27
+updated: 2026-08-28
 ---
 
 # MedSigLIP
@@ -103,3 +103,22 @@ linear probe は [[concepts/knn-evaluation-protocol]] と同系統の**凍結特
 - [[entities/eva-x]] — 単一モダリティ特化という対照的な選択
 - [[concepts/medical-foundation-model]] — 医療基盤モデルの類型
 - [[concepts/knn-evaluation-protocol]] — 凍結特徴量評価の系統
+- [[entities/biomedclip]] / [[sources/biomedclip]] — 正反対の設計の医療 CLIP 系エンコーダ
+
+## 対比: BiomedCLIP — 正反対の設計
+
+**[[entities/biomedclip]]**（Microsoft Research, 2023）は MedSigLIP と同じ「医療の CLIP 系画像エンコーダ」でありながら、**作り方がほぼ全項目で逆を向いている**。
+
+| | **MedSigLIP**（2025, Google） | **[[entities/biomedclip]]**（2023, Microsoft） |
+|---|---|---|
+| **出発点** | [[entities/siglip]]-400M（汎用で完成済み） | PubMedBERT + ViT（ほぼゼロから） |
+| **データ** | 医療 3,300 万（**内部データが中核、非公開**） | **[[entities/pmc-15m]] 1,528 万（完全公開）** |
+| **配合** | **元の WebLI を残し医療を 2%** | **医療データが 100%** |
+| **損失** | **sigmoid 損失** | InfoNCE（softmax） |
+| **汎用性能** | **保持することが設計目標** | 捨てている |
+| **解像度** | 448（896 と同一重み） | 224（**384 は下流で悪化したため不採用**） |
+| **再現性** | 重みのみ公開 | **完全に再現可能** |
+
+**「汎用性を保ったまま専門性を足す」か「汎用性を捨てて専門性を取る」か**という分岐の両端である。どちらも成功しているのは**目的が違う**からで、MedSigLIP は [[entities/medgemma]] の視覚エンコーダとして汎用 MLLM の中で機能しなければならないのに対し、BiomedCLIP は生物医学の中で広く使える表現を作ればよい。
+
+**両者をつなぐ教訓が PubMedCLIP の失敗**である。ROCO（放射線 8 万対）で汎用 CLIP をファインチューニングした PubMedCLIP は、**汎用 CLIP の 1/8 の検索性能**しか出なかった。中途半端な量のデータで元の分布を壊すのが最も危ない。MedSigLIP は「薄く混ぜる」、BiomedCLIP は「2 桁増やして置き換える」ことで、それぞれこの罠を回避している（[[concepts/medical-foundation-model]] の補論を参照）。

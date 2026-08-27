@@ -3,8 +3,8 @@ type: concept
 aliases: [Medical Foundation Model, 医療基盤モデル, 医用基盤モデル, Medical AI]
 tags: [medical-imaging, foundation-model, domain-adaptation, healthcare, radiology, pathology]
 related: ["[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/self-supervised-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/parameter-efficient-fine-tuning]]"]
-sources: ["[[sources/medgemma]]", "[[sources/medgemma-1-5]]", "[[sources/eva-x]]", "[[sources/i-synmed]]", "[[sources/mini-internvl]]"]
-updated: 2026-08-27
+sources: ["[[sources/medgemma]]", "[[sources/medgemma-1-5]]", "[[sources/biomedclip]]", "[[sources/eva-x]]", "[[sources/i-synmed]]", "[[sources/mini-internvl]]"]
+updated: 2026-08-28
 ---
 
 # Medical Foundation Model（医療基盤モデル）
@@ -13,7 +13,7 @@ updated: 2026-08-27
 
 **医療画像とテキストを扱う基盤モデル。** 汎用 CV と技術的には地続きだが、**データが外に出せない・モダリティが極端に多様・正解に専門医が要る・失敗のコストが非対称**という 4 つの制約が設計を強く規定する。本 wiki に取り込まれた範囲では、アプローチは **3 つの類型**に整理できる。
 
-> 本ページの一次情報は [[sources/medgemma]] / [[sources/medgemma-1-5]] / [[sources/eva-x]] / [[sources/i-synmed]] / [[sources/mini-internvl]] の 5 件である。これを超える記述には ⚠ を付けた。
+> 本ページの一次情報は [[sources/medgemma]] / [[sources/medgemma-1-5]] / [[sources/biomedclip]] / [[sources/eva-x]] / [[sources/i-synmed]] / [[sources/mini-internvl]] の 6 件である。これを超える記述には ⚠ を付けた。
 
 ## 医療が汎用 CV と違う 4 点
 
@@ -33,6 +33,7 @@ updated: 2026-08-27
 | **単一モダリティ特化 SSL** | [[entities/eva-x]] | EVA-02 / MIM | **6M〜22M** | 胸部 X 線に絞る。**極小でも SOTA**（EVA-X-Ti 6M で CXR14 mAUC 82.4） |
 | **合成データ SSL** | [[entities/i-synmed]] | DDPM + DINO | — | **合成 X 線 10 万枚**で事前学習。実画像事前学習と同等（肺炎 95.0%） |
 | **汎用基盤モデルのドメイン適応** | **[[entities/medgemma]]** / [[entities/mini-internvl]] | Gemma 3 + SigLIP / InternVL | **400M〜27B** | **汎用性能を保ったまま**医療を足す。多モダリティを 1 モデルで兼任 |
+| **公開データによる領域特化事前学習** | **[[entities/biomedclip]]** | CLIP を医療向けに作り直す | **86M + PubMedBERT** | **[[entities/pmc-15m\|PMC-15M]]（論文の図–キャプション 1,500 万対）で医療 100%**。**訓練データが完全公開・再現可能** |
 
 ### 型の選び方 — 深さか広さか
 
@@ -140,7 +141,7 @@ updated: 2026-08-27
 本 wiki に取り込まれた範囲では:
 
 1. **汎用基盤モデルのドメイン適応が主流になりつつある**。1 つのモデルで多モダリティ + テキスト + 微調整の出発点を兼ねられる
-2. **単一モダリティ特化 SSL は消えていない**。極小モデルで動く必要がある場面で優位が残る
+2. **単一モダリティ特化 SSL は消えていない**。極小モデルで動く必要がある場面で優位が残る（ただし [[sources/biomedclip]] は RSNA で放射線特化の BioViL を上回っており、**多様性が特化を上回る場合がある**）
 3. **合成データは制約への回答として有効**だが、本 wiki の一次情報は [[sources/i-synmed]] 1 件にとどまる ⚠
 4. **評価が追いついていない**。ベンチマークは飽和し、人間評価はコストが高く、幻覚の検出手段が確立していない
 
@@ -148,6 +149,7 @@ updated: 2026-08-27
 
 - [[sources/medgemma]] / [[entities/medgemma]] / [[entities/medsiglip]] — 汎用ドメイン適応型の中心
 - [[sources/medgemma-1-5]] / [[entities/medgemma-1-5]] — 高次元画像への拡張
+- [[sources/biomedclip]] / [[entities/biomedclip]] / [[entities/pmc-15m]] — 公開データによる領域特化事前学習
 - [[sources/eva-x]] / [[entities/eva-x]] — 単一モダリティ特化 SSL
 - [[sources/i-synmed]] / [[entities/i-synmed]] — 合成データ SSL
 - [[sources/mini-internvl]] / [[entities/mini-internvl]] — ドメイン適応の別実装（医療 / 自律走行 / リモセン）
@@ -167,3 +169,34 @@ updated: 2026-08-27
 - **GMAI-MMBench** — 医療 AI 総合 MLLM ベンチマーク
 - **Virchow / PolyPath** — 病理の特化 SOTA
 - **MAIRA-1 / MAIRA-2** — CXR レポート生成の SOTA
+
+## 補論: データの再現性と「オープンモデル ≠ オープンな訓練」
+
+医療基盤モデルは**訓練データの出どころで大きく 2 つに割れる**。これは性能以上に、モデルが検証可能かどうかを決める。
+
+| モデル | 訓練データ | 再現性 |
+|---|---|---|
+| **[[entities/biomedclip]]** | **[[entities/pmc-15m\|PMC-15M]]**（PMC-OA から機械的に抽出） | **完全に再現可能**（スクリプトが公開） |
+| [[entities/i-synmed]] | DDPM で生成した合成 X 線 | 原理的に再現可能 |
+| [[entities/eva-x]] | CXR14 + CheXpert + MIMIC-CXR（公開） | 概ね再現可能 |
+| [[entities/medgemma]] / [[entities/medsiglip]] | **Internal histopathology 3,260 万パッチ等** | **不可能**（重みのみ公開） |
+| [[entities/medgemma-1-5]] | + CXR-IND1 60 万、CT/MRI Dataset 1 等 | **不可能** |
+
+**医療ではデータの偏りが患者集団の偏りに直結する**ため、この差は汎用 CV より重い。[[entities/biomedclip]] の「**そもそも最初から公開されている場所（科学論文）を探す**」という解き方は、この問題への数少ない実効的な回答である。
+
+**ただし公開データにも固有のバイアスがある。** 論文の図は「**発表に値するほど典型的か珍しいもの**」に偏り、キャプションは臨床レポートほど網羅的に所見を書かない（その論文が言いたい 1 点だけを書く）。実際 [[sources/biomedclip]] のプライバシー代理の実験では、この性質のために心拡大の検出で**汎用 CLIP に 5 倍負けている**。**公開 = 偏りがない、ではない。**
+
+## 補論: ドメイン適応の失敗例 — PubMedCLIP
+
+「医療データでファインチューニングすれば良くなる」という素朴な期待への強い反例が [[sources/biomedclip]] に記録されている。
+
+**PubMedCLIP は ROCO（放射線 8 万対）で汎用 CLIP をファインチューニングしたもの**だが、PMC-15M の検索で **R@1 が 1.00% と、汎用 CLIP の 8.48% の 1/8** しかない。**汎用性を失ったうえに、新しい領域も広くはカバーできない**という最悪の組み合わせである。
+
+これを踏まえると、本ページ上部の「汎用性を壊さずに専門性を足す手口」の意味がはっきりする。**成功している 2 つの路線は、どちらもこの罠を別の方法で回避している。**
+
+| 路線 | 回避の仕方 |
+|---|---|
+| **[[entities/biomedclip]]** | **データを 2 桁増やして完全に置き換える**（8 万 → 1,500 万）。中途半端に混ぜない |
+| **[[entities/medsiglip]]** | **元データを残して医療を 2% だけ混ぜる**。元の分布を壊さない |
+
+**危ないのはその中間**——元の分布を壊すには十分だが、新しい領域を覆うには足りない量のデータでファインチューニングすることである。

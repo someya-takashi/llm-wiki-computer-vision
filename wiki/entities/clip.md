@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [CLIP, OpenCLIP, Contrastive Language-Image Pre-training]
 tags: [weakly-supervised, vision-language, foundation-model, openai, contrastive-learning]
-related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/contrastive-learning]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]", "[[concepts/promptable-segmentation]]"]
+related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/contrastive-learning]]", "[[concepts/zero-shot-transfer]]", "[[concepts/foundation-model]]", "[[concepts/vision-transformer]]", "[[concepts/promptable-segmentation]]", "[[entities/biomedclip]]"]
 sources: ["[[sources/clip]]"]
-updated: 2026-05-26
+updated: 2026-08-28
 ---
 
 # CLIP / OpenCLIP
@@ -259,4 +259,24 @@ CLIP の登場以降、CV/AI 界は劇的に変化：
   - [[concepts/vision-transformer]] — CLIP-ViT のバックボーン
 - データ: [[entities/wit-400m]]
 - 競合・派生: [[entities/siglip]] / [[entities/perception-encoder]]
+- ドメイン派生: [[entities/biomedclip]]（生物医学版。損失と骨格はそのままに**トークナイザ・文脈長・テキストエンコーダだけを取り替えた**）
 - 対抗系統: [[entities/dinov2]] / [[entities/dinov3]]（純粋 SSL）
+
+## ドメイン派生: BiomedCLIP
+
+**[[entities/biomedclip]]**（Microsoft Research, 2023, [[sources/biomedclip]]）は CLIP の生物医学版である。**InfoNCE 損失も二塔の骨格もそのまま**で、領域に合わない部品だけを差し替えている。
+
+| 箇所 | CLIP | BiomedCLIP | 理由 |
+|---|---|---|---|
+| テキストエンコーダ | GPT-2（白紙から） | **PubMedBERT** | 生物医学の事前学習済み LM |
+| トークナイザ | Byte-Pair Encoding | **WordPiece**（30k 領域特有語彙） | BPE は専門用語を細断する |
+| 文脈長 | **77** | **256** | 生物医学のキャプションは長い |
+| データ | [[entities/wit-400m]]（4 億、非公開） | **[[entities/pmc-15m]]**（1,528 万、**完全公開**） | 論文の図–キャプション対 |
+
+**汎用 CLIP は生物医学領域で壊滅する。** PMC-15M の検索で **R@1 が 8.48%**（BiomedCLIP は 69.60%）。ゼロショット分類でも大差がつく。**「CLIP は汎用に見えて、実は Web 分布に特化していた」ことを裏側から示す結果**として読める。
+
+一方で、**中途半端なドメイン適応はさらに悪い**。PubMedCLIP（ROCO の放射線 8 万対で CLIP をファインチューニング）は **R@1 1.00% と汎用 CLIP の 1/8** に落ちる。
+
+- [[entities/biomedclip]] / [[sources/biomedclip]] — 生物医学版の詳細
+- [[entities/pmc-15m]] — その訓練データ
+- [[concepts/medical-foundation-model]] — 医療基盤モデルの類型
