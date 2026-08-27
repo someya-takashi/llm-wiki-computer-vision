@@ -322,3 +322,19 @@ Qwen2-VL-2B にやや劣るが、**ドメイン適応フレームワークが Mi
 - 直接の祖: [[entities/internvl-1-5]] / [[sources/internvl-1-5]]（動的解像度の系譜）/ [[entities/internvl]] / [[sources/internvl]]（InternViT-6B 教師の系譜）
 - 関連視覚エンコーダ: [[entities/clip]]（CLIP-ViT-L-336px が InternViT-300M の初期化に使用）
 - 関連概念: [[concepts/knowledge-distillation]]（中核技法）, [[concepts/foundation-model]], [[concepts/weakly-supervised-pretraining]], [[concepts/zero-shot-transfer]]
+
+## 医療ドメイン適応の対比（MedGemma）
+
+Mini-InternVL の医療 DA と **[[entities/medgemma]]** は同じ「汎用基盤モデルのドメイン適応」型（[[concepts/medical-foundation-model]]）だが、**踏み込む深さが違う**。
+
+| | Mini-InternVL-DA (Medical) | MedGemma |
+|---|---|---|
+| **適応の対象** | 言語側 + コネクタ（視覚エンコーダは InternViT-300M のまま） | **視覚エンコーダ自体を作り直す**（SigLIP → [[entities/medsiglip]]） |
+| **適応の方式** | 全タスクを **VQA 形式に統一**して微調整、混合比 **1:1** | 段階ごとに **2%（視覚）/ 10%（デコーダ）** の低い混合比 + 蒸留 + RL |
+| **対象領域** | 自律走行 / 医療 / リモートセンシングの **3 領域** | **医療のみ**（その中で 4 モダリティ） |
+| **汎用性能** | DA 版は特化版として別途配布 | **単一モデルで汎用性能を保持**（Global MMLU Lite は base を上回る） |
+
+**混合比の設計思想が対照的である。** Mini-InternVL が 1:1 で領域データを主役にするのに対し、MedGemma は 2% / 10% と控えめに混ぜて元の分布を壊さない。前者は特化版を作る戦略、後者は**1 つのモデルで汎用と特化を両立させる**戦略である。
+
+- [[concepts/medical-foundation-model]] — 医療基盤モデルの類型
+- [[entities/medgemma]] / [[sources/medgemma]] — 同じドメイン適応型のより深い実装

@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [SigLIP, SigLiT, SigLIP 2, mSigLIP, Sigmoid Loss Image-Language Pre-training]
 tags: [weakly-supervised, vision-language, foundation-model, google-deepmind, sigmoid-loss, efficient-training, contrastive-learning, naflex, multilingual]
-related: ["[[concepts/weakly-supervised-pretraining]]", "[[concepts/foundation-model]]", "[[concepts/contrastive-learning]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[concepts/self-supervised-learning]]", "[[concepts/masked-image-modeling]]", "[[concepts/knowledge-distillation]]"]
+related: ["[[entities/medsiglip]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/foundation-model]]", "[[concepts/contrastive-learning]]", "[[concepts/vision-transformer]]", "[[concepts/zero-shot-transfer]]", "[[concepts/self-supervised-learning]]", "[[concepts/masked-image-modeling]]", "[[concepts/knowledge-distillation]]"]
 sources: ["[[sources/siglip]]", "[[sources/siglip-2]]"]
-updated: 2026-05-27
+updated: 2026-08-27
 ---
 
 # SigLIP / SigLiT / mSigLIP / SigLIP 2
@@ -359,3 +359,18 @@ DINOv3 著者が指摘する通り「**キャプションでは捉えきれな�
 - [[concepts/knowledge-distillation]] — SigLIP 2 の ACID/ACED
 - [[concepts/zero-shot-transfer]] — SigLIP の主要評価軸
 - [[concepts/foundation-model]] — WSL foundation model の代表
+
+## 派生: MedSigLIP（医療ドメイン適応）
+
+**[[entities/medsiglip]]**（[[sources/medgemma]] §2.2.2）は **SigLIP-400M を 3,300 万超の医療画像–テキスト対で微調整**した 4 億パラメータの医療画像エンコーダ。[[entities/medgemma]] の視覚理解を支えるが、**単独でも公開**されている。
+
+設計上の要点は 2 つ。
+
+- **混合比 2%**: 元の **WebLI を残したまま、医療データを 2% の重みで混ぜる**。SigLIP の既存の性能を保持しつつ医療の識別能力を足すための配合
+- **448² と 896² は同一重み**: 公開版は 448²、[[entities/medgemma]] 内部は 896²。違いは**位置埋め込みのダウンサンプルだけ**で、重みは共有される
+
+ゼロショットの胸部 X 線で **CXR Foundation（ELIXR ベース）を平均 2.0% 上回る**。**解像度 448² 対 1280² という不利**、かつ胸部 X 線専用ではなく 4 領域兼任でこれを達成している。ただし linear probe では**最小の 64 枚では専用エンコーダに負け、512 枚以降で逆転**する——多領域兼任の代償が極少データ領域に出る。
+
+- [[entities/medsiglip]] / [[sources/medgemma]] — 詳細
+- [[entities/internvit-300m]] — 同じ「MLLM の視覚エンコーダを独立公開する」設計
+- [[concepts/medical-foundation-model]] — 医療基盤モデルの類型

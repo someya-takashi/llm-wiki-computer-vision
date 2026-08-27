@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [I-SynMed, Image-Synthetic-Medical]
 tags: [medical-imaging, x-ray, chest-radiography, synthetic-data, diffusion-model, ddpm, dino, self-supervised-learning, weill-cornell-qatar]
-related: ["[[concepts/diffusion-model]]", "[[entities/dino]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[sources/i-synmed]]"]
+related: ["[[concepts/diffusion-model]]", "[[entities/dino]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[concepts/medical-foundation-model]]", "[[sources/i-synmed]]"]
 sources: ["[[sources/i-synmed]]"]
-updated: 2026-05-28
+updated: 2026-08-27
 ---
 
 # I-SynMed
@@ -177,3 +177,18 @@ DINO + ViT-16 が MoCo + ResNet18 を「**大幅に上回り、より速く収�
 - [[entities/eva-x]]: 対照される胸部 X 線基盤モデル（実画像 + MIM）
 - [[concepts/self-supervised-learning]]: SSL の全体像と医療応用
 - [[concepts/vision-transformer]]: バックボーンアーキテクチャ
+
+## 医療基盤モデルの類型における位置
+
+[[concepts/medical-foundation-model]] に整理した 3 類型のうち、本手法は **「合成データ SSL」型の唯一の代表**である。
+
+| 型 | 代表 | プライバシー制約への対応 |
+|---|---|---|
+| 単一モダリティ特化 SSL | [[entities/eva-x]] | 実データが必要 |
+| **合成データ SSL** | **I-SynMed** | **合成画像なので原理的に回避できる** |
+| 汎用基盤モデルのドメイン適応 | [[entities/medgemma]] | 実データが必要（**訓練データの中核は非公開**） |
+
+[[sources/medgemma]] のような大規模なドメイン適応型は、Internal histopathology 3,260 万パッチのような**非公開の内部データに依存しており再現不可能**である。**合成データという路線は、この再現性とプライバシーの問題に対する原理的に異なる回答**として位置づけられる。ただし本 wiki の一次情報は [[sources/i-synmed]] 1 件にとどまる。
+
+- [[concepts/medical-foundation-model]] — 3 類型の整理
+- [[entities/medgemma]] — 対照的な「非公開の実データに依存する」型

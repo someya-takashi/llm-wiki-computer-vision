@@ -2,9 +2,9 @@
 type: entity
 entity_kind: model
 aliases: [Gemma 3, Gemma3, Gemma-3, Gemma 3 PT, Gemma 3 IT, Gemma-3-1B, Gemma-3-4B, Gemma-3-12B, Gemma-3-27B, Gemma-3-27B-IT]
-related: ["[[entities/siglip]]", "[[entities/qwen3-vl]]", "[[entities/qwen2-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-3-5]]", "[[concepts/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/knowledge-distillation]]"]
+related: ["[[entities/siglip]]", "[[entities/medgemma]]", "[[entities/medsiglip]]", "[[entities/qwen3-vl]]", "[[entities/qwen2-vl]]", "[[entities/internvl-1-5]]", "[[entities/internvl-3-5]]", "[[concepts/vision-transformer]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/knowledge-distillation]]"]
 sources: ["[[sources/gemma-3]]"]
-updated: 2026-05-31
+updated: 2026-08-27
 ---
 
 # Gemma 3 / Gemma-3-1B / Gemma-3-4B / Gemma-3-12B / Gemma-3-27B
@@ -211,3 +211,23 @@ Gemma 3 27B は **DocVQA +4.4 / InfoVQA +14.4 / TextVQA +8.1 / ChartQA +12.1** �
 - [[entities/qwen2-vl]] — Naive Dynamic Resolution の対比
 - [[entities/internvl-1-5]] — タイル分割路線の前任者
 - [[entities/internvl-3-5]] — InternVL 系の対比（Cascade RL + MoE + ViR）
+
+## 派生: MedGemma（医療ドメイン適応）
+
+**[[entities/medgemma]]**（Google Research + DeepMind, 2025, [[sources/medgemma]]）は **Gemma 3 4B / 27B をそのまま土台にした医療の視覚–言語基盤モデル**である。ここで重要なのは**何が変わっていないか**の方である。
+
+| 要素 | MedGemma での扱い |
+|---|---|
+| 言語モデルのアーキテクチャ | **変更なし**（5:1 local:global attention、128K 文脈、SentencePiece 262K） |
+| 視覚エンコーダの構造 | **変更なし**（SigLIP-400M、896×896、画素値 [-1,1]） |
+| 既存の Gemma 基盤との互換性 | **完全に維持**（「既存の Gemma 基盤すべてと互換」と明記） |
+| **変わったもの** | **訓練データの配合比と前処理だけ** |
+
+具体的には、視覚エンコーダを医療画像–テキスト対 3,300 万で微調整して **[[entities/medsiglip]]** を作り（**元の WebLI を残し医療を 2% の重みで混合**）、その後デコーダを**医療 10% の重み**で再適応させ、蒸留 + RL で仕上げる。結果として **MedQA が 4B で 50.7 → 64.4、27B で 74.9 → 87.7** と伸びる一方、**汎用性能はほとんど落ちない**（Global MMLU Lite は 54.5 → 55.5 とむしろ上回る）。
+
+後継の **[[entities/medgemma-1-5]]** は、**Gemma 3 の 128K 長コンテキストを 3D ボリュームと病理全スライド画像を流し込む器として使う**。CT は軸位断 85 スライス = 21,760 視覚トークン、WSI は 126 パッチ = 32,256 トークン。**アーキテクチャの新規性ではなく、既存の容量の使い道の発明**という点で、Gemma 3 の長文脈設計の射程を示す例になっている。
+
+- [[entities/medgemma]] / [[sources/medgemma]] — 医療派生の本体
+- [[entities/medgemma-1-5]] / [[sources/medgemma-1-5]] — 3D・WSI・局在化への拡張
+- [[entities/medsiglip]] — 医療微調整された視覚エンコーダ
+- [[concepts/medical-foundation-model]] — 医療基盤モデルの類型と「汎用性を壊さずに専門性を足す」手口

@@ -1901,3 +1901,43 @@
   - **概念ページでは一次情報の範囲を厳密に守った**。本ページの一次情報は L2RW 1 件のみなので、その Related Work で言及されているだけの手法（AdaBoost / Focal Loss / self-paced learning / MentorNet 等）には **⚠ を付けて未取り込みであることを明示**した。[[questions/cnn-beyond-convnext-v2]] で採った作法の踏襲。
   - **原典の誤りを 1 件記録**: Appendix B の Eq.29 で $F(\theta)=\frac{1}{M}\sum_{i=1}^{N}f_i(\theta)$ となっているが係数は $\frac{1}{N}$ であるべき。証明の後続で $F$ を使わないため結論には影響しない。翻訳では原典に忠実に訳し、sources ページに「原典の誤り（正誤）」節を設けて記載した。
   - **dangling link（今後の ingest 候補）**: **Focal Loss**（Lin et al., ICCV 2017 — hard 優先側の最重要実装で、[[concepts/object-detection]] からも参照されている。優先度が高い）、**MentorNet**、**self-paced learning**（Kumar et al., NIPS 2010）、**MAML**（Finn et al., ICML 2017 — メタ学習の基本枠組みが本 wiki に未取り込み）、**Meta-Weight-Net**（Shu et al., NeurIPS 2019）。加えて既存の候補（InternImage、EfficientNet 系、CoAtNet、Swin V2、SimMIM、DeiT、U-Net、DeepLab v3+、PSPNet、SimpleBaseline、OCRNet、FPN、ResNet）は未消化のまま。
+
+## [2026-08-27] ingest | MedGemma Technical Report (MedGemma / MedSigLIP)
+
+- 取り込み: `raw/papers/MedGemma Technical Report.md`（Google Research + Google DeepMind, 2025, arXiv:2507.05201）
+- 作成: [[sources/medgemma]], [[translations/medgemma]], [[entities/medgemma]], [[entities/medsiglip]]
+- 更新: [[entities/gemma-3]], [[entities/siglip]], [[concepts/foundation-model]], [[overview]], [[index]]
+- 図: `raw/assets/medgemma/fig{1,2,3,4,5}.png` + `figA{1,2,3}.png`（8 点）
+- メモ:
+  - **ユーザー指示により Appendix A・C・D・F を全訳**（CLAUDE.md §4 からの逸脱）。ただし **Appendix B（Evaluation Prompts）は英語プロンプト文字列の列挙**で、日本語に訳すと評価の再現性を損なうため**要旨のみ**にした。Appendix E（医学推論の長文対話例）は構造のみ。**「訳さない方が正しい章がある」というのは今回初めての判断**で、今後プロンプト集を持つ論文では踏襲してよさそう。
+  - **既存ページの真上に乗る珍しい ingest だった**。MedGemma は [[entities/gemma-3]] + [[entities/siglip]] を医療データで微調整しただけで、**アーキテクチャの新規性がゼロ**。両方とも sources / translations / entities が揃っていたので、差分だけを書けば済んだ。
+  - **本論文の実質は「訓練データの配合比の設計」である**。視覚エンコーダは元の WebLI を残して**医療を 2%**、デコーダ事前学習は Gemma 3 混合を残して**医療 10%**。この控えめさが「汎用性能をほとんど落とさない」（Global MMLU Lite はむしろ 54.5 → 55.5 と**上回る**）ことに直結している。**[[concepts/knowledge-distillation]] や [[concepts/parameter-efficient-fine-tuning]] とは別系統の「忘却を防ぐ」実務**として [[concepts/medical-foundation-model]] に整理した。
+  - **CT の HU を 3 ウィンドウで RGB チャネルに写像する前処理が面白い**。放射線科医が「肺野条件」「縦隔条件」と読影条件を切り替えながら読むのと同じことを、**RGB という 3 本の器に同時に詰め込んでいる**。カラー画像の枠が「3 つの読影条件」を運ぶ器として再利用されている。
+  - **896² と 448² が同一重み**（位置埋め込みのダウンサンプルのみ）という点も実務的に有用。医療画像は高解像度必須と思われがちだが、**少なくとも本論文の評価範囲では 448² で足りた**。
+  - **本 ingest で最も重い発見は Appendix A の放射線科医評価**。論文の掲げる数字は「81% が同等以上の臨床判断」だが、**ルーブリックを正確に読むと裏返しは「約 18% は AI に従うと患者管理を誤る」**になる。しかも図4 から**異常例の方が正常例より悪い**ことが読める——臨床的に価値があるのはまさに異常例である。加えて論文自身が**非盲検・評価者 1 名**であることを明記している。**自動指標だけで押し切らず、自分に不利な分布まで図で公開している**点は高く買いたい。
+  - **「なぜ開いた 4B なのか」に §8 が明示的に答えている**のも収穫。凍結モデルによる文書化と信頼性 / コスト / ローカル・オフライン実行 / 適応の完全な制御の 4 条件。**規制対象の医療機器としての検証は、黙って更新されうる API では成立しない**という論点は、[[concepts/foundation-model]] の「基盤モデルの要件」に医療という具体的な制約条件を与える。
+  - **ドメイン特化の利得はモダリティの Web 上での希少性と相関する**という仮説を立てた。眼底（EyePACS 64.9 vs Gemini 2.5 Pro 27.7）と病理（69.8 vs 42.7）では圧勝するのに、**皮膚科では負ける**（71.8 vs 81.0）。皮膚画像は Web に豊富だが眼底写真と病理パッチはそうでない、という説明がつく。**この仮説は MedGemma 1.5 の Qwen3-VL 比較でも再現した**（下記）。
+  - **限界として「オープンモデル ≠ オープンな訓練」を強調した**。Internal histopathology 3,260 万パッチ、Internal dermatology、CT-US1、MRI-US1 がすべて非公開で、**重みは開いているが訓練は再現できない**。[[entities/clip]] の WIT-400M や [[entities/dinov3]] の LVD-1689M と同じ構図だが、**医療ではデータの偏りが患者集団の偏りに直結する**ため重みが違う。
+  - **[[entities/eva-x]] との住み分けが未検証**であることも記録。EVA-X は **6M で CXR14 mAUC 82.4**、MedGemma 4B は **4,000M で 4 領域兼任**。600 倍以上の規模差があるが直接比較した研究がない。同じトレードオフは [[entities/medsiglip]] の linear probe にも現れており、**最小 64 枚では専用エンコーダに負け 512 枚以降で逆転する**。
+  - **dangling link（今後の ingest 候補）**: **Med-Gemini**（データセット設計が「概ね従った」直接の前身、優先度高）、**Med-PaLM / Med-PaLM M**、**ELIXR / CXR Foundation**（MedSigLIP の主要比較対象）、**LLaVA-Med / RadFM**、**GMAI-MMBench**、**Virchow / PolyPath**、**MAIRA-1 / MAIRA-2**。
+
+## [2026-08-27] ingest | MedGemma 1.5 Technical Report
+
+- 取り込み: `raw/papers/MedGemma 1.5 Technical Report.md`（Google Research + Google DeepMind, 2026, arXiv:2604.05081）
+- 作成: [[sources/medgemma-1-5]], [[translations/medgemma-1-5]], [[entities/medgemma-1-5]], [[concepts/medical-foundation-model]]
+- 更新: [[entities/qwen3-vl]], [[entities/eva-x]], [[entities/i-synmed]], [[entities/mini-internvl]], [[overview]], [[index]]
+- 図: `raw/assets/medgemma-1-5/fig{1,2,3}.png`（3 点）
+- メモ:
+  - **Appendix A（CT-RATE 評価）を全訳、Appendix B（Prompts）は要旨のみ**。MedGemma 1 と同じ方針。
+  - **本レポートの実質は前処理である**。3D CT/MRI と病理 WSI を扱うのに**アーキテクチャを一切変えていない**。3D は軸位断 2D スライス列に落として**最大 85 枚 = 21,760 視覚トークン**（プロンプトと出力を含め 32K 以内に収めるため）、WSI は**126 パッチ = 32,256 トークン**。**[[entities/gemma-3]] の 128K 長コンテキストがなければ成立しない設計**で、本 wiki では長コンテキストを「長い文書を読む」文脈で書いてきたが、ここでは**3D ボリュームを流し込む器**として使われている。**アーキテクチャの新規性ではなく既存の容量の使い道の発明**。
+  - **CT のチャネル割り当ての理由が明示的なのが面白い**。「**緑チャネルは標準的な画像処理で輝度に最も大きく寄与する**ので、テクスチャ感度を活かせる軟部組織をここに置く」。RGB は本来カラー表示の枠だが、**エンコーダの感度分布を利用する 3 本の独立チャネル**として設計的に使われている。**MRI は物理単位を持たないのでウィンドウ処理せず volume 単位の min-max 正規化で R=G=B** ——「画像」と一括りにできないのが医療の難しさ。
+  - **WSI の倍率を確率的に選ぶ設計も非自明**（P(5x)=0.34 / P(10x)=0.33 / P(20x)=0.33）。病理医が倍率を行き来するのを、**マルチスケールを 1 サンプル内で持つのでなくサンプル間の分散として持たせる**形で模している。加えて**サブサンプル後も元の空間的順序を保存**する。
+  - **数値の読み方に注意が要る**。要旨は「WSI で 47% のマクロ F1 向上」「IoU で 35% 向上」と書くが、実態は **2.2 → 49.4** と **3.1 → 38.0**。**2.2 と 3.1 はほぼランダム出力の水準**で、「改善」ではなく「**まったくできなかったことができるようになった**」が正確。その分**一気に外部 SOTA と並ぶか上回る**（局在化は CoCa-CXR 30.7-34.4 を超えた）。sources / entities / index すべてでこの読み方を明記した。
+  - **[[entities/qwen3-vl]] 4B との比較が本 wiki 的に最大の収穫**。**同一パラメータ数で汎用 vs 特化を横並びにした表は本 wiki 初**。結果は綺麗な非対称で、**テキストの医学知識は Qwen3-VL が勝ち（MedQA 76.8 vs 69.1）、すべての視覚タスクで MedGemma 1.5 が勝つ**（EyePACS 76.8 vs 41.9、局在化 IoU 38.0 vs 8.7）。論文自身が「明確に異なる設計思想」と表現している。**MedGemma 1 で立てた「ドメイン特化の利得は Web 上での希少性と相関する」仮説がここでも再現した**。qwen3-vl のページには「**Qwen3-VL の強さがどこから来ているかを裏側から示す結果**」として追記した。
+  - **限界の記述が 1.0 より率直**。**MMLU Pro が Gemma 3 4B 比 -9.8pt** で、論文自ら「**4B パラメータのクラスにおける明確なトレードオフ**」と認めている。**1.0 では「汎用性能はほとんど落ちない」が売りの 1 つだったのが崩れている**——4B に高次元画像を詰め込んだ代償が汎用知識で払われた。SLAKE も **-12.5pt** と大きい（論文はベンチマーク側の限界を指摘して反論するが、この幅は反論だけで片づけるには大きい）。**PubMedQA の -5.8pt には論文本文が触れていない**ので、表から読み取って記録した。
+  - **代表図（図3）に幻覚が写っている**のを見つけた。論文が自ら選んだ肝腫瘍の成功例で、放射線科医は腫瘍の存在・不均一性・造影の性状・肝実質の歪みには同意しているが、「**実質的な肝内胆管拡張は明らかでない**」と不同意を示している。**腫瘍も性状も当てたうえで、もっともらしい所見を 1 つ足してしまう**という生成モデルの典型的な失敗が、ヒーロー図に写り込んでいる。
+  - **[[concepts/medical-foundation-model]] を新設して散らばっていた医療クラスタに軸を通した**。これまで [[entities/eva-x]]（胸部 X 線専用 SSL、6M で SOTA）、[[entities/i-synmed]]（DDPM 合成 X 線 + DINO）、[[entities/mini-internvl]]（VQA 形式に統一した 1:1 のドメイン適応）が個別に存在するだけで、束ねるページも `overview.md` の医療の節もなかった。**3 類型**（単一モダリティ特化 SSL / 合成データ SSL / 汎用基盤モデルのドメイン適応）で整理し、4 ページから相互リンクを張った。
+  - **Mini-InternVL との混合比の対比が示唆的**。Mini-InternVL の医療 DA は領域データを **1:1** で混ぜて特化版を別途配布するのに対し、MedGemma は **2% / 10%** と控えめに混ぜて**単一モデルで汎用と特化を両立させる**。同じ「ドメイン適応」でも戦略が逆である。
+  - **RadGraph F1 が 1.0 の論文と食い違う**（本論文の MedGemma 1 4B は 21.9、[[sources/medgemma]] では 29.5）。プロンプトを「更新し標準化した」ためで、**世代をまたいだ数値の直接比較には注意が要る**——テクニカルレポート系を追うときの一般的な教訓として記録した。
+  - **1.0 にあった系統的な人間評価が 1.5 にはない**。新しい能力ほど自動指標だけで測られており、正解ラベル作成の一部で放射線科医のレビューが入るのみ。
+  - **dangling link（今後の ingest 候補）**: MedGemma 1 と共通の候補に加えて、**CoCa-CXR**（局在化）、**BioViL-T**（経時解析）、**PolyPath**（WSI レポート生成）、**CT-RATE**、**Chest ImaGenome**、**MS-CXR-T**、**EHRNoteQA**。既存の未消化候補（InternImage、EfficientNet 系、CoAtNet、Swin V2、SimMIM、DeiT、U-Net、DeepLab v3+、PSPNet、Focal Loss、MAML 等）はそのまま。

@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [EVA-X, EVA-X-Ti, EVA-X-S, EVA-X-B]
 tags: [medical-imaging, chest-x-ray, foundation-model, self-supervised-learning, masked-image-modeling, vision-transformer, eva-clip, mgca, dual-vit, hustvl, npj-digital-medicine]
-related: ["[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[entities/ibot]]", "[[entities/mae]]", "[[entities/clip]]", "[[entities/i-synmed]]", "[[sources/eva-x]]"]
+related: ["[[concepts/foundation-model]]", "[[concepts/masked-image-modeling]]", "[[concepts/self-supervised-learning]]", "[[concepts/vision-transformer]]", "[[entities/ibot]]", "[[entities/mae]]", "[[entities/clip]]", "[[entities/i-synmed]]", "[[entities/medgemma]]", "[[concepts/medical-foundation-model]]", "[[sources/eva-x]]"]
 sources: ["[[sources/eva-x]]"]
-updated: 2026-05-28
+updated: 2026-08-27
 ---
 
 # EVA-X
@@ -210,3 +210,22 @@ EVA-X (npj Digital Medicine 2025) ── 医療 X 線版
 - [[concepts/online-tokenizer]]: iBOT 提案。EVA-X の凍結外部トークナイザと対比
 - [[concepts/knowledge-distillation]]: 強い teacher を凍結利用する発想
 - [[concepts/rotary-position-embeddings]]: RoPE。EVA-X が採用
+
+## 対比: 汎用基盤モデルのドメイン適応（MedGemma）
+
+**EVA-X と [[entities/medgemma]] は医療基盤モデルの両極**にある。同じ「胸部 X 線を読む」でも:
+
+| | EVA-X | MedGemma 4B |
+|---|---|---|
+| **規模** | **6M（Ti）〜 22M（S）** | **4,000M** |
+| **対象** | 胸部 X 線**のみ** | 放射線・病理・皮膚・眼底 + テキスト |
+| **作り方** | ゼロから MIM（凍結 CLIP トークナイザ） | Gemma 3 + SigLIP を**医療データ 2% / 10% で混ぜ直す** |
+| **出力** | 表現（分類・検出のバックボーン） | **テキスト**（レポート生成・VQA・推論） |
+| **強み** | 極小で SOTA（EVA-X-Ti 6M で CXR14 mAUC 82.4）、**エッジで動く** | 多モダリティ兼任、微調整の出発点、言語との統合 |
+
+**直接比較した研究は本 wiki の範囲にない**が、選択の軸ははっきりしている。**1 モダリティ・1 タスクで最高精度が要りエッジで動かしたいなら特化 SSL、複数モダリティを横断しテキストと組み合わせたいなら汎用のドメイン適応**である。
+
+同じトレードオフは [[entities/medsiglip]]（MedGemma の視覚エンコーダ、400M で 4 領域兼任）の linear probe 結果にも現れており、**最小の 64 枚では胸部 X 線専用の CXR Foundation に負け、512 枚以降で逆転する**。多領域兼任の代償が極少データ領域に出る。
+
+- [[concepts/medical-foundation-model]] — 医療基盤モデルの 3 類型（本モデルは「単一モダリティ特化 SSL」型）
+- [[entities/medgemma]] / [[entities/medsiglip]] — 対極にある「汎用ドメイン適応」型

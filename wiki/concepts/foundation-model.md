@@ -2,9 +2,9 @@
 type: concept
 aliases: [Foundation Model, 基盤モデル, foundation models]
 tags: [paradigm, scaling, pretraining]
-related: ["[[self-supervised-learning]]", "[[weakly-supervised-pretraining]]", "[[vision-transformer]]", "[[zero-shot-transfer]]", "[[contrastive-learning]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]", "[[alignment-tuning]]"]
-sources: ["[[sources/clip]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]", "[[sources/foundational-models-vision-survey]]"]
-updated: 2026-05-31
+related: ["[[self-supervised-learning]]", "[[weakly-supervised-pretraining]]", "[[vision-transformer]]", "[[zero-shot-transfer]]", "[[contrastive-learning]]", "[[promptable-segmentation]]", "[[promptable-concept-segmentation]]", "[[alignment-tuning]]", "[[concepts/medical-foundation-model]]"]
+sources: ["[[sources/clip]]", "[[sources/dinov2-learning-robust-visual-features-without-supervision]]", "[[sources/segment-anything]]", "[[sources/sam-3]]", "[[sources/siglip]]", "[[sources/siglip-2]]", "[[sources/perception-encoder]]", "[[sources/foundational-models-vision-survey]]", "[[sources/medgemma]]"]
+updated: 2026-08-27
 ---
 
 # Foundation Model（基盤モデル）
@@ -59,6 +59,13 @@ CV では NLP より遅れたが、2021〜2024 にかけて本格化。
 - **MPO** ([[sources/mpo]] / [[entities/mpo]]) (Wang et al., OpenGVLab Shanghai AI Lab, 2024 Nov): **「MLLM の CoT 推論で性能が悪化する」現象を初めて本格的に解決した論文**。**Mixed Preference Optimization = DPO（相対選好）+ BCO（絶対品質）+ SFT loss（生成過程）** の 3 損失混合。**[[entities/mmpr\|MMPR データセット（3M 選好ペア）]]** + **DropoutNTP**（画像なしで応答を補完して rejected 生成、RLAIF-V の 57.5% コスト）を併用。**InternVL2-8B-MPO で MathVista +8.7（67.0、10× 大きい InternVL2-76B 67.2 と同等）、M3CoT +19.9（59.3 → 79.2）**。**マルチモーダル選好最適化が言語推論能力も強化**（TheoremQA +5.2、IFEval +4.1）という [[entities/internvl-3\|InternVL 3]] の「Native Multimodal Pre-Training で言語が強くなる」発見の **先例**。InternVL 3 の Stage 3 で正式採用、InternVL シリーズの永続的技術となった
 - **InternVL 3.5** ([[sources/internvl-3-5]] / [[entities/internvl-3-5]]) (OpenGVLab Shanghai AI Lab, 2025 Aug): InternVL シリーズの **第 8 世代、商用フロンティアとの差をオープンソース最小に**。**Cascade Reinforcement Learning（offline RL = MPO で warm-up → online RL = GSPO で精緻化）** という coarse-to-fine 戦略で、**GSPO 単独の半分の GPU 時間で +2.1 ポイント上回る**。**MoE スケーリング**: 20B-A4B（GPT-OSS）/ 30B-A3B（Qwen3）/ **241B-A28B**（最大、Qwen3-235B-A22B）。**ViR（Visual Resolution Router）**: patch ごとに 1/4 or 1/16 圧縮率を動的選択、視覚トークン 50% 削減で性能 99% 維持。**DvD（Decoupled Vision-Language Deployment）**: ViT と LLM を別 GPU に分離、非同期 3 段階パイプラインで **896 解像度で 4.05× 加速**。**MMMU 77.7（オープンソース新 SOTA）、MathVista 82.7（GPT-5 +0.8）、VSI-Bench 69.5（GPT-5 37.5 を +32 圧倒）、GPT-5 との Aggregate 差を 3.9% に**。**Qwen3-base 比で言語 16 ベンチ中 15 で上回る**（[[entities/internvl-3\|InternVL 3]] の発見継続）。**9 サイズ × dense + MoE × Flash 効率版 = 18+ モデル**
 - **Florence**（Microsoft）, **BASIC**（Google）, **CoCa**（Google）, **EVA-CLIP**, **MetaCLIP**, **DFN**, **AIMv2**（Apple, キャプション化型）, **InternVideo2**（動画ネイティブ）など多数の関連モデル
+
+### ドメイン特化の基盤モデル（医療）
+
+- **MedGemma / MedGemma 1.5 / MedSigLIP** ([[sources/medgemma]] / [[sources/medgemma-1-5]] / [[entities/medgemma]] / [[entities/medgemma-1-5]] / [[entities/medsiglip]]) (Google Research + DeepMind, 2025-2026): **[[entities/gemma-3]] + [[entities/siglip]] のアーキテクチャを一切変えず、医療データの配合比だけでドメイン特化させた**基盤モデル群。視覚エンコーダに**医療 2%**、デコーダ事前学習に**医療 10%** という控えめな混合で、**汎用性能をほとんど落とさずに** MedQA を 50.7 → 64.4（4B）/ 74.9 → 87.7（27B）へ引き上げる。1.5 では **Gemma 3 の 128K 長コンテキストを 3D CT/MRI ボリュームと病理全スライド画像を流し込む器として使い**（CT 85 スライス = 21,760 視覚トークン、WSI 126 パッチ = 32,256 トークン）、**アーキテクチャを変えずに高次元画像へ拡張**した。**同サイズの汎用 MLLM [[entities/qwen3-vl]] 4B との比較では、テキストの医学知識では汎用が勝ち（MedQA 76.8 vs 69.1）、すべての視覚タスクでは特化が勝つ**という非対称が示された。詳細と 3 類型（単一モダリティ特化 SSL / 合成データ SSL / 汎用のドメイン適応）の整理は [[concepts/medical-foundation-model]] を参照
+- 医療領域の他の型: **EVA-X**（[[entities/eva-x]]、胸部 X 線専用 SSL、**6M で SOTA**）、**I-SynMed**（[[entities/i-synmed]]、DDPM 合成 X 線 + DINO）、**Mini-InternVL-DA**（[[entities/mini-internvl]]、VQA 形式に統一した 1:1 のドメイン適応）
+
+> **基盤モデルの「開かれていること」の意味が医療では変わる。** [[sources/medgemma]] §8 は、API 経由の巨大モデルでなく開いた 4B を作る理由として **「文書化と信頼性のための凍結されたモデル」「訓練・推論コスト」「ローカル・オフライン実行」「適応に対する完全な制御」** の 4 条件を挙げる。**規制対象の医療機器としての検証は、黙って更新されうる API では成立しない。** 一方で MedGemma の訓練データの中核は非公開であり、**「オープンモデル」は「オープンな訓練」ではない**。
 
 ### B. 自己教師あり系
 - **MAE**（Meta, 2021/2022, [[entities/mae]]）: マスク再構成で ViT-H まで scale
@@ -200,6 +207,8 @@ DINOv2 はこれらを多くの軸で達成し、「CV の基盤モデルは SSL
 これは「**基盤モデルが SSL/SeSL という研究領域そのものを再定義した**」象徴的な事例。VFM × PEFT × アンサンブルという 3 軸が次世代の SeSL 設計空間を形成しつつある。
 
 ## 関連ページ
+
+- [[concepts/medical-foundation-model]] — 医療ドメインの基盤モデル。3 類型と「汎用性を壊さずに専門性を足す」手口
 
 - [[sources/foundational-models-vision-survey]]: **Awais et al., TPAMI 2024** — 視覚における基盤モデルの 4 軸分類体系（テキスト/視覚/異種/身体性）を提供する重要なサーベイ。本 wiki の VL 基盤モデルすべての位置付けを与える「鳥瞰図」
 - [[sources/clip]]: CV における初の本格的基盤モデル CLIP の原典

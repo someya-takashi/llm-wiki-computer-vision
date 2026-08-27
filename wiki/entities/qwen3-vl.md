@@ -2,9 +2,9 @@
 type: entity
 entity_kind: model
 aliases: [Qwen3-VL, Qwen3-VL-2B, Qwen3-VL-4B, Qwen3-VL-8B, Qwen3-VL-32B, Qwen3-VL-30B-A3B, Qwen3-VL-235B-A22B, Qwen3VL, qwen3-vl]
-related: ["[[entities/qwen2-5-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen-vl]]", "[[entities/siglip]]", "[[entities/internvl-3]]", "[[entities/internvl-3-5]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]"]
+related: ["[[entities/qwen2-5-vl]]", "[[entities/qwen2-vl]]", "[[entities/qwen-vl]]", "[[entities/siglip]]", "[[entities/internvl-3]]", "[[entities/internvl-3-5]]", "[[concepts/rotary-position-embeddings]]", "[[concepts/foundation-model]]", "[[concepts/weakly-supervised-pretraining]]", "[[entities/medgemma-1-5]]"]
 sources: ["[[sources/qwen3-vl]]"]
-updated: 2026-05-30
+updated: 2026-08-27
 ---
 
 # Qwen3-VL / 6 サイズ × 2 バリアント = 12 公開モデル
@@ -226,3 +226,27 @@ updated: 2026-05-30
 - [[concepts/weakly-supervised-pretraining]]
 - [[concepts/zero-shot-transfer]]
 - [[concepts/alignment-tuning]]
+
+## 医療ドメインでの位置づけ（MedGemma 1.5 との比較）
+
+**[[sources/medgemma-1-5]]（Google, 2026）は Qwen3-VL 4B を「同程度サイズの最先端マルチモーダルモデル」として直接の比較対象に選んでいる**。論文はその結果を「**明確に異なる設計思想**」と表現しており、綺麗な非対称が出た。
+
+| 領域 | 代表タスク | Qwen3-VL 4B | MedGemma 1.5 4B |
+|---|---|---|---|
+| **テキストの医学知識** | MedQA | **76.8** | 69.1 |
+| | MMLU Med | **78.3** | 69.7 |
+| | EHRNoteQA | **90.6** | 80.4 |
+| **医療画像の解釈** | MIMIC-CXR (Med-Gemini) | 78.5 | **89.5** |
+| | PathMCQA（病理） | 41.8 | **70.0** |
+| | EyePACS（眼底） | 41.9 | **76.8** |
+| | Chest ImaGenome（局在化 IoU） | 8.7 | **38.0** |
+| | 3D CT / 3D MRI | 52.8 / 49.6 | **61.1 / 64.7** |
+
+> **すべての視覚タスクにおいて MedGemma 1.5 は Qwen3 VL 4B を上回った。**（原典 §4）
+
+**Qwen3-VL の強さがどこから来ているかを裏側から示す結果でもある。** 医学知識のテキスト QA で医療特化モデルを 7〜10pt 上回るのは、**大規模で多様な事前学習コーパスが教科書的な医学知識を既に吸収している**ことの証拠である。一方、眼底写真や病理パッチのように **Web にラベル付きで存在しないデータ**では大きく劣る。**汎用の事前学習で届く範囲と届かない範囲の境界**が、このモダリティ別の差に現れている。
+
+なお論文は「一部の評価は内部評価フレームワークの実務上の制約により Qwen3 で実施できなかった」とも書いており、比較表には欠測がある。
+
+- [[sources/medgemma-1-5]] / [[entities/medgemma-1-5]] — 比較の出典
+- [[concepts/medical-foundation-model]] — 汎用 vs ドメイン特化の整理
