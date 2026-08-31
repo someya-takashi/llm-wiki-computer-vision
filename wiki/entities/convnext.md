@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [ConvNeXt, CNX, Convolutional Next]
 tags: [convnext, convolutional-neural-network, architecture, backbone, fair, meta-ai]
-related: ["[[concepts/convolutional-neural-network]]", "[[concepts/vision-transformer]]", "[[entities/dinov3]]", "[[entities/hiera]]", "[[entities/mae]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]", "[[entities/maxvit]]"]
+related: ["[[concepts/convolutional-neural-network]]", "[[concepts/vision-transformer]]", "[[entities/dinov3]]", "[[entities/hiera]]", "[[entities/mae]]", "[[entities/convnext-v2]]", "[[entities/swin-transformer]]", "[[entities/maxvit]]", "[[entities/rdnet]]", "[[entities/inceptionnext]]", "[[concepts/skip-connection]]"]
 sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]"]
-updated: 2026-06-17
+updated: 2026-09-01
 ---
 
 # ConvNeXt
@@ -92,3 +92,54 @@ $C$ = 各段階のチャネル数、$B$ = 各段階のブロック数。
 - [[entities/maxvit]] / [[sources/maxvit]] — 同時期のハイブリッド路線（畳み込みと attention を 1 ブロックに統合）
 - [[entities/convnext-v2]] / [[sources/convnext-v2]] — 後継。GRN + FCMAE で自己教師あり学習と共設計（CVPR 2023）
 - [[entities/mae]] — ConvNeXt V2 が取り込んだマスク再構成の源流
+
+## 対をなす論文: RDNet（DenseNets Reloaded）
+
+**[[entities/rdnet]]**（NAVER AI Lab, ECCV 2024, [[sources/rdnet]]）は、**ConvNeXt とまったく同じ手続きを DenseNet に適用した**論文である。
+
+| | **ConvNeXt**（2022） | **RDNet**（2024） |
+|---|---|---|
+| **出発点** | ResNet-50（レシピ更新で 76.1 → 78.8） | DenseNet-201（現代レシピで 79.7） |
+| **到達点** | ConvNeXt-T **82.1** | RDNet-T **82.8** |
+| **保持したもの** | 畳み込み（attention を使わない） | **連結ショートカット** |
+| **輸入したもの** | Transformer の訓練レシピと設計 | **ConvNeXt のブロック設計** + 訓練レシピ |
+| **最大の単一要因** | **訓練レシピ**（総改善の約 46%） | **遷移層を 3 ブロックごとに挟む**（+1.5%p） |
+| **主張** | ViT が CNN を置き換えたわけではない | **加算が連結を置き換えたわけではない** |
+
+**RDNet は ConvNeXt のブロックをそのまま借りている**（LayerNorm・depthwise・7×7 カーネル・活性化を減らす）。つまり「ConvNeXt の成果を土台にして、**ConvNeXt が触らなかった軸——ショートカットの型——を変えた**」という構図になる。
+
+結果は **RDNet-T 82.8 > ConvNeXt-T 82.1**、**RDNet-B 84.4 > ConvNeXt-B 83.8**、ADE20K **49.6 > 49.1**、COCO **47.5 > 46.2**（しかも 43M vs 48M）。ただし**メモリでは ConvNeXt が勝つ**（RDNet-T 4.1GB vs ConvNeXt-T 2.7GB）——連結の代償は緩和できても消えない。また b1 レイテンシでは RDNet が圧倒的に速い（7.4ms）一方、b128 では差が縮む。
+
+**ConvNeXt が本 wiki に持ち込んだ「近代化ロードマップ」という作法が別のアーキテクチャで再現された**点で、方法論としての一般性を示す事例でもある。
+
+- [[entities/rdnet]] / [[sources/rdnet]] — 詳細
+- [[concepts/skip-connection]] — 加算 vs 連結という軸の整理
+
+## もう 1 つの批判: InceptionNeXt（7×7 は実機で遅い）
+
+**[[entities/inceptionnext]]**（NUS / Sea AI Lab, CVPR 2024, [[sources/inceptionnext]]）は、RDNet とは別の角度から ConvNeXt を刺した。狙いは**ショートカットではなく 7×7 depthwise 畳み込みそのもの**である。
+
+> **ConvNeXt-T は ResNet-50 と同程度の FLOPs を持つが、A100 上の訓練スループットは約 60% しかない**（575 vs 969 img/s）。
+
+原因は **メモリアクセスコスト**。depthwise 畳み込みは演算量に対して読み書きするデータ量の比が悪く、カーネルが大きいほど GPU がメモリ帯域に律速される。**ConvNeXt の近代化ロードマップは「7×7 で精度が飽和する」ことは示したが、7×7 が実機で払っているコストは評価していない**（ConvNeXt 論文が出す A100 スループットは Swin との比較のみで、同 FLOPs の ResNet-50 とは並べていない）。
+
+InceptionNeXt の処方は**大カーネルの分解**である。`DWConv 7×7` を **`DWConv 3×3` + `DWConv 1×11` + `DWConv 11×1` + 恒等写像**の 4 分岐に置き換え、畳み込みを通すのは全チャネルの 3/8 だけにする。
+
+| Model | Params | MACs | A100 訓練 | Top-1 |
+|---|---|---|---|---|
+| **ConvNeXt-T** | 29 | 4.5 | **575** | 82.1 |
+| **InceptionNeXt-T** | 28 | 4.2 | **901 (+57%)** | **82.3 (+0.2)** |
+| ConvNeXt-A | 3.7 | 0.55 | 835 | 75.7 |
+| **InceptionNeXt-A** | 4.2 | 0.51 | **2661 (+219%)** | 75.3 (−0.4) |
+
+**ブロック構造そのものは ConvNeXt をほぼそのまま踏襲している**（4 ステージ、ブロック数 [3,3,9,3]、MLP 比 4）。違いはトークン混合器と、**速度優先で LayerNorm ではなく BatchNorm を採る**点、第 4 ステージだけ MLP 比を 3 にする点の 3 つだけ。**LN の方が精度は 0.1 高いが訓練スループットが 20% 落ちる**——ConvNeXt が「近代化を済ませた後なら LN がわずかに良い」と結論したのと、目的関数が違えば判断が逆になる例である。
+
+**RDNet と InceptionNeXt は同じ診断・別の処方**として並べられる。
+
+| | **[[entities/rdnet\|RDNet]]** | **[[entities/inceptionnext\|InceptionNeXt]]** |
+|---|---|---|
+| 変えた軸 | **ショートカットの型**（加算 → 連結） | **トークン混合器**（7×7 → 4 分岐） |
+| ConvNeXt-T 比 | **82.8**（+0.7） | 82.3（+0.2）／**訓練 1.6 倍** |
+| 効きどころ | 小バッチ・低レイテンシ | **軽量モデル**（大きいと MLP が支配し効かない） |
+
+RDNet の比較表には InceptionNeXt-T が **132ms と表中最速のレイテンシ**で載っており（RDNet-T は 175ms で 82.8）、**精度で RDNet、速度で InceptionNeXt**という住み分けになる。両者は直交しうるが、組み合わせは誰も試していない ⚠。

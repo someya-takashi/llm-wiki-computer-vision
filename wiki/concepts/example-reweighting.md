@@ -2,9 +2,9 @@
 type: concept
 aliases: [Example Reweighting, 事例の重み付け, サンプル重み付け, データ再重み付け]
 tags: [training, robustness, class-imbalance, label-noise, meta-learning, data-quality]
-related: ["[[concepts/object-detection]]", "[[concepts/semi-supervised-learning]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/convolutional-neural-network]]"]
-sources: ["[[sources/l2rw]]"]
-updated: 2026-08-23
+related: ["[[concepts/learning-with-noisy-labels]]", "[[concepts/object-detection]]", "[[concepts/semi-supervised-learning]]", "[[concepts/weakly-supervised-pretraining]]", "[[concepts/convolutional-neural-network]]"]
+sources: ["[[sources/l2rw]]", "[[sources/elr]]"]
+updated: 2026-08-31
 ---
 
 # Example Reweighting（事例の重み付け）
@@ -13,7 +13,9 @@ updated: 2026-08-23
 
 **訓練事例ごとに重み $w_i$ を付けて $\sum_i w_i f_i(\theta)$ を最小化する**という、訓練データのバイアス（クラス不均衡・ラベルノイズ）に対処する古典的な枠組み。焦点は「重み付けするかどうか」ではなく、**何を根拠に $w_i$ を決めるか**にある。
 
-> 本ページの一次情報は現時点で [[sources/l2rw]]（Ren et al., ICML 2018）1 件である。同論文の Related Work で言及されている手法については、その記述の範囲を超えて断定しないよう努めている。原典を取り込んでいない手法には ⚠ を付けた。
+> 本ページの一次情報は [[sources/l2rw]]（Ren et al., ICML 2018）と [[sources/elr]]（Liu et al., NeurIPS 2020）の 2 件である。
+>
+> **ラベルノイズに限った話題は [[concepts/learning-with-noisy-labels]] に分離した。** 本ページは「何を根拠に重みを決めるか」という重み付けの主題に集中する。同論文の Related Work で言及されている手法については、その記述の範囲を超えて断定しないよう努めている。原典を取り込んでいない手法には ⚠ を付けた。
 
 ## なぜ事例に重みを付けるのか
 
@@ -143,3 +145,24 @@ $$w_i \propto \max\{\nabla G^{\top}\nabla f_{i},\,0\}$$
 - **self-paced learning**（Kumar et al., NIPS 2010） — easy 優先側の原典
 - **MAML**（Finn et al., ICML 2017） — メタ学習の基本枠組み。本 wiki に未取り込み
 - **Meta-Weight-Net**（Shu et al., NeurIPS 2019） ⚠ — L2RW の直接の後継とされる（未検証）
+
+## 第四の道: そもそも重みを付けない（正則化）
+
+**重み付けという枠組み自体を出る道がある。** [[sources/elr]]（ELR, NeurIPS 2020）は、事例に重みを付ける代わりに**損失関数に正則化項を 1 つ足すだけ**でラベルノイズへの頑健性を得る。
+
+$$\mathcal{L}_{\text{ELR}}=\mathcal{L}_{\text{CE}}+\frac{\lambda}{n}\sum_{i}\log\left(1-\langle\mathbf{p}^{[i]},\mathbf{t}^{[i]}\rangle\right)$$
+
+ここで $\mathbf{t}^{[i]}$ はモデル自身の過去の出力の移動平均である。**同じ 1 つの項が、クリーンな事例と誤ラベル事例で自動的に逆向きに働く**——クリーンな事例では消えかけた交差エントロピーの寄与を補い、誤ラベル事例では暗記を引き起こす方向を打ち消す。**「どちらの事例か」を判定する必要がない**のが本質的な違いである。
+
+**hard 優先 / easy 優先 / 勾配方向 / 正則化 という 4 つの立場を並べると次のようになる。**
+
+| 立場 | 代表 | 事例を区別するか | 追加データ | コスト |
+|---|---|---|---|---|
+| **hard 優先** | Focal Loss ⚠ / hard negative mining ⚠ | する（損失値で） | 不要 | 軽い |
+| **easy 優先** | self-paced learning ⚠ / Co-teaching ⚠ | する（損失値で） | 不要 | 軽い〜中 |
+| **勾配方向** | [[sources/l2rw\|L2RW]] | する（勾配の内積で） | **クリーンな検証 15 枚** | **訓練 3×** |
+| **正則化** | [[sources/elr\|ELR]] | **しない** | 不要 | **ほぼ 1×** |
+
+**L2RW と ELR は同じ問題への対照的な解**である。L2RW は外部のクリーンなデータを基準に持ち込む代わりに収束の理論保証を得て、ELR は追加データ不要な代わりに「早期学習が実際に起こる」という経験的前提に乗る（そしてその前提を線形モデルで証明した）。詳細は [[concepts/learning-with-noisy-labels]] を参照。
+
+> **なお [[sources/elr]] は [[sources/l2rw]] を Related Work で明示的に議論の対象外に置いている**——「クリーンなラベルを持つ訓練データの小さな部分集合が利用可能であることを仮定する」手法として。**前提の差が両者を別の土俵に置いている。**

@@ -2,9 +2,9 @@
 type: concept
 aliases: [SeSL, 半教師あり学習, Semi-Supervised Learning]
 tags: [paradigm, semi-supervised, label-efficiency, consistency-regularization, entropy-minimization, mixup, pseudo-label, foundation-model, peft]
-related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/foundation-model]]", "[[concepts/parameter-efficient-fine-tuning]]", "[[concepts/example-reweighting]]"]
-sources: ["[[sources/mixmatch]]", "[[sources/fixmatch]]", "[[sources/flexmatch]]", "[[sources/revisiting-ssl-foundation-models]]"]
-updated: 2026-08-23
+related: ["[[concepts/self-supervised-learning]]", "[[concepts/contrastive-learning]]", "[[concepts/knowledge-distillation]]", "[[concepts/foundation-model]]", "[[concepts/parameter-efficient-fine-tuning]]", "[[concepts/example-reweighting]]", "[[concepts/learning-with-noisy-labels]]"]
+sources: ["[[sources/mixmatch]]", "[[sources/fixmatch]]", "[[sources/flexmatch]]", "[[sources/revisiting-ssl-foundation-models]]", "[[sources/elr]]"]
+updated: 2026-08-31
 ---
 
 # 半教師あり学習（Semi-Supervised Learning）
@@ -146,3 +146,26 @@ MixMatch (2019) ─→ FixMatch (2020) ─→ FlexMatch (2021) ─→ ... ─→
 - [[concepts/self-supervised-learning]]: ラベルなし事前学習の系譜（SimCLR/BYOL/DINO/MAE）
 - [[concepts/contrastive-learning]]: 半教師あり学習の一貫性正則化と思想的に近い
 - [[concepts/knowledge-distillation]]: Mean Teacher / BYOL の EMA ターゲットが使う考え方
+
+## ノイズラベル学習との合流
+
+**「ラベルが足りない」（半教師あり）と「ラベルが汚い」（ノイズラベル）は別の問題だが、道具立ては同じになりつつある。** どちらも核心は「**モデル自身の予測を、信頼できる範囲でどう使うか**」だからである。
+
+[[sources/elr]]（ELR+, NeurIPS 2020）はノイズラベルの手法だが、その構成要素は**すべて半教師あり学習由来**である。
+
+| 要素 | 出どころ | 半教師あり学習での目的 | ノイズラベルでの目的 |
+|---|---|---|---|
+| **temporal ensembling** | Laine & Aila ⚠ | 疑似ラベルの安定化 | 目標の安定化 |
+| **重み平均化** | Mean Teacher ⚠ | **確証バイアス**の緩和 | 同左 |
+| **2 つのネットワーク** | Co-teaching 系 ⚠ | — | 互いの出力から目標を計算 |
+| **mixup** | Zhang ら ⚠ | 正則化（[[entities/mixmatch]] の核） | 同左 |
+
+**DivideMix ⚠ に至っては、ノイズラベル問題そのものを半教師あり学習として定式化する**——クリーンと判定した事例をラベルあり、ノイジーと判定した事例をラベルなしとして扱い、MixMatch を回す。
+
+**高ノイズほど半教師あり技法が効く。** [[sources/elr]] のアブレーションでは、CIFAR-10 の 40% ノイズで各要素の寄与が 1〜2 ポイントなのに対し、**80% ノイズでは mixup 単体で 10 ポイント以上動く**（76.50 → 87.23）。ラベルの信頼度が下がるほど、ラベルに頼らない正則化の比重が上がるという素直な話である。
+
+> **逆向きの教訓もある。** [[entities/flexmatch]] の CPL がクラス不均衡な SVHN で失敗した件は、「モデル自身の予測をどう使うか」の設計がデータの性質に依存することを示している。**片方の分野の失敗がもう片方の教訓になる**関係にあり、両分野を並べて読む価値がある。
+
+- [[concepts/learning-with-noisy-labels]] — ノイズラベル学習の全体像（5 類型、早期学習と暗記）
+- [[sources/elr]] / [[translations/elr]] — ELR / ELR+ の原典
+- [[concepts/example-reweighting]] — 事例の重み付けという別の軸

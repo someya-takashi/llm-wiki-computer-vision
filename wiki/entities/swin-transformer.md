@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [Swin, Swin Transformer, Swin-T, Swin-S, Swin-B, Swin-L, SwinL]
 tags: [swin-transformer, vision-transformer, hierarchical, window-attention, backbone, microsoft]
-related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]", "[[entities/maxvit]]", "[[entities/hrnet]]"]
+related: ["[[concepts/vision-transformer]]", "[[entities/hiera]]", "[[entities/convnext]]", "[[concepts/object-detection]]", "[[concepts/masked-image-modeling]]", "[[entities/maxvit]]", "[[entities/hrnet]]", "[[entities/rdnet]]", "[[entities/inceptionnext]]"]
 sources: ["[[sources/swin-transformer]]"]
-updated: 2026-08-21
+updated: 2026-09-01
 ---
 
 # Swin Transformer
@@ -99,6 +99,8 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 - **2022: [[sources/convnext|ConvNeXt]] からの反論** — 「ConvNet の性質を苦労して輸入するくらいなら ConvNet を近代化せよ」。実際 ConvNeXt-T 82.1 > Swin-T 81.3 で、A100 では最大 +49% 高速。**「Swin の特殊モジュールは性能の源泉ではなかった」**という主張。
 - **2022: [[entities/maxvit]] からの置き換え提案** — 「窓をずらして間接的に大域性を得るより、**grid attention で直接得た方が良い**」。Max-SA は **Swin の attention と同パラメータ・同 FLOPs の drop-in 置換**でありながら cyclic shift もマスクも不要で、IN-21K 以降で大きく上回る（[[sources/maxvit]]）。
 - **2023: [[entities/hiera]] からの簡素化** — 「MAE で適切に事前学習すれば shifted window も相対位置バイアスも全部要らない」。Hiera-B 51M で 84.3 > Swin-B 88M で 83.5。
+- **2024: [[entities/rdnet]] からの別方向の反論** — 「ConvNet か Transformer かの前に、**ショートカットが加算であること自体を疑え**」。Swin も ConvNeXt も ViT も内部は加算ショートカットを共有しており、**連結ショートカットを使う DenseNet 系を近代化すると Swin を上回る**（RDNet-T 82.8 vs Swin-T 81.3、ADE20K 47.6 vs 44.5、COCO 47.5 vs 46.0）。[[sources/rdnet]] は 15,000 個超のランダムネットワークで「連結 > 加算」を系統的に検証している（[[concepts/skip-connection]]）。
+- **2024: [[entities/inceptionnext]] が示す「速度でも既に負けている」** — Swin-T は A100 訓練 564 img/s で、ConvNeXt-T（575）にも InceptionNeXt-T（**901**）にも及ばない。精度でも 81.3 < 82.1 < 82.3。**Swin が主戦場から退いた理由は、MIM 非互換だけでなく精度・速度の両面で追い抜かれたことにもある。**
 - **MIM との相性の悪さ**が弱点として残り、SimMIM という専用手法が必要だった。この制約が [[entities/hiera]] と [[entities/convnext-v2]] を生む動機になった（[[concepts/masked-image-modeling]] の「MIM とアーキテクチャの相性」表を参照）。
 - **それでも検出・グラウンディング領域では長く標準**であり続けた。[[entities/glip]]（2022）→ [[entities/grounding-dino]]（2024）と、open-vocabulary 検出の主要系譜が Swin バックボーンの上に築かれている。
 
@@ -119,3 +121,4 @@ Swin は本 wiki の多くのページで**バックボーンとして言及さ�
 - [[entities/maxvit]] / [[sources/maxvit]] — Swin の attention の drop-in 置換を提案したハイブリッド系（ECCV 2022）
 - [[concepts/convolutional-neural-network]] — Swin が輸入した階層性・局所性の出どころ
 - [[entities/hrnet]] / [[sources/hrnet]] — 同じ密 prediction 問題への CNN 側からの回答（2019）。ADE20K の比較対象
+- [[entities/inceptionnext]] / [[sources/inceptionnext]] — 精度・速度の両面で Swin-T を上回る 2024 年の CNN

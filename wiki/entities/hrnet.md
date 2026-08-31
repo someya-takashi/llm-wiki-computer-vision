@@ -3,9 +3,9 @@ type: entity
 entity_kind: model
 aliases: [HRNet, HRNetV1, HRNetV2, HRNetV2p, High-Resolution Network, HRNet-W32, HRNet-W48]
 tags: [hrnet, convolutional-neural-network, backbone, pose-estimation, semantic-segmentation, object-detection, high-resolution, microsoft]
-related: ["[[concepts/convolutional-neural-network]]", "[[concepts/object-detection]]", "[[entities/swin-transformer]]", "[[entities/convnext]]", "[[entities/nfnet]]"]
+related: ["[[concepts/convolutional-neural-network]]", "[[concepts/object-detection]]", "[[entities/swin-transformer]]", "[[entities/convnext]]", "[[entities/nfnet]]", "[[concepts/skip-connection]]"]
 sources: ["[[sources/hrnet]]"]
-updated: 2026-08-21
+updated: 2026-08-31
 ---
 
 # HRNet（High-Resolution Network）
@@ -125,6 +125,7 @@ TPAMI 版で追加された §III-E の議論。
 - [[translations/hrnet]] — 全文和訳（Appendix A〜E 込み）
 - [[concepts/convolutional-neural-network]] — CNN の系譜。本モデルはその「解像度」軸の到達点
 - [[concepts/object-detection]] — HRNetV2p が差し込まれる枠組み
+- [[concepts/skip-connection]] — HRNet の多解像度融合を「解像度を運ぶ skip の極端な形」として位置づけた概念ページ
 - [[entities/swin-transformer]] / [[sources/swin-transformer]] — 同じ問題への Transformer 側からの回答
 - [[entities/convnext]] — 「部品を減らす」対照的な設計哲学
 - [[entities/nfnet]] — 同時期の別方向の CNN（正規化の排除）

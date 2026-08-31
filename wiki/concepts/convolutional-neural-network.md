@@ -2,9 +2,9 @@
 type: concept
 aliases: [CNN, ConvNet, Convolutional Neural Network, 畳み込みニューラルネットワーク]
 tags: [architecture, cnn, backbone]
-related: ["[[vision-transformer]]", "[[masked-image-modeling]]", "[[object-detection]]", "[[self-supervised-learning]]"]
-sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]", "[[sources/nfnet]]", "[[sources/hrnet]]"]
-updated: 2026-08-21
+related: ["[[vision-transformer]]", "[[masked-image-modeling]]", "[[object-detection]]", "[[self-supervised-learning]]", "[[concepts/skip-connection]]"]
+sources: ["[[sources/convnext]]", "[[sources/convnext-v2]]", "[[sources/vision-transformer]]", "[[sources/nfnet]]", "[[sources/hrnet]]", "[[sources/rdnet]]", "[[sources/inceptionnext]]"]
+updated: 2026-09-01
 ---
 
 # Convolutional Neural Network（CNN / ConvNet, 畳み込みニューラルネットワーク）
@@ -40,7 +40,7 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 | 2014 | VGGNet | **3×3 の小カーネルを積み重ねる**という長年の標準を確立 |
 | 2014 | GoogLeNet / Inception | 複数カーネルサイズの並列分岐、1×1 conv によるチャネル削減 |
 | 2015 | **ResNet** | **残差接続（skip connection）**で超深層の訓練を可能に。以後すべての基準点 |
-| 2016 | DenseNet | 全層間の密な接続 |
+| 2016 | **DenseNet** | **全層間の密な接続**。ショートカットを加算でなく**連結**で行う唯一の主要系譜。→ 2024 年に [[entities/rdnet]] として復活 |
 | 2017 | **ResNeXt** | **grouped convolution** +「グループを増やして幅を拡げる」原則 |
 | 2017 | MobileNet / Xception | **depthwise separable convolution** を普及させる |
 | 2018 | **MobileNetV2** | **inverted bottleneck** を普及させる |
@@ -50,6 +50,7 @@ CNN の強さは「畳み込み」という演算が**画像についての仮�
 | 2021 | **NFNet**（[[entities/nfnet]]） | **BatchNorm を完全に排除**。AGC + Scaled Weight Standardization で代替し IN-1K 86.5%（追加データなし SOTA）/ JFT で 89.2% |
 | 2022 | **ConvNeXt**（[[entities/convnext]]） | Transformer 流の訓練レシピと設計を取り込み、Swin を上回る |
 | 2023 | **ConvNeXt V2**（[[entities/convnext-v2]]） | **FCMAE（疎畳み込み MIM）+ GRN** と共設計。CNN でも MIM が効くことを実証、IN-1K 88.9% |
+| 2024 | **RDNet**（[[entities/rdnet]]） | **DenseNet を近代化**。ConvNeXt と同じ手続きを連結ショートカットに適用し Swin / ConvNeXt / DeiT-III を上回る（IN-1K 82.8〜85.8） |
 
 ## 主要な構成部品
 
@@ -102,11 +103,42 @@ HRNet の効き方は明快で、Cityscapes val において **PSPNet と同じ�
 - ConvNeXt の再検証: 3 → 5 → **7** で改善し、**7×7 で飽和**（9, 11 では改善しない）。Swin の窓サイズ 7×7 と一致するのは示唆的
 - ただし ResNet-200 領域では **5 で飽和**する
 
+#### 大カーネルの隠れたコスト: FLOPs は小さいが実機では遅い
+
+**7×7 depthwise 畳み込みは FLOPs では安いが、実測では高くつく。** [[entities/inceptionnext|InceptionNeXt]]（[[sources/inceptionnext]], CVPR 2024）はこれを 1 つの数字で突きつけた。
+
+> **ConvNeXt-T は ResNet-50 と同程度の FLOPs（4.5G vs 4.1G）を持つが、A100 上の訓練スループットは 575 img/s と ResNet-50 の 969 img/s の約 60% しかない。**
+
+原因は **メモリアクセスコスト（memory access cost）** である。depthwise 畳み込みはチャネルごとに独立して計算するため、**演算量に対して読み書きするデータ量の比が悪く**、GPU は演算器を遊ばせたままメモリ帯域に律速される。カーネルを大きくするほどこの傾向は強まる。
+
+**つまり「7×7 で飽和」は精度の話であって、コストの話ではない。7×7 は精度上の利得がもう出ない地点で、速度上の代償だけを払い続けている。**
+
+対処は 2 系統ある。
+
+| 方針 | 代表 | 内容 | 結果 |
+|---|---|---|---|
+| **カーネルを小さくする** | — | ConvNeXt-T の 7×7 → 3×3 | 1.4 倍速いが **−0.6%** |
+| **カーネルを分解する** | [[entities/inceptionnext]] | 3×3 + 1×11 + 11×1 + 恒等の 4 分岐、通すのは全チャネルの 3/8 | **1.6 倍速く +0.2%** |
+| **ショートカットを変える** | [[entities/rdnet]] | 加算 → 連結、遷移層を増やす | b1 レイテンシで大幅改善 |
+
+分解が効く理由は計算量の次数が変わることにある。**通常/depthwise の畳み込みはカーネルサイズ $k$ の 2 次だが、帯状カーネル（$1\times k$ と $k\times 1$）に分ければ $k$ の 1 次で済む。**
+
+| 畳み込みの型 | Params | FLOPs |
+|---|---|---|
+| 通常の畳み込み | $k^{2}C^{2}$ | $2k^{2}C^{2}HW$ |
+| Depthwise 畳み込み | $k^{2}C$ | $2k^{2}CHW$ |
+| **Inception depthwise 畳み込み** | $(2k+9)C/8$ | $(2k+9)CHW/4$ |
+
+> **ただし効果はモデルサイズに強く依存する。** depthwise の計算量は $\mathcal{O}(C)$、MLP は $\mathcal{O}(C^2)$ なので、チャネル数 $C$ が大きくなると計算は MLP に支配され、depthwise をいくら速くしても全体には効かない。InceptionNeXt の訓練スループット改善は **Atto で +219%、Tiny で +57%** と減衰する。**この手法はエッジ・軽量モデル向けである。**
+
+**FLOPs と実速度の乖離は本 wiki を横断する論点**でもある。[[entities/nfnet|NFNet]] は「理論 FLOPS でも推論レイテンシでもなく**実機の訓練レイテンシ**を最適化対象にする」と明言し、[[entities/rdnet]] は「b1 で 7 倍差、b128 では並ぶ」とバッチサイズ依存を示した。**FLOPs は比較の出発点にはなるが、結論にはならない。**
+
 ### 正規化: BatchNorm vs LayerNorm
 
 - **BatchNorm（BN）**: ミニバッチ方向に正規化。ConvNet の事実上の標準で、収束を速め過学習を減らす。ただし**バッチサイズ依存**、訓練/推論で挙動が変わる、分散学習で扱いが面倒、といった厄介さがある
 - **LayerNorm（LN）**: 特徴次元方向に正規化。バッチに依存しない。Transformer の標準
 - 素の ResNet で BN を LN に置き換えると性能が落ちるが、**他の近代化をすべて済ませた後なら LN の方がわずかに良い**（81.41 → 81.47）
+- **ただし目的関数が速度なら結論は逆になる**: [[entities/inceptionnext]] は LN の方が精度が高い（82.4 vs 82.3）ことを確認したうえで、**LN では訓練スループットが 20% 落ちる**（901 → 721）ため **BN を採用**した
 - **落とし穴**: BN を持つモデルでは **EMA（重みの指数移動平均）が性能を著しく害する**（[[sources/convnext]] Appendix A.1）
 - **第 3 の道: 正規化層を置かない** — [[entities/nfnet|NFNet]]（[[sources/nfnet]]）は **BN を LN に置き換えるのではなく完全に排除**した。BN の 4 つの役割（残差分岐のダウンスケール / 平均シフト除去 / 正則化 / 大バッチ訓練）を、**分散の解析的予測 + Scaled Weight Standardization + 強いデータ拡張 + AGC** で個別に代替する。**同一アーキテクチャの BN 版より精度がわずかに高く、訓練は 20-40% 速い**
 - **BN の欠点の整理としても NFNet は重要**: バッチサイズ依存 / 訓練・推論の乖離 / **ミニバッチ内の事例の独立性を壊す**（→ 対比学習での情報漏洩、[[concepts/self-supervised-learning]] / [[entities/moco]]）という 3 点は広く引用される
@@ -146,3 +178,20 @@ ConvNeXt の近代化で**終盤に最も効いたのは、部品を足すこと
 - [[entities/hiera]] — 階層型 ViT から特殊モジュールを削ぐ研究。ConvNeXt と同じ *simplicity* 論の Transformer 側
 - [[sources/hrnet]] / [[entities/hrnet]] — 「解像度を落とさない」という別軸の設計。位置に敏感なタスクでの CNN の到達点
 - [[entities/dinov3]] — ConvNeXt バリアントを蒸留で提供する後年の基盤モデル
+
+## ショートカットの型 — 加算か連結か
+
+**本ページの系譜表で DenseNet だけが浮いている**のは偶然ではない。ResNet 以降のほぼすべて（ResNeXt / EfficientNet / [[entities/convnext]] / さらに ViT / [[entities/swin-transformer]] まで）が**加算ショートカット** $\mathbf{X}+f(\mathbf{X}\mathbf{W})$ を採るのに対し、DenseNet だけが**連結ショートカット** $[\mathbf{X}, f(\mathbf{X}\mathbf{W})]$ を採る。
+
+| | 加算 | 連結 |
+|---|---|---|
+| 代表 | ResNet → ConvNeXt → ViT → Swin | DenseNet → **[[entities/rdnet]]** |
+| チャネル数 | 変わらない | **層ごとに増える** |
+| 利点 | 勾配消失の回避、モジュール化しやすい | **特徴の再利用**、パラメータ効率 |
+| 難点 | 同じ空間に足すので表現が似通いやすい | **メモリを食う**、幅のスケーリングが難しい |
+
+**[[sources/rdnet]]（ECCV 2024）がこの軸を初めて系統的に検証した。** Tiny-ImageNet で **15,000 個超のランダムネットワーク**をサンプルし、ショートカットだけを入れ替えて比較すると、**全 10 設定で連結が勝つ**（例: 9M 規模で 54.3 vs 53.2）。差は約 1 ポイントで標準偏差より小さいが、分布全体が系統的にシフトしている。
+
+**DenseNet が消えた理由は連結が弱いからではなく、(1) メモリ、(2) 訓練レシピと設計要素が古いまま放置されたこと**だった——これは本ページ上部の「[[sources/convnext]] の最大の発見: 性能差の最大の単一要因は訓練レシピだった」とまったく同じ診断である。RDNet は ConvNeXt と同じ手続きを DenseNet に適用し、**遷移層を 3 ブロックごとに挟んでメモリ問題を解いた**うえで Swin / ConvNeXt / DeiT-III を上回った。
+
+詳細と、「skip があるから他の要素が要らない」という定石を疑う議論（Stochastic Depth / 正規化）は [[concepts/skip-connection]] を参照。
